@@ -1,12 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Material.material" type="Material" id=1]
 
-[sub_resource type="CubeMesh" id=1]
+[sub_resource type="CubeMesh" id=18]
 
 [sub_resource type="BoxShape" id=2]
 
-[sub_resource type="ArrayMesh" id=3]
+[sub_resource type="ArrayMesh" id=19]
 resource_name = "Chair"
 surfaces/0 = {
 "aabb": AABB( -1.00742, 0.00108671, -1.07085, 2.00743, 4.17586, 2.07602 ),
@@ -24,11 +24,14 @@ surfaces/0 = {
 [sub_resource type="BoxShape" id=17]
 extents = Vector3( 1, 2, 1 )
 
+[sub_resource type="CubeMesh" id=20]
+size = Vector3( 0.5, 0.5, 0.5 )
+
 [node name="MeshLib" type="Spatial"]
 
 [node name="Cube" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 1 )
-mesh = SubResource( 1 )
+mesh = SubResource( 18 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Cube"]
@@ -38,7 +41,7 @@ shape = SubResource( 2 )
 
 [node name="Chair" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0 )
-mesh = SubResource( 3 )
+mesh = SubResource( 19 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Chair"]
@@ -46,3 +49,8 @@ material/0 = null
 [node name="CollisionShape" type="CollisionShape" parent="Chair/StaticBody"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 shape = SubResource( 17 )
+
+[node name="PathTile" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.593, 1, 0 )
+mesh = SubResource( 20 )
+material/0 = null

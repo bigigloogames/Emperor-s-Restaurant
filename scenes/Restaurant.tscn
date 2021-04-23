@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://MeshLibrary.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
+[ext_resource path="res://scripts/Camera.gd" type="Script" id=3]
+[ext_resource path="res://scenes/Unit.tscn" type="PackedScene" id=4]
 
 [node name="Restaurant" type="Node"]
 script = ExtResource( 2 )
@@ -13,6 +15,7 @@ transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0
 transform = Transform( 1, 4.47035e-08, 8.9407e-08, 0, 0.923879, -0.382684, -1.19209e-07, 0.382684, 0.923879, 0, -30, 85 )
 projection = 1
 size = 10.0
+script = ExtResource( 3 )
 
 [node name="Control" type="Control" parent="."]
 margin_right = 1280.0
@@ -21,7 +24,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GridMap" type="GridMap" parent="."]
+[node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
 data = {
 "cells": PoolIntArray(  )
@@ -30,3 +33,25 @@ __meta__ = {
 "_editor_clip_": 0,
 "_editor_floor_": Vector3( 0, 0, 0 )
 }
+
+[node name="Furniture" type="GridMap" parent="."]
+mesh_library = ExtResource( 1 )
+data = {
+"cells": PoolIntArray(  )
+}
+__meta__ = {
+"_editor_clip_": 0
+}
+
+[node name="Astar" type="GridMap" parent="."]
+visible = false
+mesh_library = ExtResource( 1 )
+data = {
+"cells": PoolIntArray(  )
+}
+__meta__ = {
+"_editor_clip_": 0
+}
+
+[node name="Unit" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
