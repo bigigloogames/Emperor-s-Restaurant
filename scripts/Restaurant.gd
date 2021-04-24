@@ -1,5 +1,7 @@
 extends Node
 
+const Unit = preload("res://scenes/Unit.tscn")
+
 var level = 0
 var room_size = 9 + level
 onready var Camera = $CameraOrigin/Camera
@@ -18,6 +20,12 @@ func _ready():
 	$Furniture.set_cell_item(4, 0, 4, 3, 16)  # +90 clockwise
 	$Furniture.set_cell_item(6, 0, 2, 3, 22)  # -90 clockwise
 	$Furniture.set_cell_item(0, 0, 8, 3, 0)  # no rotation
+	
+	for m in room_size:
+		$Floor.set_cell_item(-2, 0, m, 0, 0)
+		$Astar.set_cell_item(-2, 1, m, 4, 0)
+	$Floor.set_cell_item(-1, 0, int(room_size/2), 0)
+	$Astar.set_cell_item(-1, 1, int(room_size/2), 4, 0)
 	
 	for m in room_size:
 		for n in room_size:
@@ -42,6 +50,12 @@ func _ready():
 						var idx2 = all_points[v3_to_index(cell + v3)]
 						if !astar.are_points_connected(idx1, idx2):
 							astar.connect_points(idx1, idx2, true)
+
+	var NewUnit = Unit.instance()
+	NewUnit.translation.x = -3
+	NewUnit.translation.y = 2
+	self.add_child(NewUnit)
+	NewUnit.visit_restaurant()
 
 func v3_to_index(v3):
 	return str(int(round(v3.x))) + "," + str(int(round(v3.y))) + "," + str(int(round(v3.z)))

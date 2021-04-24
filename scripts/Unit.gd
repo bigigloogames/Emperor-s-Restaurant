@@ -4,9 +4,10 @@ var path = []
 var path_idx = 0
 const move_speed = 5
 onready var astar_map = get_parent()
+onready var timer = $Eating
 
 func _ready():
-	add_to_group("units")
+	pass #add_to_group("units")
 
 func _process(delta):
 	if path_idx < path.size():
@@ -18,5 +19,11 @@ func _process(delta):
 
 func move_to(target_pos):
 	path = astar_map.generate_path(global_transform.origin, target_pos)
-	print(path)
 	path_idx = 0
+
+func visit_restaurant():
+	move_to(Vector3(13, 1, 9))
+	yield(get_tree().create_timer(10.0), "timeout")
+	move_to(Vector3(-2, 1, 1))
+	yield(get_tree().create_timer(10.0), "timeout")
+	self.queue_free()
