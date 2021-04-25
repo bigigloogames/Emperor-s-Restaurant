@@ -1,10 +1,17 @@
 extends Node
 
 const Unit = preload("res://scenes/Unit.tscn")
+# MeshLib item constants
+const EMPTY = 0
 const PATH_TILE = 4
 const SEAT_TILE = 6
 const CHAIR = 3
-const TABLE = -2
+const TABLE = 2
+# GridMap orientation constants
+const NE = 10
+const SE = 16
+const SW = 0
+const NW = 22
 
 var level = 0
 var room_size = 9 + level
@@ -14,17 +21,21 @@ var astar = null
 onready var gridmap = $Astar
 var seats = []
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for m in room_size:
 		for n in room_size:
 			# $GridMap.set_cell_item(x, y, z, item, orientation)
 			$Floor.set_cell_item(m, 0, n, 0, 0)
-	$Furniture.set_cell_item(0, 0, 8, 3, 0)  # no rotation
-	$Furniture.set_cell_item(2, 0, 6, 3, 10)  # 180
-	$Furniture.set_cell_item(4, 0, 4, 3, 16)  # +90 clockwise
-	$Furniture.set_cell_item(6, 0, 2, 3, 22)  # -90 clockwise
-	$Furniture.set_cell_item(0, 0, 8, 3, 0)  # no rotation
+	$Furniture.set_cell_item(0, 0, 8, CHAIR, SW)  # no rotation
+	$Furniture.set_cell_item(2, 0, 6, CHAIR, NE)  # 180
+	$Furniture.set_cell_item(4, 0, 4, CHAIR, SE)  # +90 clockwise
+	$Furniture.set_cell_item(6, 0, 2, CHAIR, NW)  # -90 clockwise
+	$Furniture.set_cell_item(3, 0, 1, CHAIR, 0)  # no rotation
+	$Furniture.set_cell_item(2, 0, 5, TABLE, NE)  # 180
+	$Furniture.set_cell_item(5, 0, 4, TABLE, SE)  # +90 clockwise
+	$Furniture.set_cell_item(5, 0, 2, TABLE, NW)  # -90 clockwise
 	
 	for m in room_size:
 		$Floor.set_cell_item(-2, 0, m, 0, 0)
@@ -36,22 +47,26 @@ func _ready():
 		for n in room_size:
 			if $Furniture.get_cell_item(m, 0, n) == -1:
 				$Astar.set_cell_item(m, 1, n, PATH_TILE, 0)
-			elif $Furniture.get_cell_item(m, 0, n) == CHAIR:
-				# Remember to check for valid seating
-				$Astar.set_cell_item(m, 1, n, SEAT_TILE, 0)
-				seats.push_back(Vector3(m, 1, n))
-			#elif #Furniture.get_cell_item(m, 0, n) == TABLE:
-				# Check if there's a chair next to the table
-				# that is facing the right way
-				# if
-				# Furniture.get_cell_item(m - 1, 0, n) == CHAIR or
-				# Furniture.get_cell_item(m + 1, 0, n) == CHAIR or
-				# Furniture.get_cell_item(m, 0, n - 1) == CHAIR or
-				# Furniture.get_cell_item(m, 0, n + 1) == CHAIR or:
-					#$Astar.set_cell_item(m, 1, n, SEAT_TILE, 0)
-					#seats.push_back(Vector3(m, 1, n))
+			elif $Furniture.get_cell_item(m, 0, n) == TABLE:
+				var chair = valid_chair(m, n)
+				if chair:
+					$Astar.set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
+					seats.push_back(chair)
 
 	generate_astar()
+
+
+func valid_chair(m, n):
+	if $Furniture.get_cell_item(m - 1, 0, n) == CHAIR and $Furniture.get_cell_item_orientation(m - 1, 0, n) == SE:
+		return Vector3(m - 1, 1, n)
+	if $Furniture.get_cell_item(m + 1, 0, n) == CHAIR and $Furniture.get_cell_item_orientation(m + 1, 0, n) == NW:
+		return Vector3(m + 1, 1, n)
+	if $Furniture.get_cell_item(m, 0, n - 1) == CHAIR and $Furniture.get_cell_item_orientation(m, 0, n - 1) == SW:
+		return Vector3(m, 1, n - 1)
+	if $Furniture.get_cell_item(m, 0, n + 1) == CHAIR and $Furniture.get_cell_item_orientation(m, 0, n + 1) == NE:
+		return Vector3(m, 1, n + 1)
+	return null
+
 
 func generate_astar():
 	astar = AStar.new()
@@ -75,8 +90,10 @@ func generate_astar():
 						if !astar.are_points_connected(idx1, idx2):
 							astar.connect_points(idx1, idx2, true)
 
+
 func v3_to_index(v3):
 	return str(int(round(v3.x))) + "," + str(int(round(v3.y))) + "," + str(int(round(v3.z)))
+
 
 func generate_path(start, end):  # From mouse click
 	#var grid_start = v3_to_index(gridmap.world_to_map(start))
@@ -96,6 +113,7 @@ func generate_path(start, end):  # From mouse click
 	astar.set_point_disabled(end_id, false)
 	return astar.get_point_path(start_id, end_id)
 
+
 func generate_path_via_click(start, end):  # From mouse click
 	var grid_start = v3_to_index(gridmap.world_to_map(start))
 	var grid_end = v3_to_index(gridmap.world_to_map(end))
@@ -110,6 +128,7 @@ func generate_path_via_click(start, end):  # From mouse click
 	else:
 		end_id = astar.get_closest_point(end)
 	return astar.get_point_path(start_id, end_id)
+
 
 func _on_CustomerTimer_timeout():
 	while seats:
@@ -129,16 +148,19 @@ func _on_CustomerTimer_timeout():
 		yield(get_tree().create_timer(10.0), "timeout")
 		NewUnit.queue_free()
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	zoom()
 	pan()
+
 
 func zoom():
 	if Input.is_action_just_released('wheel_down') and Camera.size < 20:
 		Camera.size += 0.25
 	if Input.is_action_just_released('wheel_up') and Camera.size > 1:
 		Camera.size -= 0.25
+
 
 func pan():
 	if Input.is_action_just_pressed("ui_up") and Camera.translation.y < -20:
