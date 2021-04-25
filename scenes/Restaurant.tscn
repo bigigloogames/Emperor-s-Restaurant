@@ -57,3 +57,8 @@ __meta__ = {
 "units",
 ] instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+
+[node name="CustomerTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+[connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]

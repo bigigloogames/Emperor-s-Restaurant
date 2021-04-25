@@ -53,20 +53,6 @@ func _ready():
 
 	generate_astar()
 
-	while seats:
-		var NewUnit = Unit.instance()
-		NewUnit.translation.x = -3
-		NewUnit.translation.y = 2
-		self.add_child(NewUnit)
-		#NewUnit.visit_restaurant()
-		var free_seat = seats.pop_back()
-		NewUnit.move_to(free_seat)
-		yield(get_tree().create_timer(10.0), "timeout")
-		NewUnit.move_to(Vector3(-2, 1, 0))
-		#seats.push_back(free_seat)
-		yield(get_tree().create_timer(10.0), "timeout")
-		NewUnit.queue_free()
-
 func generate_astar():
 	astar = AStar.new()
 	var cells = gridmap.get_used_cells()
@@ -124,6 +110,24 @@ func generate_path_via_click(start, end):  # From mouse click
 	else:
 		end_id = astar.get_closest_point(end)
 	return astar.get_point_path(start_id, end_id)
+
+func _on_CustomerTimer_timeout():
+	while seats:
+		var NewUnit = Unit.instance()
+		NewUnit.translation.x = -3
+		NewUnit.translation.y = 2
+		self.add_child(NewUnit)
+		#NewUnit.visit_restaurant()
+		var free_seat = seats.pop_back()
+		var seat_id = all_points[v3_to_index(free_seat)]
+		astar.set_point_disabled(seat_id, false)
+		NewUnit.move_to(free_seat)
+		astar.set_point_disabled(seat_id, true)
+		yield(get_tree().create_timer(10.0), "timeout")
+		NewUnit.move_to(Vector3(-2, 1, 0))
+		seats.push_back(free_seat)
+		yield(get_tree().create_timer(10.0), "timeout")
+		NewUnit.queue_free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
