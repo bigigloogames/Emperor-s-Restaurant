@@ -149,6 +149,11 @@ func _on_CustomerTimer_timeout():
 		NewUnit.queue_free()
 
 
+func place_item(position):
+	position = gridmap.world_to_map(position)
+	$Furniture.set_cell_item(position.x, 0, position.z, TABLE, SW)
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	zoom()
