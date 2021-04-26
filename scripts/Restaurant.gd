@@ -20,6 +20,8 @@ var all_points = {}
 var astar = null
 onready var gridmap = $Astar
 var seats = []
+onready var FurniList = $Control/ItemList
+var selected_item = -1
 
 
 # Called when the node enters the scene tree for the first time.
@@ -54,6 +56,20 @@ func _ready():
 					seats.push_back(chair)
 
 	generate_astar()
+
+	var mesh_lib = $Furniture.mesh_library
+	var chair_id = mesh_lib.find_item_by_name("Chair")
+	var chair_text = mesh_lib.get_item_preview(chair_id)
+	var table_id = mesh_lib.find_item_by_name("Cube")
+	var table_text = mesh_lib.get_item_preview(table_id)
+	
+	FurniList.visible = false
+	FurniList.set_max_columns(0)
+	FurniList.set_select_mode(ItemList.SELECT_SINGLE)
+	FurniList.set_same_column_width(true)
+	
+	FurniList.add_item(str(CHAIR), chair_text, true)
+	FurniList.add_item(str(TABLE), table_text, true)
 
 
 func valid_chair(m, n):
@@ -151,7 +167,11 @@ func _on_CustomerTimer_timeout():
 
 func place_item(position):
 	position = gridmap.world_to_map(position)
-	$Furniture.set_cell_item(position.x, 0, position.z, TABLE, SW)
+	$Furniture.set_cell_item(position.x, 0, position.z, selected_item, SW)
+
+
+func _on_ItemList_item_selected(index):
+	selected_item = int(FurniList.get_item_text(index))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

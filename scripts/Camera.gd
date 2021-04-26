@@ -19,3 +19,4 @@ func _input(event):
 
 func _on_BuildMode_toggled(_button_pressed):
 	build_mode = !build_mode
+	get_parent().get_parent().get_node("Control/ItemList").visible = build_mode

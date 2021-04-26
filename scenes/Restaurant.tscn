@@ -31,6 +31,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ItemList" type="ItemList" parent="Control"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -170.0
+allow_reselect = true
+max_columns = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
 data = {
@@ -69,4 +80,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 wait_time = 3.0
 autostart = true
 [connection signal="toggled" from="Control/BuildMode" to="CameraOrigin/Camera" method="_on_BuildMode_toggled"]
+[connection signal="item_selected" from="Control/ItemList" to="." method="_on_ItemList_item_selected"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
