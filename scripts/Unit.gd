@@ -3,7 +3,7 @@ extends KinematicBody
 var path = []
 var path_idx = 0
 const move_speed = 5
-onready var astar_map = get_parent()
+onready var astar_map = get_parent().get_node("Astar")
 
 func _ready():
 	pass #add_to_group("units")

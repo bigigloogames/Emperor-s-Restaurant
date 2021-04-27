@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://MeshLibrary.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
 [ext_resource path="res://scripts/Camera.gd" type="Script" id=3]
 [ext_resource path="res://scenes/Unit.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scripts/FurniList.gd" type="Script" id=5]
+[ext_resource path="res://scripts/Astar.gd" type="Script" id=6]
+[ext_resource path="res://scripts/Floor.gd" type="Script" id=7]
+[ext_resource path="res://scripts/Furniture.gd" type="Script" id=8]
 
 [node name="Restaurant" type="Node"]
 script = ExtResource( 2 )
@@ -31,13 +35,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ItemList" type="ItemList" parent="Control"]
+[node name="FurniList" type="ItemList" parent="Control"]
+visible = false
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -170.0
 allow_reselect = true
 max_columns = 0
+script = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -47,6 +53,7 @@ mesh_library = ExtResource( 1 )
 data = {
 "cells": PoolIntArray(  )
 }
+script = ExtResource( 7 )
 __meta__ = {
 "_editor_clip_": 0,
 "_editor_floor_": Vector3( 0, 0, 0 )
@@ -57,6 +64,7 @@ mesh_library = ExtResource( 1 )
 data = {
 "cells": PoolIntArray(  )
 }
+script = ExtResource( 8 )
 __meta__ = {
 "_editor_clip_": 0
 }
@@ -67,6 +75,7 @@ mesh_library = ExtResource( 1 )
 data = {
 "cells": PoolIntArray(  )
 }
+script = ExtResource( 6 )
 __meta__ = {
 "_editor_clip_": 0
 }
@@ -79,6 +88,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 [node name="CustomerTimer" type="Timer" parent="."]
 wait_time = 3.0
 autostart = true
-[connection signal="toggled" from="Control/BuildMode" to="CameraOrigin/Camera" method="_on_BuildMode_toggled"]
-[connection signal="item_selected" from="Control/ItemList" to="." method="_on_ItemList_item_selected"]
+[connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
+[connection signal="item_selected" from="Control/FurniList" to="." method="_on_ItemList_item_selected"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]

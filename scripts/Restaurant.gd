@@ -2,148 +2,42 @@ extends Node
 
 const Unit = preload("res://scenes/Unit.tscn")
 # MeshLib item constants
-const EMPTY = 0
+const EMPTY = -1
 const PATH_TILE = 4
 const SEAT_TILE = 6
-const CHAIR = 3
 const TABLE = 2
-# GridMap orientation constants
-const NE = 10
-const SE = 16
-const SW = 0
-const NW = 22
 
+onready var Cam = $CameraOrigin/Camera
+onready var FurniList = $Control/FurniList
+onready var Floor = $Floor
+onready var Furni = $Furniture
+onready var Astar = $Astar
 var level = 0
 var room_size = 9 + level
-onready var Camera = $CameraOrigin/Camera
-var all_points = {}
-var astar = null
-onready var gridmap = $Astar
 var seats = []
-onready var FurniList = $Control/ItemList
 var selected_item = -1
+var build_mode = false
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	for m in room_size:
-		for n in room_size:
-			# $GridMap.set_cell_item(x, y, z, item, orientation)
-			$Floor.set_cell_item(m, 0, n, 0, 0)
-	$Furniture.set_cell_item(0, 0, 8, CHAIR, SW)  # no rotation
-	$Furniture.set_cell_item(2, 0, 6, CHAIR, NE)  # 180
-	$Furniture.set_cell_item(4, 0, 4, CHAIR, SE)  # +90 clockwise
-	$Furniture.set_cell_item(6, 0, 2, CHAIR, NW)  # -90 clockwise
-	$Furniture.set_cell_item(3, 0, 1, CHAIR, 0)  # no rotation
-	$Furniture.set_cell_item(2, 0, 5, TABLE, NE)  # 180
-	$Furniture.set_cell_item(5, 0, 4, TABLE, SE)  # +90 clockwise
-	$Furniture.set_cell_item(5, 0, 2, TABLE, NW)  # -90 clockwise
-	
-	for m in room_size:
-		$Floor.set_cell_item(-2, 0, m, 0, 0)
-		$Astar.set_cell_item(-2, 1, m, 4, 0)
-	$Floor.set_cell_item(-1, 0, int(room_size/2), 0)
-	$Astar.set_cell_item(-1, 1, int(room_size/2), 4, 0)
+	Floor.populate_tiles(room_size)
+	Furni.populate_furniture()
+	Astar.populate_astar(room_size)
 	
 	for m in room_size:
 		for n in room_size:
-			if $Furniture.get_cell_item(m, 0, n) == -1:
-				$Astar.set_cell_item(m, 1, n, PATH_TILE, 0)
-			elif $Furniture.get_cell_item(m, 0, n) == TABLE:
-				var chair = valid_chair(m, n)
+			if Furni.get_cell_item(m, 0, n) == EMPTY:
+				Astar.set_cell_item(m, 1, n, PATH_TILE, 0)
+			elif Furni.get_cell_item(m, 0, n) == TABLE:
+				var chair = Furni.valid_chair(m, n)
 				if chair:
-					$Astar.set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
+					Astar.set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
 					seats.push_back(chair)
 
-	generate_astar()
+	Astar.generate_astar()
 
-	var mesh_lib = $Furniture.mesh_library
-	var chair_id = mesh_lib.find_item_by_name("Chair")
-	var chair_text = mesh_lib.get_item_preview(chair_id)
-	var table_id = mesh_lib.find_item_by_name("Cube")
-	var table_text = mesh_lib.get_item_preview(table_id)
-	
-	FurniList.visible = false
-	FurniList.set_max_columns(0)
-	FurniList.set_select_mode(ItemList.SELECT_SINGLE)
-	FurniList.set_same_column_width(true)
-	
-	FurniList.add_item(str(CHAIR), chair_text, true)
-	FurniList.add_item(str(TABLE), table_text, true)
-
-
-func valid_chair(m, n):
-	if $Furniture.get_cell_item(m - 1, 0, n) == CHAIR and $Furniture.get_cell_item_orientation(m - 1, 0, n) == SE:
-		return Vector3(m - 1, 1, n)
-	if $Furniture.get_cell_item(m + 1, 0, n) == CHAIR and $Furniture.get_cell_item_orientation(m + 1, 0, n) == NW:
-		return Vector3(m + 1, 1, n)
-	if $Furniture.get_cell_item(m, 0, n - 1) == CHAIR and $Furniture.get_cell_item_orientation(m, 0, n - 1) == SW:
-		return Vector3(m, 1, n - 1)
-	if $Furniture.get_cell_item(m, 0, n + 1) == CHAIR and $Furniture.get_cell_item_orientation(m, 0, n + 1) == NE:
-		return Vector3(m, 1, n + 1)
-	return null
-
-
-func generate_astar():
-	astar = AStar.new()
-	var cells = gridmap.get_used_cells()
-	for cell in cells:
-		var idx = astar.get_available_point_id()
-		astar.add_point(idx, gridmap.map_to_world(cell.x, cell.y, cell.z))
-		all_points[v3_to_index(cell)] = idx
-		if gridmap.get_cell_item(cell.x, cell.y, cell.z) == SEAT_TILE:
-			astar.set_point_disabled(idx, true)
-	for cell in cells:
-		for x in [-1, 0, 1]:
-			for y in [-1, 0, 1]:
-				for z in [-1, 0, 1]:
-					var v3 = Vector3(x, y, z)
-					if v3 == Vector3(0, 0, 0):
-						continue
-					if v3_to_index(v3 + cell) in all_points:
-						var idx1 = all_points[v3_to_index(cell)]
-						var idx2 = all_points[v3_to_index(cell + v3)]
-						if !astar.are_points_connected(idx1, idx2):
-							astar.connect_points(idx1, idx2, true)
-
-
-func v3_to_index(v3):
-	return str(int(round(v3.x))) + "," + str(int(round(v3.y))) + "," + str(int(round(v3.z)))
-
-
-func generate_path(start, end):  # From mouse click
-	#var grid_start = v3_to_index(gridmap.world_to_map(start))
-	var grid_start = v3_to_index(start)
-	#var grid_end = v3_to_index(gridmap.world_to_map(end))
-	var grid_end = v3_to_index(end)
-	var start_id = 0
-	var end_id = 0
-	if grid_start in all_points:
-		start_id = all_points[grid_start]
-	else:
-		start_id = astar.get_closest_point(start)
-	if grid_end in all_points:
-		end_id = all_points[grid_end]
-	else:
-		end_id = astar.get_closest_point(end)
-	astar.set_point_disabled(end_id, false)
-	return astar.get_point_path(start_id, end_id)
-
-
-func generate_path_via_click(start, end):  # From mouse click
-	var grid_start = v3_to_index(gridmap.world_to_map(start))
-	var grid_end = v3_to_index(gridmap.world_to_map(end))
-	var start_id = 0
-	var end_id = 0
-	if grid_start in all_points:
-		start_id = all_points[grid_start]
-	else:
-		start_id = astar.get_closest_point(start)
-	if grid_end in all_points:
-		end_id = all_points[grid_end]
-	else:
-		end_id = astar.get_closest_point(end)
-	return astar.get_point_path(start_id, end_id)
+	var mesh_lib = Furni.mesh_library
+	FurniList.populate_list(mesh_lib)
 
 
 func _on_CustomerTimer_timeout():
@@ -154,10 +48,10 @@ func _on_CustomerTimer_timeout():
 		self.add_child(NewUnit)
 		#NewUnit.visit_restaurant()
 		var free_seat = seats.pop_back()
-		var seat_id = all_points[v3_to_index(free_seat)]
-		astar.set_point_disabled(seat_id, false)
+		var seat_id = $Astar.all_points[$Astar.v3_to_index(free_seat)]
+		$Astar.astar.set_point_disabled(seat_id, false)
 		NewUnit.move_to(free_seat)
-		astar.set_point_disabled(seat_id, true)
+		$Astar.astar.set_point_disabled(seat_id, true)
 		yield(get_tree().create_timer(10.0), "timeout")
 		NewUnit.move_to(Vector3(-2, 1, 0))
 		seats.push_back(free_seat)
@@ -165,13 +59,23 @@ func _on_CustomerTimer_timeout():
 		NewUnit.queue_free()
 
 
-func place_item(position):
-	position = gridmap.world_to_map(position)
-	$Furniture.set_cell_item(position.x, 0, position.z, selected_item, SW)
-
-
 func _on_ItemList_item_selected(index):
 	selected_item = int(FurniList.get_item_text(index))
+
+
+func _input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
+		var result = Cam.get_clicked_position(event)
+		if result:
+			if build_mode:
+				Furni.place_item(selected_item, result.position)
+			else:
+				get_tree().call_group("units", "move_to_via_click", result.position)
+
+
+func _on_BuildMode_toggled(_button_pressed):
+	build_mode = !build_mode
+	FurniList.visible = build_mode
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -181,14 +85,14 @@ func _process(delta):
 
 
 func zoom():
-	if Input.is_action_just_released('wheel_down') and Camera.size < 20:
-		Camera.size += 0.25
-	if Input.is_action_just_released('wheel_up') and Camera.size > 1:
-		Camera.size -= 0.25
+	if Input.is_action_just_released('wheel_down'):
+		Cam.zoom_out()
+	if Input.is_action_just_released('wheel_up'):
+		Cam.zoom_in()
 
 
 func pan():
-	if Input.is_action_just_pressed("ui_up") and Camera.translation.y < -20:
-		Camera.translation.y += 1
-	if Input.is_action_just_pressed("ui_down") and Camera.translation.y > -40:
-		Camera.translation.y -= 1
+	if Input.is_action_just_pressed("ui_up"):
+		Cam.pan_up()
+	if Input.is_action_just_pressed("ui_down"):
+		Cam.pan_down()
