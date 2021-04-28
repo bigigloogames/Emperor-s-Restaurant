@@ -8,7 +8,8 @@ const SEAT_TILE = 6
 const TABLE = 2
 
 onready var Cam = $CameraOrigin/Camera
-onready var FurniList = $Control/FurniList
+onready var Build = $Control/Build
+onready var FurniList = $Control/Build/Inventory/Chairs
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
@@ -75,7 +76,7 @@ func _input(event):
 
 func _on_BuildMode_toggled(_button_pressed):
 	build_mode = !build_mode
-	FurniList.visible = build_mode
+	Build.visible = build_mode
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

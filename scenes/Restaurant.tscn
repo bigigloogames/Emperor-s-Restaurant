@@ -35,18 +35,72 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FurniList" type="ItemList" parent="Control"]
+[node name="Build" type="TabContainer" parent="Control"]
 visible = false
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -170.0
+margin_top = -236.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Store" type="TabContainer" parent="Control/Build"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Chairs" type="ItemList" parent="Control/Build/Store"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Tables" type="ItemList" parent="Control/Build/Store"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -1228.0
+margin_bottom = -128.0
+
+[node name="Inventory" type="TabContainer" parent="Control/Build"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Chairs" type="ItemList" parent="Control/Build/Inventory"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -4.0
+margin_top = 518.0
+margin_right = -12.0
+margin_bottom = 482.0
 allow_reselect = true
 max_columns = 0
 script = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Tables" type="ItemList" parent="Control/Build/Inventory"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -1228.0
+margin_bottom = -128.0
 
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
@@ -89,5 +143,5 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 wait_time = 3.0
 autostart = true
 [connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
-[connection signal="item_selected" from="Control/FurniList" to="." method="_on_ItemList_item_selected"]
+[connection signal="item_selected" from="Control/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
