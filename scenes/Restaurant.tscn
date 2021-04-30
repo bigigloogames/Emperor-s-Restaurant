@@ -29,7 +29,9 @@ __meta__ = {
 }
 
 [node name="BuildMode" type="CheckButton" parent="Control"]
-margin_right = 76.0
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -76.0
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -67,8 +69,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
-margin_right = -1228.0
-margin_bottom = -128.0
+margin_right = -4.0
+margin_bottom = -4.0
 
 [node name="Inventory" type="TabContainer" parent="Control/Build"]
 visible = false
@@ -82,10 +84,10 @@ margin_bottom = -4.0
 [node name="Chairs" type="ItemList" parent="Control/Build/Inventory"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -4.0
-margin_top = 518.0
-margin_right = -12.0
-margin_bottom = 482.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
 allow_reselect = true
 max_columns = 0
 script = ExtResource( 5 )
@@ -99,8 +101,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
-margin_right = -1228.0
-margin_bottom = -128.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="ExpBar" type="ProgressBar" parent="Control"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -250.0
+margin_top = 30.0
+margin_right = 250.0
+margin_bottom = 70.0
+step = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Level" type="Label" parent="Control"]
+margin_left = 350.0
+margin_top = 30.0
+margin_right = 390.0
+margin_bottom = 70.0
+text = "1"
+align = 1
+valign = 1
 
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
@@ -144,4 +167,5 @@ wait_time = 3.0
 autostart = true
 [connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
 [connection signal="item_selected" from="Control/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected"]
+[connection signal="value_changed" from="Control/ExpBar" to="." method="_on_ExpBar_value_changed"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]

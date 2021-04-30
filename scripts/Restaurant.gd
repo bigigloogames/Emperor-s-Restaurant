@@ -13,8 +13,10 @@ onready var FurniList = $Control/Build/Inventory/Chairs
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
-var level = 0
-var room_size = 9 + level
+onready var ExpBar = $Control/ExpBar
+onready var Level = $Control/Level
+var level = 1
+var room_size = 8 + level
 var seats = []
 var selected_item = -1
 var build_mode = false
@@ -58,6 +60,7 @@ func _on_CustomerTimer_timeout():
 		seats.push_back(free_seat)
 		yield(get_tree().create_timer(10.0), "timeout")
 		NewUnit.queue_free()
+		ExpBar.set_value(ExpBar.get_value() + 20)
 
 
 func _on_ItemList_item_selected(index):
@@ -97,3 +100,10 @@ func pan():
 		Cam.pan_up()
 	if Input.is_action_just_pressed("ui_down"):
 		Cam.pan_down()
+
+
+func _on_ExpBar_value_changed(value):
+	if value >= 100:
+		level += 1
+		Level.set_text(str(level))
+		ExpBar.set_value(value - 100)
