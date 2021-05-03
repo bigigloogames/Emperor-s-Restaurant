@@ -5,7 +5,13 @@ const Unit = preload("res://scenes/Unit.tscn")
 const EMPTY = -1
 const PATH_TILE = 4
 const SEAT_TILE = 6
+const CHAIR = 3
 const TABLE = 2
+# GridMap orientation constants
+const NE = 10
+const SE = 16
+const SW = 0
+const NW = 22
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Build
@@ -15,27 +21,19 @@ onready var Furni = $Furniture
 onready var Astar = $Astar
 onready var ExpBar = $Control/ExpBar
 onready var Level = $Control/Level
+var sav_dict = {}
 var level = 1
-var room_size = 8 + level
 var seats = []
 var selected_item = -1
 var build_mode = false
 
-
 func _ready():
+	load_game()
+	var room_size = sav_dict["room_size"]
+	var furniture = sav_dict["furniture"]
 	Floor.populate_tiles(room_size)
-	Furni.populate_furniture()
-	Astar.populate_astar(room_size)
-	
-	for m in room_size:
-		for n in room_size:
-			if Furni.get_cell_item(m, 0, n) == EMPTY:
-				Astar.set_cell_item(m, 1, n, PATH_TILE, 0)
-			elif Furni.get_cell_item(m, 0, n) == TABLE:
-				var chair = Furni.valid_chair(m, n)
-				if chair:
-					Astar.set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
-					seats.push_back(chair)
+	Furni.populate_furniture(furniture)
+	seats = Astar.populate_astar(room_size, furniture)
 
 	Astar.generate_astar()
 
@@ -104,6 +102,47 @@ func pan():
 
 func _on_ExpBar_value_changed(value):
 	if value >= 100:
-		level += 1
-		Level.set_text(str(level))
+		sav_dict["level"] += 1
+		Level.set_text(str(sav_dict["level"]))
 		ExpBar.set_value(value - 100)
+
+
+func save_game():
+	var save_file = File.new()
+	save_file.open("user://savegame.save", File.WRITE)
+	save_file.store_line(to_json(sav_dict))
+	save_file.close()
+
+
+func load_game():
+	var save_file = File.new()
+	if not save_file.file_exists("user://savegame.save"):
+		sav_dict["level"] = 1
+		sav_dict["exp"] = 0
+		sav_dict["currency"] = 0
+		sav_dict["floor"] = 0
+		sav_dict["tiles"] = 0
+		var room_size = 9
+		sav_dict["room_size"] = room_size
+		var furniture_array = []
+		for x in range(room_size):
+			furniture_array.append([])
+			furniture_array[x].resize(room_size)
+		# For debugging purposes
+		furniture_array[0][8] = [CHAIR, SW]  # no rotation
+		furniture_array[2][6] = [CHAIR, NE]  # 180
+		furniture_array[4][4] = [CHAIR, SE]  # +90 clockwise
+		furniture_array[6][2] = [CHAIR, NW]  # -90 clockwise
+		furniture_array[3][1] = [CHAIR, SW]  # no rotation
+		furniture_array[2][5] = [TABLE, NE]  # 180
+		furniture_array[5][4] = [TABLE, SE]  # +90 clockwise
+		furniture_array[5][2] = [TABLE, NW]  # -90 clockwise
+		sav_dict["furniture"] = furniture_array
+		return
+	save_file.open("user://savegame.save", File.READ)
+	sav_dict = parse_json(save_file.get_line())
+	save_file.close()
+
+
+func _on_Save_pressed():
+	save_game()

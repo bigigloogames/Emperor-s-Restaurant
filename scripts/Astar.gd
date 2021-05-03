@@ -2,6 +2,13 @@ extends GridMap
 
 const PATH_TILE = 4
 const SEAT_TILE = 6
+const CHAIR = 3
+const TABLE = 2
+# GridMap orientation constants
+const NE = 10
+const SE = 16
+const SW = 0
+const NW = 22
 
 var astar = null
 var all_points = {}
@@ -11,10 +18,35 @@ func _ready():
 	pass # Replace with function body.
 
 
-func populate_astar(room_size):
+func populate_astar(room_size, furniture):
+	var seats = []
 	for m in room_size:
 		set_cell_item(-2, 1, m, PATH_TILE, 0)
+		for n in room_size:
+			if furniture[m][n] == null:
+				set_cell_item(m, 1, n, PATH_TILE, 0)
+			elif furniture[m][n][0] == TABLE:
+				var chair = valid_chair(m, n, furniture, room_size)
+				if chair:
+					set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
+					seats.push_back(chair)
 	set_cell_item(-1, 1, int(room_size/2), PATH_TILE, 0)
+	return seats
+
+
+func valid_chair(m, n, furniture, room_size):
+	var adjacent = [
+		[m - 1, n, SE], [m + 1, n, NW], [m, n - 1, SW], [m, n + 1, NE]
+	]
+	for cell in adjacent:
+		var x = cell[0]
+		var z = cell[1]
+		if x < 0 or z < 0 or x >= room_size or z >= room_size:
+			continue
+		var furni = furniture[x][z]
+		if furni and furni[0] == CHAIR and furni[1] == cell[2]:
+			return Vector3(x, 1, z)
+	return null
 
 
 func generate_astar():

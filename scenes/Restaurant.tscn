@@ -125,6 +125,11 @@ text = "1"
 align = 1
 valign = 1
 
+[node name="Save" type="Button" parent="Control"]
+margin_right = 12.0
+margin_bottom = 20.0
+text = "Save"
+
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
 data = {
@@ -168,4 +173,5 @@ autostart = true
 [connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
 [connection signal="item_selected" from="Control/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected"]
 [connection signal="value_changed" from="Control/ExpBar" to="." method="_on_ExpBar_value_changed"]
+[connection signal="pressed" from="Control/Save" to="." method="_on_Save_pressed"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
