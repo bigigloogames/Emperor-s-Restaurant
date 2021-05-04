@@ -16,8 +16,10 @@ onready var FurniList = $Control/Build/Inventory/Chairs
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
-onready var ExpBar = $Control/ExpBar
-onready var Level = $Control/Level
+onready var Menu = $Control/Menu
+onready var ExpBar = $Control/Menu/ExpBar
+onready var Level = $Control/Menu/Level
+onready var CustomerTimer = $CustomerTimer
 var sav_dict = {}
 var seats = []
 var selected_item = -1
@@ -36,25 +38,32 @@ func _ready():
 	FurniList.populate_list(mesh_lib)
 
 
-func _on_CustomerTimer_timeout():
+func _on_CustomerTimer_timeout():  # Spawn customers
 	if seats:
 		var NewUnit = Unit.instance()
+		NewUnit.add_to_group("customers")
 		NewUnit.translation.x = -3
 		NewUnit.translation.y = 2
 		self.add_child(NewUnit)
 		#NewUnit.visit_restaurant()
 		var free_seat = seats.pop_back()
-		print(free_seat)
 		var seat_id = Astar.all_points[Astar.v3_to_index(free_seat)]
 		Astar.astar.set_point_disabled(seat_id, false)
 		NewUnit.move_to(free_seat)
 		Astar.astar.set_point_disabled(seat_id, true)
-		yield(get_tree().create_timer(10.0), "timeout")
-		NewUnit.move_to(Vector3(-2, 1, 0))
+		#
+		yield(get_tree().create_timer(20.0), "timeout")
 		seats.push_back(free_seat)
-		yield(get_tree().create_timer(10.0), "timeout")
-		NewUnit.queue_free()
-		ExpBar.set_value(ExpBar.get_value() + 20)
+
+
+func _on_Seating_body_entered(body):  # Detect customers entering seats
+	yield(get_tree().create_timer(10.0), "timeout")  # Eating time
+	body.move_to(Vector3(-2, 1, 8))
+
+
+func _on_Exit_body_entered(body):  # Dectect customer leaving
+	body.queue_free()
+	ExpBar.set_value(ExpBar.get_value() + 20)
 
 
 func _on_ItemList_item_selected(index):
@@ -76,10 +85,15 @@ func _input(event):
 func _on_BuildMode_toggled(_button_pressed):
 	build_mode = !build_mode
 	Build.visible = build_mode
+	Menu.visible = !build_mode
 	if build_mode:
-		pass  # Hide customers
+		CustomerTimer.stop()
+		var customers = get_tree().get_nodes_in_group("customers")
+		for customer in customers:
+			customer.visible = false  # customer.queue_free()
 	else:
 		initialize_astar()
+		CustomerTimer.start()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -143,17 +157,21 @@ func initialize_sav_dict():
 		furniture_array.append([])
 		furniture_array[x].resize(room_size)
 	# For debugging purposes
-	furniture_array[0][8] = [CHAIR, SW]  # no rotation
-	furniture_array[2][6] = [CHAIR, NE]  # 180
-	furniture_array[4][4] = [CHAIR, SE]  # +90 clockwise
-	furniture_array[6][2] = [CHAIR, NW]  # -90 clockwise
-	furniture_array[3][1] = [CHAIR, SW]  # no rotation
-	furniture_array[2][5] = [TABLE, NE]  # 180
-	furniture_array[5][4] = [TABLE, SE]  # +90 clockwise
-	furniture_array[5][2] = [TABLE, NW]  # -90 clockwise
+#	furniture_array[0][8] = [CHAIR, SW]  # no rotation
+#	furniture_array[2][6] = [CHAIR, NE]  # 180
+#	furniture_array[4][4] = [CHAIR, SE]  # +90 clockwise
+#	furniture_array[6][2] = [CHAIR, NW]  # -90 clockwise
+#	furniture_array[3][1] = [CHAIR, SW]  # no rotation
+#	furniture_array[2][5] = [TABLE, NE]  # 180
+#	furniture_array[5][4] = [TABLE, SE]  # +90 clockwise
+#	furniture_array[5][2] = [TABLE, NW]  # -90 clockwise
 	sav_dict["furniture"] = furniture_array
 
 
 func initialize_astar():
 	seats = Astar.populate_astar(sav_dict["room_size"], sav_dict["furniture"])
 	Astar.generate_astar()
+
+
+func _on_Map_pressed():
+	get_tree().change_scene("res://scenes/Map.tscn")

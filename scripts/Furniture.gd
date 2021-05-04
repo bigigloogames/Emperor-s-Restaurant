@@ -16,7 +16,7 @@ func populate_furniture(furniture):
 	for m in range(size):
 		for n in range(size):
 			if furniture[m][n]:
-				set_cell_item(m, 0, n, furniture[m][n][0], furniture[m][n][1])
+				set_cell_item(m, -1, n, furniture[m][n][0], furniture[m][n][1])
 
 
 func place_item(selected_item, position):
