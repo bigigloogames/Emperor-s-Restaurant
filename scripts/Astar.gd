@@ -34,6 +34,11 @@ func populate_astar(room_size, furniture):
 	return seats
 
 
+func _on_Seating_body_entered(body):  # Detect customers entering seats
+	yield(get_tree().create_timer(10.0), "timeout")  # Eating time
+	body.move_to(Vector3(-2, 1, 8))
+
+
 func valid_chair(m, n, furniture, room_size):
 	var adjacent = [
 		[m - 1, n, SE], [m + 1, n, NW], [m, n - 1, SW], [m, n + 1, NE]

@@ -171,6 +171,17 @@ func initialize_sav_dict():
 func initialize_astar():
 	seats = Astar.populate_astar(sav_dict["room_size"], sav_dict["furniture"])
 	Astar.generate_astar()
+	for seat in seats:
+		var area = Area.new()
+		add_child(area)
+		var collision = CollisionShape.new()
+		collision.shape = BoxShape.new()
+		area.add_child(collision)
+		var coord = Astar.map_to_world(seat.x, seat.y, seat.z)
+		area.translation.x = coord.x
+		area.translation.z = coord.z
+		area.translation.y = 5
+		area.connect("body_entered", self, "_on_Seating_body_entered")
 
 
 func _on_Map_pressed():
