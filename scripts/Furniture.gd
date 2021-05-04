@@ -21,7 +21,12 @@ func populate_furniture(furniture):
 
 func place_item(selected_item, position):
 	position = world_to_map(position)
-	set_cell_item(position.x, 0, position.z, selected_item, SW)
+	var m = position.x
+	var n = position.z
+	if m >= 0 and n >= 0 and m < 9 and n < 9:
+		set_cell_item(m, 0, n, selected_item, SW)
+		return position
+	return null
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -168,7 +168,6 @@ __meta__ = {
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 
 [node name="CustomerTimer" type="Timer" parent="."]
-wait_time = 3.0
 autostart = true
 [connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
 [connection signal="item_selected" from="Control/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected"]
