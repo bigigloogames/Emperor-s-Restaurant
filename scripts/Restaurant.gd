@@ -153,11 +153,15 @@ func initialize_sav_dict():
 
 
 func initialize_astar():
+	var seat_areas = get_tree().get_nodes_in_group("seat_area")
+	for seat_area in seat_areas:
+		seat_area.queue_free()
 	seats = Astar.populate_astar(sav_dict["room_size"], sav_dict["furniture"])
 	Astar.generate_astar()
 	for seat in seats:
 		var area = Area.new()
 		add_child(area)
+		area.add_to_group("seat_area")
 		var collision = CollisionShape.new()
 		collision.shape = BoxShape.new()
 		area.add_child(collision)
