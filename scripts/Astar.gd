@@ -89,22 +89,6 @@ func generate_path(start, end):
 	return astar.get_point_path(start_id, end_id)
 
 
-func generate_path_via_click(start, end):  # From mouse click
-	var grid_start = v3_to_index(world_to_map(start))
-	var grid_end = v3_to_index(world_to_map(end))
-	var start_id = 0
-	var end_id = 0
-	if grid_start in all_points:
-		start_id = all_points[grid_start]
-	else:
-		start_id = astar.get_closest_point(start)
-	if grid_end in all_points:
-		end_id = all_points[grid_end]
-	else:
-		end_id = astar.get_closest_point(end)
-	return astar.get_point_path(start_id, end_id)
-
-
 func toggle_seat(seat):
 	var seat_id = all_points[v3_to_index(seat)]
 	astar.set_point_disabled(seat_id, !astar.is_point_disabled(seat_id))

@@ -36,11 +36,7 @@ func _ready():
 func _on_CustomerTimer_timeout():  # Spawn customers
 	if seats:
 		var NewUnit = Unit.instance()
-		NewUnit.add_to_group("customers")
-		NewUnit.translation.x = -3
-		NewUnit.translation.y = 2
 		self.add_child(NewUnit)
-		#NewUnit.visit_restaurant()
 		var free_seat = seats.pop_back()
 		Astar.toggle_seat(free_seat)
 		NewUnit.move_to(free_seat)
@@ -71,8 +67,6 @@ func _input(event):
 				var position = Furni.place_item(selected_item, result.position)
 				if position:
 					sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
-			else:
-				get_tree().call_group("units", "move_to_via_click", result.position)
 
 
 func _on_BuildMode_toggled(_button_pressed):
