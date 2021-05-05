@@ -1,11 +1,5 @@
 extends GridMap
 
-# GridMap orientation constants
-const NE = 10
-const SE = 16
-const SW = 0
-const NW = 22
-
 
 func _ready():
 	pass # Replace with function body.
@@ -24,7 +18,7 @@ func place_item(selected_item, position):
 	var m = position.x
 	var n = position.z
 	if m >= 0 and n >= 0 and m < 9 and n < 9:
-		set_cell_item(m, 0, n, selected_item, SW)
+		set_cell_item(m, 0, n, selected_item, 0)
 		return position
 	return null
 

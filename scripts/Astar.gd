@@ -5,10 +5,10 @@ const SEAT_TILE = 6
 const CHAIR = 3
 const TABLE = 2
 # GridMap orientation constants
-const NE = 10
-const SE = 16
-const SW = 0
-const NW = 22
+const NE = 10  # 180
+const SE = 16  # +90 clockwise
+const SW = 0  # no rotation
+const NW = 22  # -90 clockwise
 
 var astar = null
 var all_points = {}
@@ -32,11 +32,6 @@ func populate_astar(room_size, furniture):
 					seats.push_back(chair)
 	set_cell_item(-1, 1, int(room_size/2), PATH_TILE, 0)
 	return seats
-
-
-func _on_Seating_body_entered(body):  # Detect customers entering seats
-	yield(get_tree().create_timer(10.0), "timeout")  # Eating time
-	body.move_to(Vector3(-2, 1, 8))
 
 
 func valid_chair(m, n, furniture, room_size):
@@ -108,6 +103,11 @@ func generate_path_via_click(start, end):  # From mouse click
 	else:
 		end_id = astar.get_closest_point(end)
 	return astar.get_point_path(start_id, end_id)
+
+
+func toggle_seat(seat):
+	var seat_id = all_points[v3_to_index(seat)]
+	astar.set_point_disabled(seat_id, !astar.is_point_disabled(seat_id))
 
 
 func v3_to_index(v3):

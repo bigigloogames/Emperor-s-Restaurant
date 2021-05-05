@@ -4,11 +4,6 @@ const Unit = preload("res://scenes/Unit.tscn")
 # MeshLib item constants
 const CHAIR = 3
 const TABLE = 2
-# GridMap orientation constants
-const NE = 10
-const SE = 16
-const SW = 0
-const NW = 22
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Build
@@ -47,11 +42,9 @@ func _on_CustomerTimer_timeout():  # Spawn customers
 		self.add_child(NewUnit)
 		#NewUnit.visit_restaurant()
 		var free_seat = seats.pop_back()
-		var seat_id = Astar.all_points[Astar.v3_to_index(free_seat)]
-		Astar.astar.set_point_disabled(seat_id, false)
+		Astar.toggle_seat(free_seat)
 		NewUnit.move_to(free_seat)
-		Astar.astar.set_point_disabled(seat_id, true)
-		#
+		Astar.toggle_seat(free_seat)
 		yield(get_tree().create_timer(20.0), "timeout")
 		seats.push_back(free_seat)
 
@@ -156,15 +149,6 @@ func initialize_sav_dict():
 	for x in range(room_size):
 		furniture_array.append([])
 		furniture_array[x].resize(room_size)
-	# For debugging purposes
-#	furniture_array[0][8] = [CHAIR, SW]  # no rotation
-#	furniture_array[2][6] = [CHAIR, NE]  # 180
-#	furniture_array[4][4] = [CHAIR, SE]  # +90 clockwise
-#	furniture_array[6][2] = [CHAIR, NW]  # -90 clockwise
-#	furniture_array[3][1] = [CHAIR, SW]  # no rotation
-#	furniture_array[2][5] = [TABLE, NE]  # 180
-#	furniture_array[5][4] = [TABLE, SE]  # +90 clockwise
-#	furniture_array[5][2] = [TABLE, NW]  # -90 clockwise
 	sav_dict["furniture"] = furniture_array
 
 
