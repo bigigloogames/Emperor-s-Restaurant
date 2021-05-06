@@ -17,6 +17,7 @@ onready var Level = $Control/Menu/Level
 onready var CustomerTimer = $CustomerTimer
 var sav_dict = {}
 var seats = []
+var occupied = {}
 var selected_item = -1
 var build_mode = false
 
@@ -38,16 +39,21 @@ func _on_CustomerTimer_timeout():  # Spawn customers
 		var NewUnit = Unit.instance()
 		self.add_child(NewUnit)
 		var free_seat = seats.pop_back()
+		occupied[NewUnit] = free_seat
 		Astar.toggle_seat(free_seat)
 		NewUnit.move_to(free_seat)
 		Astar.toggle_seat(free_seat)
-		yield(get_tree().create_timer(20.0), "timeout")
-		seats.push_back(free_seat)
 
 
 func _on_Seating_body_entered(body):  # Detect customers entering seats
 	yield(get_tree().create_timer(10.0), "timeout")  # Eating time
-	body.move_to(Vector3(-2, 1, 8))
+	if body:
+		body.move_to(Vector3(-2, 1, 8))
+
+
+func _on_Seating_body_exited(body):  # Detect customers leaving seats
+	seats.push_back(occupied[body])
+	occupied.erase(body)
 
 
 func _on_Exit_body_entered(body):  # Dectect customer leaving
@@ -77,7 +83,7 @@ func _on_BuildMode_toggled(_button_pressed):
 		CustomerTimer.stop()
 		var customers = get_tree().get_nodes_in_group("customers")
 		for customer in customers:
-			customer.visible = false  # customer.queue_free()
+			customer.queue_free()
 	else:
 		initialize_astar()
 		CustomerTimer.start()
@@ -147,6 +153,7 @@ func initialize_sav_dict():
 
 
 func initialize_astar():
+	occupied.clear()
 	var seat_areas = get_tree().get_nodes_in_group("seat_area")
 	for seat_area in seat_areas:
 		seat_area.queue_free()
@@ -164,6 +171,7 @@ func initialize_astar():
 		area.translation.z = coord.z
 		area.translation.y = 5
 		area.connect("body_entered", self, "_on_Seating_body_entered")
+		area.connect("body_exited", self, "_on_Seating_body_exited")
 
 
 func _on_Map_pressed():
