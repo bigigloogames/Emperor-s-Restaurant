@@ -47,12 +47,12 @@ func _on_Seating_body_entered(body):  # Detect customers entering seats
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
 	eating_timer.one_shot = true
-	add_child(eating_timer)
+	body.add_child(eating_timer)
 	eating_timer.start()
 	eating_timer.connect("timeout", self, "_on_EatingTimer_timeout", [body])
 
 
-func _on_EatingTimer_timeout(body):  # Eating time
+func _on_EatingTimer_timeout(body):  # Customer is finished eating
 	if body:
 		body.move_to(Vector3(-2, 1, 8))
 

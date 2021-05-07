@@ -1,8 +1,8 @@
 extends Camera
 
 const ray_length = 1000
-const min_size = 1
-const max_size = 20
+const min_size = 10
+const max_size = 50
 const min_y = -40
 const max_y = -20
 
