@@ -7,6 +7,7 @@ const TABLE = 2
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Build
+onready var BuildMode = $Control/BuildMode
 onready var FurniList = $Control/Build/Inventory/Chairs
 onready var Floor = $Floor
 onready var Furni = $Furniture
@@ -15,6 +16,7 @@ onready var Menu = $Control/Menu
 onready var ExpBar = $Control/Menu/ExpBar
 onready var Level = $Control/Menu/Level
 onready var CustomerTimer = $CustomerTimer
+onready var Recipes = $Recipes
 var sav_dict = {}
 var seats = []
 var selected_item = -1
@@ -180,3 +182,9 @@ func initialize_astar():
 
 func _on_Map_pressed():
 	get_tree().change_scene("res://scenes/Map.tscn")
+
+
+func _on_Recipes_pressed():
+	Recipes.visible = !Recipes.visible
+	Menu.visible = !Menu.visible
+	BuildMode.visible = !BuildMode.visible

@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://MeshLibrary.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
 [ext_resource path="res://scripts/Camera.gd" type="Script" id=3]
+[ext_resource path="res://scripts/Recipes.gd" type="Script" id=4]
 [ext_resource path="res://scripts/FurniList.gd" type="Script" id=5]
 [ext_resource path="res://scripts/Astar.gd" type="Script" id=6]
 [ext_resource path="res://scripts/Floor.gd" type="Script" id=7]
@@ -83,6 +84,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Recipes" type="Button" parent="Control/Menu"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 48.7676
+margin_top = 659.748
+margin_right = 110.768
+margin_bottom = 679.748
+text = "Recipes"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="BuildMode" type="CheckButton" parent="Control"]
 anchor_left = 1.0
 anchor_right = 1.0
@@ -159,6 +174,35 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 
+[node name="Recipes" type="Control" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RecipeScroll" type="ScrollContainer" parent="Recipes"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -200.0
+margin_bottom = 200.0
+scroll_vertical_enabled = false
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Recipes/RecipeScroll"]
+
+[node name="Recipes" type="Button" parent="Recipes"]
+margin_left = 7.27661
+margin_top = 660.121
+margin_right = 87.2766
+margin_bottom = 680.121
+text = "Restaurant"
+
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
 data = {
@@ -202,7 +246,9 @@ shape = SubResource( 1 )
 [connection signal="value_changed" from="Control/Menu/ExpBar" to="." method="_on_ExpBar_value_changed"]
 [connection signal="pressed" from="Control/Menu/Map" to="." method="_on_Map_pressed"]
 [connection signal="pressed" from="Control/Menu/Save" to="." method="_on_Save_pressed"]
+[connection signal="pressed" from="Control/Menu/Recipes" to="." method="_on_Recipes_pressed"]
 [connection signal="toggled" from="Control/BuildMode" to="." method="_on_BuildMode_toggled"]
 [connection signal="item_selected" from="Control/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected"]
+[connection signal="pressed" from="Recipes/Recipes" to="." method="_on_Recipes_pressed"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
 [connection signal="body_entered" from="Exit" to="." method="_on_Exit_body_entered"]
