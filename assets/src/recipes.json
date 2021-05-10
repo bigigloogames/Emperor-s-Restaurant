@@ -1,0 +1,27 @@
+{"name": "Grilled Salmon", "cookware": "grill pan", "ingredients": ["salmon"]}
+{"name": "Grilled Trout", "cookware": "grill pan", "ingredients": ["trout"]}
+{"name": "Fish Stew", "cookware": "pot", "ingredients": ["cod", "tomato", "onion", "garlic"]}
+{"name": "Fish and Chips", "cookware": "deep fryer", "ingredients": ["cod", "potato", "flour", "egg"]}
+{"name": "Anchovy Pasta", "cookware": "skillet", "ingredients": ["anchovy", "pasta", "garlic"]}
+{"name": "Sardine Rice Bowl", "cookware": "skillet", "ingredients": ["sardine" , "rice", "egg"]}
+{"name": "Crispy Fish Sandwich", "cookware": "skillet", "ingredients": ["cod", "bread", "lettuce", "panko"]}
+{"name": "Tuna Salad Sandwich", "cookware": "skillet", "ingredients": ["tuna", "bread", "mayonnaise", "onion"]}
+{"name": "Tuna Wrap", "cookware": "skillet", "ingredients": ["tuna", "tortilla", "lettuce", "tomato", "mayonnaise"]}
+{"name": "Fish Tacos", "cookware": "oven", "ingredients": ["tilapia", "tortilla", "lettuce", "avocado", "mayonnaise"]}
+{"name": "Grilled Squid", "cookware": "grill pan", "ingredients": ["squid"]}
+{"name": "Fried Calamari", "cookware": "grill pan", "ingredients": ["squid", "flour", "egg"]}
+{"name": "Ikayaki", "cookware": "grill pan", "ingredients": ["squid", "soy sauce", "red miso paste", "mirin", "ginger"]}
+{"name": "Squid Ink Pasta", "cookware": "skillet", "ingredients": ["squid", "pasta", "tomato", "garlic"]}
+{"name": "Stewed Squid", "cookware": "pot", "ingredients": ["squid", "tomato", "onion", "garlic"]}
+{"name": "Grilled Shrimp", "cookware": "grill pan", "ingredients": ["shrimp", "garlic", "butter"]}
+{"name": "Shrimp Scampi", "cookware": "skillet", "ingredients": ["shrimp", "pasta", "butter", "broth", "garlic"]}
+{"name": "Shrimp Stir Fry", "cookware": "wok", "ingredients": ["shrimp", "rice", "soy sauce", "bell pepper", "pea"]}
+{"name": "Shrimp Fried Rice", "cookware": "wok", "ingredients": ["shrimp", "rice", "soy sauce", "pea", "carrot", "corn", "egg"]}
+{"name": "Shrimp Fajitas", "cookware": "skillet", "ingredients": ["shrimp", "tortilla", "onion", "bell pepper", "avocado"]}
+{"name": "Shrimp Cobb Salad", "cookware": "skillet", "ingredients": ["shrimp", "lettuce", "avocado", "tomato", "corn"]}
+{"name": "Grilled Crab", "cookware": "grill pan", "ingredients": ["crab", "garlic", "butter"]}
+{"name": "Crab Boil", "cookware": "pot", "ingredients": ["crab", "corn", "potato", "broth"]}
+{"name": "Crab Soup", "cookware": "pot", "ingredients": ["crab", "tomato", "broth", "corn", "carrot", "onion", "pea"]}
+{"name": "Crab Bisque", "cookware": "pot", "ingredients": ["crab", "milk", "heavy cream", "carrot", "onion"]}
+{"name": "Crab Cakes", "cookware": "oven", "ingredients": ["crab", "egg", "mayonnaise", "panko"]}
+{"name": "Crab Linguine", "cookware": "skillet", "ingredients": ["crab", "pasta", "garlic", "tomato", "butter"]}
