@@ -143,6 +143,7 @@ margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="Inventory" type="TabContainer" parent="Control/Build"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -165,6 +166,7 @@ __meta__ = {
 }
 
 [node name="Tables" type="ItemList" parent="Control/Build/Inventory"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0

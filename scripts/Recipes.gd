@@ -11,7 +11,12 @@ func _ready():
 		return
 	recipes.open("res://assets/src/recipes.json", File.READ)
 	while not recipes.eof_reached():
-		var recipe = parse_json(recipes.get_line())
+		var line = recipes.get_line()
+		if line == "":
+			var control = Control.new()
+			HBox.add_child(control)
+			break
+		var recipe = parse_json(line)
 		var control = Control.new()
 		var recipe_panel = Panel.new()
 		recipe_panel.rect_size.x = 200
