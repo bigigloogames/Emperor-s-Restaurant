@@ -1,9 +1,9 @@
 extends GridMap
 
-const PATH_TILE = 4
-const SEAT_TILE = 6
-const CHAIR = 3
-const TABLE = 2
+const PATH_TILE = 0
+const SEAT_TILE = 1
+const CHAIR = 15
+const TABLE = 14
 # GridMap orientation constants
 const NE = 10  # 180
 const SE = 16  # +90 clockwise

@@ -1,9 +1,6 @@
 extends Node
 
 const Unit = preload("res://scenes/Unit.tscn")
-# MeshLib item constants
-const CHAIR = 3
-const TABLE = 2
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Build
@@ -175,7 +172,7 @@ func initialize_astar():
 		var coord = Astar.map_to_world(seat.x, seat.y, seat.z)
 		area.translation.x = coord.x
 		area.translation.z = coord.z
-		area.translation.y = 5
+		area.translation.y = coord.y
 		area.connect("body_entered", self, "_on_Seating_body_entered")
 		area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
 

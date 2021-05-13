@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 0.1, 0.1, 0.1 )
+
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 0.1, 0.1, 0.1 )
+
+[node name="Point" type="Spatial"]
+
+[node name="Empty" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="Seat" type="MeshInstance" parent="."]
+mesh = SubResource( 3 )
+material/0 = null
