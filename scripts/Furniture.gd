@@ -1,5 +1,7 @@
 extends GridMap
 
+var selected = null
+
 
 func _ready():
 	pass # Replace with function body.
@@ -22,6 +24,25 @@ func place_item(selected_item, position):
 		return position
 	return null
 
+
+func is_occupied(position):
+	position = world_to_map(position)
+	return get_cell_item(position.x, position.y, position.z) != -1
+
+
+func select_item(position):
+	selected = world_to_map(position)
+
+
+func drag(position):
+	if is_occupied(position):
+		return
+	position = world_to_map(position)
+	var item = get_cell_item(selected.x, selected.y, selected.z)
+	var orientation = get_cell_item_orientation(selected.x, selected.y, selected.z)
+	set_cell_item(selected.x, selected.y, selected.z, -1)
+	selected = position
+	set_cell_item(position.x, position.y, position.z, item, orientation)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

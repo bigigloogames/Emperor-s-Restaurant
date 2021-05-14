@@ -20,6 +20,7 @@ var selected_item = -1
 var build_mode = false
 var tables = []
 var chairs = []
+var dragging = false
 
 
 func _ready():
@@ -29,7 +30,7 @@ func _ready():
 	Floor.populate_tiles(room_size)
 	Furni.populate_furniture(furniture)
 	
-	initialize_astar()
+	init_astar()
 
 	var mesh_lib = Furni.mesh_library
 	tables = Tables.populate_list(mesh_lib, "Table")
@@ -77,27 +78,25 @@ func _on_ItemList_item_selected(index, type):
 
 
 func _input(event):
-	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
+	if build_mode and event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		var result = Cam.get_clicked_position(event)
 		if result:
-			if build_mode:
+			if Furni.is_occupied(result.position):
+				if not dragging and event.pressed:
+					dragging = true
+					Furni.select_item(result.position)
+			elif event.pressed:
 				var position = Furni.place_item(selected_item, result.position)
 				if position:
 					sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
+			if dragging and not event.pressed:
+				dragging = false
+	# Move furniture along with mouse
+	if event is InputEventMouseMotion and dragging:
+		var result = Cam.get_clicked_position(event)
+		if result:
+			Furni.drag(result.position)
 
-
-func _on_BuildMode_toggled(_button_pressed):
-	build_mode = !build_mode
-	Build.visible = build_mode
-	Menu.visible = !build_mode
-	if build_mode:
-		CustomerTimer.stop()
-		var customers = get_tree().get_nodes_in_group("customers")
-		for customer in customers:
-			customer.queue_free()
-	else:
-		initialize_astar()
-		CustomerTimer.start()
 
 func _on_Build_pressed():
 	build_mode = !build_mode
@@ -109,7 +108,14 @@ func _on_Build_pressed():
 		for customer in customers:
 			customer.queue_free()
 	else:
-		initialize_astar()
+		var furni_array = init_furni(sav_dict["room_size"])
+		for furni in Furni.get_used_cells():
+			var data = []
+			data.append(Furni.get_cell_item(furni[0], furni[1], furni[2]))
+			data.append(Furni.get_cell_item_orientation(furni[0], furni[1], furni[2]))
+			furni_array[furni[0]][furni[2]] = data
+		sav_dict["furniture"] = furni_array
+		init_astar()
 		CustomerTimer.start()
 
 
@@ -154,14 +160,14 @@ func _on_Save_pressed():
 func load_game():
 	var save_file = File.new()
 	if not save_file.file_exists("user://savegame.save"):
-		initialize_sav_dict()
+		init_sav_dict()
 		return
 	save_file.open("user://savegame.save", File.READ)
 	sav_dict = parse_json(save_file.get_line())
 	save_file.close()
 
 
-func initialize_sav_dict():
+func init_sav_dict():
 	sav_dict["level"] = 1
 	sav_dict["exp"] = 0
 	sav_dict["currency"] = 0
@@ -169,14 +175,17 @@ func initialize_sav_dict():
 	sav_dict["tiles"] = 0
 	var room_size = 9
 	sav_dict["room_size"] = room_size
+	sav_dict["furniture"] = init_furni(room_size)
+
+
+func init_furni(room_size):
 	var furniture_array = []
 	for x in range(room_size):
 		furniture_array.append([])
 		furniture_array[x].resize(room_size)
-	sav_dict["furniture"] = furniture_array
+	return furniture_array
 
-
-func initialize_astar():
+func init_astar():
 	var seat_areas = get_tree().get_nodes_in_group("seat_area")
 	for seat_area in seat_areas:
 		seat_area.queue_free()
