@@ -58,7 +58,6 @@ func _on_EatingTimer_timeout(body):  # Customer is finished eating
 
 func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
 	seats.push_back(seat)
-	print("Return")
 
 
 func _on_Exit_body_entered(body):  # Dectect customer leaving
