@@ -14,8 +14,9 @@ func _ready():
 func populate_list(mesh_lib):
 	var furniture = mesh_lib.get_item_list()
 	for id in furniture:
+		var name = mesh_lib.get_item_name(id)
 		var texture = mesh_lib.get_item_preview(id)
-		add_item(str(id), texture, true)
+		add_item(name, texture, true)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

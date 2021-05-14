@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://MeshLibrary.tres" type="MeshLibrary" id=1]
+[ext_resource path="res://Floor.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
 [ext_resource path="res://scripts/Camera.gd" type="Script" id=3]
 [ext_resource path="res://scripts/Recipes.gd" type="Script" id=4]
@@ -21,9 +21,9 @@ script = ExtResource( 2 )
 transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0 )
 
 [node name="Camera" type="Camera" parent="CameraOrigin"]
-transform = Transform( 1, 4.47035e-08, 8.9407e-08, 0, 0.923879, -0.382684, -1.19209e-07, 0.382684, 0.923879, 0, -30, 85 )
+transform = Transform( 1, 4.47035e-08, 8.9407e-08, 0, 0.923879, -0.382684, -1.19209e-07, 0.382684, 0.923879, 0, -35, 85 )
 projection = 1
-size = 30.0
+size = 10.0
 script = ExtResource( 3 )
 
 [node name="Control" type="Control" parent="."]
@@ -207,6 +207,7 @@ text = "Restaurant"
 
 [node name="Floor" type="GridMap" parent="."]
 mesh_library = ExtResource( 1 )
+cell_size = Vector3( 1, 1, 1 )
 data = {
 "cells": PoolIntArray(  )
 }
@@ -218,6 +219,7 @@ __meta__ = {
 
 [node name="Furniture" type="GridMap" parent="."]
 mesh_library = ExtResource( 10 )
+cell_size = Vector3( 1, 1, 1 )
 data = {
 "cells": PoolIntArray(  )
 }
@@ -229,6 +231,7 @@ __meta__ = {
 [node name="Astar" type="GridMap" parent="."]
 visible = false
 mesh_library = ExtResource( 9 )
+cell_size = Vector3( 1, 1, 1 )
 data = {
 "cells": PoolIntArray(  )
 }
@@ -241,7 +244,7 @@ __meta__ = {
 autostart = true
 
 [node name="Exit" type="Area" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, 17 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, 9 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Exit"]
 shape = SubResource( 1 )

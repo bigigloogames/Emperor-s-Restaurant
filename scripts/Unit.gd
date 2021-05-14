@@ -2,7 +2,7 @@ extends KinematicBody
 
 var path = []
 var path_idx = 0
-const move_speed = 5
+const move_speed = 4
 onready var astar_map = get_parent().get_node("Astar")
 
 

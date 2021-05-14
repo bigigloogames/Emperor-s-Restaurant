@@ -58,6 +58,7 @@ func _on_EatingTimer_timeout(body):  # Customer is finished eating
 
 func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
 	seats.push_back(seat)
+	print("Return")
 
 
 func _on_Exit_body_entered(body):  # Dectect customer leaving
@@ -168,11 +169,12 @@ func initialize_astar():
 		area.add_to_group("seat_area")
 		var collision = CollisionShape.new()
 		collision.shape = BoxShape.new()
+		collision.shape.extents = Vector3(0.25, 0.25, 0.25)
 		area.add_child(collision)
 		var coord = Astar.map_to_world(seat.x, seat.y, seat.z)
 		area.translation.x = coord.x
 		area.translation.z = coord.z
-		area.translation.y = coord.y
+		area.translation.y = 2
 		area.connect("body_entered", self, "_on_Seating_body_entered")
 		area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
 
