@@ -18,7 +18,7 @@ func place_item(selected_item, position):
 	var m = position.x
 	var n = position.z
 	if m >= 0 and n >= 0 and m < 9 and n < 9:
-		set_cell_item(m, -1, n, selected_item, 0)
+		set_cell_item(m, 0, n, selected_item, 0)
 		return position
 	return null
 

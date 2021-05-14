@@ -3,9 +3,9 @@ extends Node
 const Unit = preload("res://scenes/Unit.tscn")
 
 onready var Cam = $CameraOrigin/Camera
-onready var Build = $Control/Build
-onready var BuildMode = $Control/BuildMode
-onready var FurniList = $Control/Build/Inventory/Chairs
+onready var Build = $Control/Panel
+onready var Chairs = $Control/Panel/Build/Inventory/Chairs
+onready var Tables = $Control/Panel/Build/Inventory/Tables
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
@@ -29,7 +29,8 @@ func _ready():
 	initialize_astar()
 
 	var mesh_lib = Furni.mesh_library
-	FurniList.populate_list(mesh_lib)
+	Chairs.populate_list(mesh_lib, 1)
+	Tables.populate_list(mesh_lib, 0)
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
@@ -66,7 +67,10 @@ func _on_Exit_body_entered(body):  # Dectect customer leaving
 
 
 func _on_ItemList_item_selected(index):
-	selected_item = int(FurniList.get_item_text(index))
+	if index % 2 == 1:
+		selected_item = index * 2
+	else:
+		selected_item = index * 2 + 1
 
 
 func _input(event):
@@ -80,6 +84,19 @@ func _input(event):
 
 
 func _on_BuildMode_toggled(_button_pressed):
+	build_mode = !build_mode
+	Build.visible = build_mode
+	Menu.visible = !build_mode
+	if build_mode:
+		CustomerTimer.stop()
+		var customers = get_tree().get_nodes_in_group("customers")
+		for customer in customers:
+			customer.queue_free()
+	else:
+		initialize_astar()
+		CustomerTimer.start()
+
+func _on_Build_pressed():
 	build_mode = !build_mode
 	Build.visible = build_mode
 	Menu.visible = !build_mode
@@ -173,7 +190,7 @@ func initialize_astar():
 		var coord = Astar.map_to_world(seat.x, seat.y, seat.z)
 		area.translation.x = coord.x
 		area.translation.z = coord.z
-		area.translation.y = 2
+		area.translation.y = 1
 		area.connect("body_entered", self, "_on_Seating_body_entered")
 		area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
 
@@ -185,4 +202,3 @@ func _on_Map_pressed():
 func _on_Recipes_pressed():
 	Recipes.visible = !Recipes.visible
 	Menu.visible = !Menu.visible
-	BuildMode.visible = !BuildMode.visible

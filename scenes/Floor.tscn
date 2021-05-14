@@ -1,18 +1,18 @@
 [gd_scene load_steps=3 format=2]
 
-[sub_resource type="CubeMesh" id=5]
-size = Vector3( 1, 0.01, 1 )
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 0.8, 0.01, 0.8 )
 
-[sub_resource type="BoxShape" id=4]
-extents = Vector3( 0.5, 0.005, 0.5 )
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 0.4, 0.005, 0.4 )
 
 [node name="Floor" type="Spatial"]
 
 [node name="Tile" type="MeshInstance" parent="."]
-mesh = SubResource( 5 )
+mesh = SubResource( 1 )
 material/0 = null
 
 [node name="StaticBody" type="StaticBody" parent="Tile"]
 
 [node name="CollisionShape" type="CollisionShape" parent="Tile/StaticBody"]
-shape = SubResource( 4 )
+shape = SubResource( 2 )
