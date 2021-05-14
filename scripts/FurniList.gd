@@ -1,8 +1,5 @@
 extends ItemList
 
-const CHAIR = 3
-const TABLE = 2
-
 
 func _ready():
 	#visible = false
@@ -12,12 +9,15 @@ func _ready():
 
 
 func populate_list(mesh_lib, type):
+	var items = []
 	var furniture = mesh_lib.get_item_list()
 	for id in furniture:
-		if id % 2 == type:
-			var name = mesh_lib.get_item_name(id)
+		var name = mesh_lib.get_item_name(id)
+		if type in name:
 			var texture = mesh_lib.get_item_preview(id)
 			add_item(name, texture, true)
+			items.push_back(id)
+	return items
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

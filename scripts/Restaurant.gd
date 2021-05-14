@@ -18,6 +18,9 @@ var sav_dict = {}
 var seats = []
 var selected_item = -1
 var build_mode = false
+var tables = []
+var chairs = []
+
 
 func _ready():
 	load_game()
@@ -29,8 +32,8 @@ func _ready():
 	initialize_astar()
 
 	var mesh_lib = Furni.mesh_library
-	Chairs.populate_list(mesh_lib, 1)
-	Tables.populate_list(mesh_lib, 0)
+	tables = Tables.populate_list(mesh_lib, "Table")
+	chairs = Chairs.populate_list(mesh_lib, "Chair")
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
@@ -66,11 +69,11 @@ func _on_Exit_body_entered(body):  # Dectect customer leaving
 	ExpBar.set_value(ExpBar.get_value() + 20)
 
 
-func _on_ItemList_item_selected(index):
-	if index % 2 == 1:
-		selected_item = index * 2
+func _on_ItemList_item_selected(index, type):
+	if type == 0:
+		selected_item = tables[index]
 	else:
-		selected_item = index * 2 + 1
+		selected_item = chairs[index]
 
 
 func _input(event):
