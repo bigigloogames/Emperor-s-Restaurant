@@ -29,12 +29,12 @@ func _ready():
 	var furniture = sav_dict["furniture"]
 	Floor.populate_tiles(room_size)
 	Furni.populate_furniture(furniture)
-	
-	init_astar()
 
 	var mesh_lib = Furni.mesh_library
 	tables = Tables.populate_list(mesh_lib, "Table")
 	chairs = Chairs.populate_list(mesh_lib, "Chair")
+	
+	init_astar()
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
@@ -189,7 +189,8 @@ func init_astar():
 	var seat_areas = get_tree().get_nodes_in_group("seat_area")
 	for seat_area in seat_areas:
 		seat_area.queue_free()
-	seats = Astar.populate_astar(sav_dict["room_size"], sav_dict["furniture"])
+	seats = Astar.populate_astar(
+			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
 	Astar.generate_astar()
 	for seat in seats:
 		var area = Area.new()

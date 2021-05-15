@@ -16,15 +16,15 @@ func _ready():
 	pass # Replace with function body.
 
 
-func populate_astar(room_size, furniture):
+func populate_astar(room_size, furniture, tables, chairs):
 	var seats = []
 	for m in room_size:
 		set_cell_item(-2, 1, m, PATH_TILE, 0)
 		for n in room_size:
 			if furniture[m][n] == null:
 				set_cell_item(m, 1, n, PATH_TILE, 0)
-			elif fmod(furniture[m][n][0], 2) == 0:
-				var chair = valid_chair(m, n, furniture, room_size)
+			elif tables.has(int(furniture[m][n][0])):
+				var chair = valid_chair(m, n, furniture, room_size, chairs)
 				if chair:
 					set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
 					seats.push_back(chair)
@@ -32,7 +32,7 @@ func populate_astar(room_size, furniture):
 	return seats
 
 
-func valid_chair(m, n, furniture, room_size):
+func valid_chair(m, n, furniture, room_size, chairs):
 	var adjacent = [
 		[m - 1, n, SE], [m + 1, n, NW], [m, n - 1, SW], [m, n + 1, NE]
 	]
@@ -42,7 +42,7 @@ func valid_chair(m, n, furniture, room_size):
 		if x < 0 or z < 0 or x >= room_size or z >= room_size:
 			continue
 		var furni = furniture[x][z]
-		if furni and fmod(furni[0], 2) == 1 and furni[1] == cell[2]:
+		if furni and chairs.has(int(furni[0])) and furni[1] == cell[2]:
 			return Vector3(x, 1, z)
 	return null
 
