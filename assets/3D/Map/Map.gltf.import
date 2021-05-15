@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/Map.gltf-cb0d13c2e35f90b4e4e09661aa213862.scn"
+path="res://.import/Map.gltf-f853210e4c4f939775445f406271a135.scn"
 
 [deps]
 
-source_file="res://assets/3D/Map.gltf"
-dest_files=[ "res://.import/Map.gltf-cb0d13c2e35f90b4e4e09661aa213862.scn" ]
+source_file="res://assets/3D/Map/Map.gltf"
+dest_files=[ "res://.import/Map.gltf-f853210e4c4f939775445f406271a135.scn" ]
 
 [params]
 

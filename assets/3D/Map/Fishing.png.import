@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/Fishing.png-781dd4de1347af949acfb702a7ccce70.s3tc.stex"
-path.etc="res://.import/Fishing.png-781dd4de1347af949acfb702a7ccce70.etc.stex"
+path.s3tc="res://.import/Fishing.png-e6aea0cc6c2fd0040fe75d6f51033516.s3tc.stex"
+path.etc="res://.import/Fishing.png-e6aea0cc6c2fd0040fe75d6f51033516.etc.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/3D/Fishing.png"
-dest_files=[ "res://.import/Fishing.png-781dd4de1347af949acfb702a7ccce70.s3tc.stex", "res://.import/Fishing.png-781dd4de1347af949acfb702a7ccce70.etc.stex" ]
+source_file="res://assets/3D/Map/Fishing.png"
+dest_files=[ "res://.import/Fishing.png-e6aea0cc6c2fd0040fe75d6f51033516.s3tc.stex", "res://.import/Fishing.png-e6aea0cc6c2fd0040fe75d6f51033516.etc.stex" ]
 
 [params]
 

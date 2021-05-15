@@ -1,134 +1,150 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=23 format=2]
 
-[ext_resource path="res://scripts/Map.gd" type="Script" id=1]
+[ext_resource path="res://assets/3D/Map/Map.gltf" type="PackedScene" id=1]
+[ext_resource path="res://assets/3D/Map/Waves.material" type="Material" id=2]
+[ext_resource path="res://scripts/Map.gd" type="Script" id=3]
+[ext_resource path="res://scenes/SceneManager/SceneManager3D.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/SceneManager/SceneManagerButton.tscn" type="PackedScene" id=5]
 
-[sub_resource type="PlaneMesh" id=1]
-size = Vector2( 40, 40 )
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 8, 4, 4 )
 
-[sub_resource type="SpatialMaterial" id=2]
-albedo_color = Color( 0.729412, 0.752941, 0.886275, 1 )
+[sub_resource type="SphereShape" id=2]
+radius = 8.0
 
-[sub_resource type="CylinderMesh" id=3]
-top_radius = 5.0
-bottom_radius = 6.0
-height = 0.25
-radial_segments = 16
+[sub_resource type="Animation" id=3]
+length = 3.0
+loop = true
+step = 1.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("Environment/Waves:material/0:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ), Vector3( 0.994444, 0, 0 ) ]
+}
 
-[sub_resource type="SphereMesh" id=4]
-height = 1.0
-radial_segments = 10
-rings = 5
-is_hemisphere = true
+[sub_resource type="AnimationNodeAdd2" id=5]
 
-[sub_resource type="BoxShape" id=5]
-extents = Vector3( 2.55931, 0.753974, 1.90567 )
+[sub_resource type="AnimationNodeAdd2" id=6]
 
-[sub_resource type="SpatialMaterial" id=6]
-albedo_color = Color( 0.760784, 0.572549, 0.34902, 1 )
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "camera pivot pan"
 
-[sub_resource type="CubeMesh" id=7]
-material = SubResource( 6 )
-size = Vector3( 0.75, 0.1, 0.5 )
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "camera rotate"
 
-[sub_resource type="CubeMesh" id=8]
-material = SubResource( 6 )
-size = Vector3( 0.1, 0.75, 0.05 )
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "clouds move"
 
-[sub_resource type="CubeMesh" id=9]
-size = Vector3( 1.5, 0.1, 4 )
+[sub_resource type="AnimationNodeTimeSeek" id=17]
 
-[sub_resource type="BoxShape" id=10]
-extents = Vector3( 2.56559, 1.37752, 1.13016 )
+[sub_resource type="AnimationNodeTimeScale" id=4]
 
-[sub_resource type="CylinderMesh" id=11]
-top_radius = 0.79
-bottom_radius = 1.1
-height = 0.25
-radial_segments = 16
+[sub_resource type="AnimationNodeOneShot" id=10]
 
-[sub_resource type="BoxShape" id=12]
-extents = Vector3( 2.08604, 0.764475, 1.60218 )
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "ocean tide"
 
-[node name="Map" type="Node"]
-script = ExtResource( 1 )
+[sub_resource type="AnimationNodeAdd2" id=12]
 
-[node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.262997, 0.964797, 0, -0.964797, 0.262997, 0, 0, 0 )
-light_energy = 0.25
+[sub_resource type="AnimationNodeAdd2" id=13]
 
-[node name="CameraOrigin" type="Spatial" parent="."]
-transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0 )
+[sub_resource type="AnimationNodeAnimation" id=14]
+animation = "waves move"
 
-[node name="Camera" type="Camera" parent="CameraOrigin"]
-transform = Transform( 1, 5.96046e-08, 0, -5.96046e-08, 0.92388, -0.382684, -8.9407e-08, 0.382684, 0.92388, -7.15256e-07, -1.49123, 6.50877 )
-projection = 1
-size = 6.0
+[sub_resource type="AnimationNodeAnimation" id=15]
+animation = "waves tide"
 
-[node name="Ocean" type="MeshInstance" parent="."]
-transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -0.011, -0.5, 0 )
-mesh = SubResource( 1 )
-material/0 = SubResource( 2 )
+[sub_resource type="AnimationNodeBlendTree" id=16]
+graph_offset = Vector2( 404.927, -130.522 )
+"nodes/camera + clouds/node" = SubResource( 5 )
+"nodes/camera + clouds/position" = Vector2( 420, 380 )
+"nodes/camera pan/node" = SubResource( 7 )
+"nodes/camera pan/position" = Vector2( -100, 320 )
+"nodes/camera pan + rotate/node" = SubResource( 6 )
+"nodes/camera pan + rotate/position" = Vector2( 160, 340 )
+"nodes/camera rotate/node" = SubResource( 8 )
+"nodes/camera rotate/position" = Vector2( -100, 440 )
+"nodes/clouds move/node" = SubResource( 9 )
+"nodes/clouds move/position" = Vector2( 160, 540 )
+"nodes/forage transition/node" = SubResource( 10 )
+"nodes/forage transition/position" = Vector2( 1180, 220 )
+"nodes/forage transition position/node" = SubResource( 17 )
+"nodes/forage transition position/position" = Vector2( 620, 380 )
+"nodes/forage transition speed/node" = SubResource( 4 )
+"nodes/forage transition speed/position" = Vector2( 880, 380 )
+"nodes/ocean tide/node" = SubResource( 11 )
+"nodes/ocean tide/position" = Vector2( 620, 220 )
+nodes/output/position = Vector2( 1400, 220 )
+"nodes/waves + ocean/node" = SubResource( 12 )
+"nodes/waves + ocean/position" = Vector2( 880, 80 )
+"nodes/waves move/node" = SubResource( 14 )
+"nodes/waves move/position" = Vector2( 380, 20 )
+"nodes/waves move + tide/node" = SubResource( 13 )
+"nodes/waves move + tide/position" = Vector2( 620, 20 )
+"nodes/waves tide/node" = SubResource( 15 )
+"nodes/waves tide/position" = Vector2( 380, 140 )
+node_connections = [ "output", 0, "forage transition", "waves move + tide", 0, "waves move", "waves move + tide", 1, "waves tide", "waves + ocean", 0, "waves move + tide", "waves + ocean", 1, "ocean tide", "camera + clouds", 0, "camera pan + rotate", "camera + clouds", 1, "clouds move", "forage transition", 0, "waves + ocean", "forage transition", 1, "forage transition speed", "camera pan + rotate", 0, "camera pan", "camera pan + rotate", 1, "camera rotate", "forage transition position", 0, "camera + clouds", "forage transition speed", 0, "forage transition position" ]
 
-[node name="Mainland" type="Spatial" parent="."]
+[node name="Map" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
 
-[node name="IceSheet" type="MeshInstance" parent="Mainland"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0 )
-mesh = SubResource( 3 )
-material/0 = null
+[node name="Camera" parent="CameraPivot" index="0"]
+transform = Transform( 0.1, 3.61238e-10, -1.34816e-09, 3.61238e-10, 0.0866025, 0.05, 1.34816e-09, -0.05, 0.0866025, 0, 0, 2.57835e-06 )
 
-[node name="Restaurant" type="Area" parent="Mainland"]
-transform = Transform( 0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1, 0, -3.5 )
+[node name="Camera_Orientation" parent="CameraPivot/Camera" index="0"]
+size = 30.0
 
-[node name="MeshInstance" type="MeshInstance" parent="Mainland/Restaurant"]
-mesh = SubResource( 4 )
-material/0 = null
+[node name="Light_Orientation" parent="Light" index="0"]
+light_energy = 0.5
 
-[node name="CollisionShape" type="CollisionShape" parent="Mainland/Restaurant"]
-shape = SubResource( 5 )
+[node name="SceneManager3D" parent="Archipelago/Fishing" index="2" instance=ExtResource( 4 )]
+scene = "Fishing"
+toggle_self = true
+toggle_group = true
 
-[node name="Fishing" type="Area" parent="Mainland"]
-transform = Transform( 0.388834, 0, 0.921308, 0, 1, 0, -0.921308, 0, 0.388834, -3.85661, 0, 0.267914 )
+[node name="CollisionShape" parent="Archipelago/Fishing/SceneManager3D" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0 )
+shape = SubResource( 1 )
 
-[node name="Sign" type="MeshInstance" parent="Mainland/Fishing"]
-transform = Transform( 1, 1.78814e-07, 5.58794e-09, 0, 0.0230362, -0.999735, 0, 0.999735, 0.0230362, 1.19209e-07, 0.586711, 4.76837e-07 )
-mesh = SubResource( 7 )
-material/0 = null
+[node name="Point_Orientation" parent="Archipelago/Restaurant/Point" index="0"]
+light_energy = 5.0
 
-[node name="Post" type="MeshInstance" parent="Mainland/Fishing"]
-mesh = SubResource( 8 )
-material/0 = null
+[node name="SceneManager3D" parent="Archipelago/Restaurant" index="2" instance=ExtResource( 4 )]
+scene = "Restaurant"
+change_root_scene = true
 
-[node name="Bridge" type="MeshInstance" parent="Mainland/Fishing"]
-transform = Transform( 0.94508, 0, 0.326838, 0, 1, 0, -0.326838, 0, 0.94508, -1.39934, 0, -2.30928 )
-mesh = SubResource( 9 )
-material/0 = SubResource( 6 )
+[node name="CollisionShape" parent="Archipelago/Restaurant/SceneManager3D" index="0"]
+shape = SubResource( 2 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Mainland/Fishing"]
-transform = Transform( 0.341709, 0, -0.939806, 0, 1, 0, 0.939806, 0, 0.341709, -1.2779, 0, -1.84424 )
-shape = SubResource( 10 )
+[node name="Ocean" parent="Environment" index="0"]
+transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, -1, 0 )
 
-[node name="Foraging" type="Area" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.54028, 0, -7.43281 )
+[node name="Waves" parent="Environment" index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0 )
+material/0 = ExtResource( 2 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Foraging"]
-mesh = SubResource( 11 )
-material/0 = null
+[node name="AnimationPlayer" parent="." index="5"]
+"anims/waves move" = SubResource( 3 )
 
-[node name="MeshInstance2" type="MeshInstance" parent="Foraging"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.39181, -0.194855, 0 )
-mesh = SubResource( 11 )
-material/0 = null
+[node name="AnimationTree" type="AnimationTree" parent="." index="6"]
+tree_root = SubResource( 16 )
+anim_player = NodePath("../AnimationPlayer")
+"parameters/camera + clouds/add_amount" = 1.0
+"parameters/camera pan + rotate/add_amount" = 1.0
+"parameters/forage transition/active" = false
+"parameters/forage transition position/seek_position" = 0.0
+"parameters/forage transition speed/scale" = 1.0
+"parameters/waves + ocean/add_amount" = 1.0
+"parameters/waves move + tide/add_amount" = 1.0
 
-[node name="MeshInstance3" type="MeshInstance" parent="Foraging"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.770077, -0.126114, -1.20219 )
-mesh = SubResource( 11 )
-material/0 = null
-
-[node name="CollisionShape" type="CollisionShape" parent="Foraging"]
-transform = Transform( 0.787581, 0, 0.616211, 0, 1, 0, -0.616211, 0, 0.787581, -0.828432, 0.419022, -0.49969 )
-shape = SubResource( 12 )
-
-[node name="GUI" type="Control" parent="."]
+[node name="GUI" type="Control" parent="." index="7"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -136,27 +152,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="GUI"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -75.0
-margin_top = 12.0
-margin_right = -12.0
-margin_bottom = 32.0
-text = "Settings"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="ForagingButton" parent="GUI" index="0" instance=ExtResource( 5 )]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -32.5
+margin_top = 30.0
+margin_right = 32.5
+margin_bottom = 20.0
+text = "Foraging"
+scene = "Foraging"
+toggle_self = true
+toggle_group = true
+[connection signal="new_scene_callback" from="Archipelago/Fishing/SceneManager3D" to="." method="_on_Fishing_new_scene_callback"]
+[connection signal="scene_worker_freed" from="Archipelago/Fishing/SceneManager3D" to="." method="_on_Fishing_scene_worker_freed"]
+[connection signal="new_scene_callback" from="GUI/ForagingButton" to="." method="_on_ForagingButton_new_scene_callback"]
+[connection signal="scene_worker_freed" from="GUI/ForagingButton" to="." method="_on_ForagingButton_scene_worker_freed"]
 
-[node name="Destination" type="Label" parent="GUI"]
-margin_left = 12.0
-margin_top = 12.0
-margin_right = 128.0
-margin_bottom = 26.0
-text = "Destination: None"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-[connection signal="input_event" from="Mainland/Restaurant" to="." method="_on_Restaurant_input_event"]
-[connection signal="input_event" from="Mainland/Fishing" to="." method="_on_Fishing_input_event"]
-[connection signal="input_event" from="Foraging" to="." method="_on_Foraging_input_event"]
+[editable path="Archipelago/Fishing/SceneManager3D"]
+
+[editable path="Archipelago/Restaurant/SceneManager3D"]
