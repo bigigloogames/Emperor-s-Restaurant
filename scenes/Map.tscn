@@ -29,68 +29,68 @@ tracks/0/keys = {
 "values": [ Vector3( 0, 0, 0 ), Vector3( 0.994444, 0, 0 ) ]
 }
 
+[sub_resource type="AnimationNodeAdd2" id=4]
+
 [sub_resource type="AnimationNodeAdd2" id=5]
 
-[sub_resource type="AnimationNodeAdd2" id=6]
-
-[sub_resource type="AnimationNodeAnimation" id=7]
+[sub_resource type="AnimationNodeAnimation" id=6]
 animation = "camera pivot pan"
 
-[sub_resource type="AnimationNodeAnimation" id=8]
+[sub_resource type="AnimationNodeAnimation" id=7]
 animation = "camera rotate"
 
-[sub_resource type="AnimationNodeAnimation" id=9]
+[sub_resource type="AnimationNodeAnimation" id=8]
 animation = "clouds move"
 
-[sub_resource type="AnimationNodeTimeSeek" id=17]
+[sub_resource type="AnimationNodeTimeSeek" id=9]
 
-[sub_resource type="AnimationNodeTimeScale" id=4]
+[sub_resource type="AnimationNodeTimeScale" id=10]
 
-[sub_resource type="AnimationNodeOneShot" id=10]
+[sub_resource type="AnimationNodeAdd2" id=11]
 
-[sub_resource type="AnimationNodeAnimation" id=11]
+[sub_resource type="AnimationNodeAnimation" id=12]
 animation = "ocean tide"
-
-[sub_resource type="AnimationNodeAdd2" id=12]
 
 [sub_resource type="AnimationNodeAdd2" id=13]
 
-[sub_resource type="AnimationNodeAnimation" id=14]
-animation = "waves move"
+[sub_resource type="AnimationNodeAdd2" id=14]
 
 [sub_resource type="AnimationNodeAnimation" id=15]
+animation = "waves move"
+
+[sub_resource type="AnimationNodeAnimation" id=16]
 animation = "waves tide"
 
-[sub_resource type="AnimationNodeBlendTree" id=16]
-graph_offset = Vector2( 404.927, -130.522 )
-"nodes/camera + clouds/node" = SubResource( 5 )
+[sub_resource type="AnimationNodeBlendTree" id=17]
+graph_offset = Vector2( 162, -14.75 )
+"nodes/camera + clouds/node" = SubResource( 4 )
 "nodes/camera + clouds/position" = Vector2( 420, 380 )
-"nodes/camera pan/node" = SubResource( 7 )
+"nodes/camera pan/node" = SubResource( 6 )
 "nodes/camera pan/position" = Vector2( -100, 320 )
-"nodes/camera pan + rotate/node" = SubResource( 6 )
+"nodes/camera pan + rotate/node" = SubResource( 5 )
 "nodes/camera pan + rotate/position" = Vector2( 160, 340 )
-"nodes/camera rotate/node" = SubResource( 8 )
+"nodes/camera rotate/node" = SubResource( 7 )
 "nodes/camera rotate/position" = Vector2( -100, 440 )
-"nodes/clouds move/node" = SubResource( 9 )
+"nodes/clouds move/node" = SubResource( 8 )
 "nodes/clouds move/position" = Vector2( 160, 540 )
-"nodes/forage transition/node" = SubResource( 10 )
+"nodes/forage transition/node" = SubResource( 11 )
 "nodes/forage transition/position" = Vector2( 1180, 220 )
-"nodes/forage transition position/node" = SubResource( 17 )
+"nodes/forage transition position/node" = SubResource( 9 )
 "nodes/forage transition position/position" = Vector2( 620, 380 )
-"nodes/forage transition speed/node" = SubResource( 4 )
+"nodes/forage transition speed/node" = SubResource( 10 )
 "nodes/forage transition speed/position" = Vector2( 880, 380 )
-"nodes/ocean tide/node" = SubResource( 11 )
+"nodes/ocean tide/node" = SubResource( 12 )
 "nodes/ocean tide/position" = Vector2( 620, 220 )
 nodes/output/position = Vector2( 1400, 220 )
-"nodes/waves + ocean/node" = SubResource( 12 )
+"nodes/waves + ocean/node" = SubResource( 13 )
 "nodes/waves + ocean/position" = Vector2( 880, 80 )
-"nodes/waves move/node" = SubResource( 14 )
+"nodes/waves move/node" = SubResource( 15 )
 "nodes/waves move/position" = Vector2( 380, 20 )
-"nodes/waves move + tide/node" = SubResource( 13 )
+"nodes/waves move + tide/node" = SubResource( 14 )
 "nodes/waves move + tide/position" = Vector2( 620, 20 )
-"nodes/waves tide/node" = SubResource( 15 )
+"nodes/waves tide/node" = SubResource( 16 )
 "nodes/waves tide/position" = Vector2( 380, 140 )
-node_connections = [ "output", 0, "forage transition", "waves move + tide", 0, "waves move", "waves move + tide", 1, "waves tide", "waves + ocean", 0, "waves move + tide", "waves + ocean", 1, "ocean tide", "camera + clouds", 0, "camera pan + rotate", "camera + clouds", 1, "clouds move", "forage transition", 0, "waves + ocean", "forage transition", 1, "forage transition speed", "camera pan + rotate", 0, "camera pan", "camera pan + rotate", 1, "camera rotate", "forage transition position", 0, "camera + clouds", "forage transition speed", 0, "forage transition position" ]
+node_connections = [ "forage transition", 0, "waves + ocean", "forage transition", 1, "forage transition speed", "output", 0, "forage transition", "forage transition speed", 0, "forage transition position", "waves + ocean", 0, "waves move + tide", "waves + ocean", 1, "ocean tide", "waves move + tide", 0, "waves move", "waves move + tide", 1, "waves tide", "camera + clouds", 0, "camera pan + rotate", "camera + clouds", 1, "clouds move", "camera pan + rotate", 0, "camera pan", "camera pan + rotate", 1, "camera rotate", "forage transition position", 0, "camera + clouds" ]
 
 [node name="Map" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
@@ -134,11 +134,11 @@ material/0 = ExtResource( 2 )
 "anims/waves move" = SubResource( 3 )
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="6"]
-tree_root = SubResource( 16 )
+tree_root = SubResource( 17 )
 anim_player = NodePath("../AnimationPlayer")
 "parameters/camera + clouds/add_amount" = 1.0
 "parameters/camera pan + rotate/add_amount" = 1.0
-"parameters/forage transition/active" = false
+"parameters/forage transition/add_amount" = 0
 "parameters/forage transition position/seek_position" = 0.0
 "parameters/forage transition speed/scale" = 1.0
 "parameters/waves + ocean/add_amount" = 1.0
