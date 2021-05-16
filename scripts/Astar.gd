@@ -2,6 +2,7 @@ extends GridMap
 
 const PATH_TILE = 0
 const SEAT_TILE = 1
+const TABLE_TILE = 2
 # GridMap orientation constants
 const NE = 10  # 180
 const SE = 16  # +90 clockwise
@@ -17,6 +18,7 @@ func _ready():
 
 
 func populate_astar(room_size, furniture, tables, chairs):
+	clear()
 	var seats = []
 	for m in room_size:
 		set_cell_item(-2, 1, m, PATH_TILE, 0)
@@ -27,6 +29,7 @@ func populate_astar(room_size, furniture, tables, chairs):
 				var chair = valid_chair(m, n, furniture, room_size, chairs)
 				if chair:
 					set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
+					set_cell_item(m, 1, n, TABLE_TILE, 0)
 					seats.push_back(chair)
 	set_cell_item(-1, 1, int(room_size/2), PATH_TILE, 0)
 	return seats
@@ -49,12 +52,15 @@ func valid_chair(m, n, furniture, room_size, chairs):
 
 func generate_astar():
 	astar = AStar.new()
+	all_points.clear()
 	var cells = get_used_cells()
 	for cell in cells:
 		var idx = astar.get_available_point_id()
 		astar.add_point(idx, map_to_world(cell.x, cell.y, cell.z))
 		all_points[v3_to_index(cell)] = idx
 		if get_cell_item(cell.x, cell.y, cell.z) == SEAT_TILE:
+			astar.set_point_disabled(idx, true)
+		if get_cell_item(cell.x, cell.y, cell.z) == TABLE_TILE:
 			astar.set_point_disabled(idx, true)
 	for cell in cells:
 		for x in [-1, 0, 1]:
@@ -66,8 +72,11 @@ func generate_astar():
 					if v3_to_index(v3 + cell) in all_points:
 						var idx1 = all_points[v3_to_index(cell)]
 						var idx2 = all_points[v3_to_index(cell + v3)]
+						if idx1 == 47:
+							print(idx2)
+							print(v3_to_index(cell + v3))
 						if !astar.are_points_connected(idx1, idx2):
-							astar.connect_points(idx1, idx2, true)
+								astar.connect_points(idx1, idx2, true)
 
 
 func generate_path(start, end):
@@ -82,8 +91,7 @@ func generate_path(start, end):
 	if grid_end in all_points:
 		end_id = all_points[grid_end]
 	else:
-		end_id = astar.get_closest_point(end)
-	astar.set_point_disabled(end_id, false)
+		return []
 	return astar.get_point_path(start_id, end_id)
 
 
