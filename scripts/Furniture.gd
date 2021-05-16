@@ -1,5 +1,11 @@
 extends GridMap
 
+# GridMap orientation constants
+const NE = 10  # 180
+const SE = 16  # +90 clockwise
+const SW = 0  # no rotation
+const NW = 22  # -90 clockwise
+
 var selected = null
 
 
@@ -23,6 +29,28 @@ func place_item(selected_item, position):
 		set_cell_item(m, 0, n, selected_item, 0)
 		return position
 	return null
+
+
+func remove_item(position):
+	position = world_to_map(position)
+	set_cell_item(position.x, position.y, position.z, -1)
+
+
+func rotate_item(position):
+	position = world_to_map(position)
+	var item = get_cell_item(position.x, position.y, position.z)
+	var orientation = get_cell_item_orientation(position.x, position.y, position.z)
+	var new_orientation = null
+	match orientation:
+		SW:
+			new_orientation = NW
+		NW:
+			new_orientation = NE
+		NE:
+			new_orientation = SE
+		SE:
+			new_orientation = SW
+	set_cell_item(position.x, position.y, position.z, item, new_orientation)
 
 
 func is_occupied(position):

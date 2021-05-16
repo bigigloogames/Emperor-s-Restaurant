@@ -85,17 +85,43 @@ func _input(event):
 				if not dragging and event.pressed:
 					dragging = true
 					Furni.select_item(result.position)
+					var buttons = get_tree().get_nodes_in_group("build_buttons")
+					for button in buttons:
+						button.queue_free()
 			elif event.pressed:
+				var buttons = get_tree().get_nodes_in_group("build_buttons")
+				for button in buttons:
+					button.queue_free()
 				var position = Furni.place_item(selected_item, result.position)
 				if position:
 					sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
 			if dragging and not event.pressed:
 				dragging = false
+				var rotate = Button.new()
+				rotate.text = "Rotate"
+				rotate.set_position(Vector2(15, -650))
+				rotate.add_to_group("build_buttons")
+				rotate.connect("pressed", self, "_on_rotate_pressed", [result.position])
+				Build.add_child(rotate)
+				var remove = Button.new()
+				remove.text = "Remove"
+				remove.set_position(Vector2(75, -650))
+				remove.add_to_group("build_buttons")
+				remove.connect("pressed", self, "_on_remove_pressed", [result.position])
+				Build.add_child(remove)
 	# Move furniture along with mouse
 	if event is InputEventMouseMotion and dragging:
 		var result = Cam.get_clicked_position(event)
 		if result:
 			Furni.drag(result.position)
+
+
+func _on_rotate_pressed(position):
+	Furni.rotate_item(position)
+
+
+func _on_remove_pressed(position):
+	Furni.remove_item(position)
 
 
 func _on_Build_pressed():
