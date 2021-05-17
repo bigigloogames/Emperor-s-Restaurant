@@ -30,7 +30,7 @@ func populate_astar(room_size, furniture, tables, chairs):
 				if chair:
 					set_cell_item(chair.x, 1, chair.z, SEAT_TILE, 0)
 					set_cell_item(m, 1, n, TABLE_TILE, 0)
-					seats.push_back(chair)
+					seats.append([chair, Vector3(m, 1, n)])
 	set_cell_item(-1, 1, int(room_size/2), PATH_TILE, 0)
 	return seats
 
@@ -72,11 +72,8 @@ func generate_astar():
 					if v3_to_index(v3 + cell) in all_points:
 						var idx1 = all_points[v3_to_index(cell)]
 						var idx2 = all_points[v3_to_index(cell + v3)]
-						if idx1 == 47:
-							print(idx2)
-							print(v3_to_index(cell + v3))
 						if !astar.are_points_connected(idx1, idx2):
-								astar.connect_points(idx1, idx2, true)
+							astar.connect_points(idx1, idx2, true)
 
 
 func generate_path(start, end):

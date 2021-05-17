@@ -16,6 +16,8 @@ onready var CustomerTimer = $CustomerTimer
 onready var Recipes = $Recipes
 var sav_dict = {}
 var seats = []
+var waiters = []
+var queue = []
 var selected_item = -1
 var build_mode = false
 var tables = []
@@ -35,25 +37,51 @@ func _ready():
 	chairs = Chairs.populate_list(mesh_lib, "Chair")
 	
 	init_astar()
+	spawn_waiters()
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
 	if seats:
 		var NewUnit = Unit.instance()
 		self.add_child(NewUnit)
-		var free_seat = seats.pop_back()
+		var free_seat = seats.pop_back()[0]
 		Astar.toggle_seat(free_seat)
 		NewUnit.move_to(free_seat)
 		Astar.toggle_seat(free_seat)
 
 
-func _on_Seating_body_entered(body):  # Detect customers entering seats
+func spawn_waiters():
+	waiters.clear()
+	var Waiter = Unit.instance()
+	self.add_child(Waiter)
+	waiters.append(Waiter)
+
+
+func _on_Seating_body_entered(_body, table):  # Detect customers entering seats
+	queue.append(table)
+
+
+func serve_customer():
+	if !queue.empty() and !waiters.empty():		
+		var table = queue.pop_front()
+		Astar.toggle_seat(table)
+		waiters.pop_front().move_to(table)
+		Astar.toggle_seat(table)
+
+
+func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
+	var customer = seat.get_overlapping_bodies()[0]
+	body.move_to(Vector3(0, 1, 0))
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
 	eating_timer.one_shot = true
-	body.add_child(eating_timer)
+	customer.add_child(eating_timer)
 	eating_timer.start()
-	eating_timer.connect("timeout", self, "_on_EatingTimer_timeout", [body])
+	eating_timer.connect("timeout", self, "_on_EatingTimer_timeout", [customer])
+
+
+func _on_Waiter_body_entered(body):
+	waiters.append(body)
 
 
 func _on_EatingTimer_timeout(body):  # Customer is finished eating
@@ -61,7 +89,7 @@ func _on_EatingTimer_timeout(body):  # Customer is finished eating
 		body.move_to(Vector3(-2, 1, 8))
 
 
-func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
+func _on_Seating_body_exited(_body, seat):  # Detect customers leaving seats
 	seats.push_back(seat)
 
 
@@ -142,6 +170,7 @@ func _on_Build_pressed():
 			furni_array[furni[0]][furni[2]] = data
 		sav_dict["furniture"] = furni_array
 		init_astar()
+		spawn_waiters()
 		CustomerTimer.start()
 
 
@@ -149,6 +178,7 @@ func _on_Build_pressed():
 func _process(delta):
 	zoom()
 	pan()
+	serve_customer()
 
 
 func zoom():
@@ -219,19 +249,45 @@ func init_astar():
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
 	Astar.generate_astar()
 	for seat in seats:
-		var area = Area.new()
-		add_child(area)
-		area.add_to_group("seat_area")
-		var collision = CollisionShape.new()
-		collision.shape = BoxShape.new()
-		collision.shape.extents = Vector3(0.25, 0.25, 0.25)
-		area.add_child(collision)
-		var coord = Astar.map_to_world(seat.x, seat.y, seat.z)
-		area.translation.x = coord.x
-		area.translation.z = coord.z
-		area.translation.y = 1
-		area.connect("body_entered", self, "_on_Seating_body_entered")
-		area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
+		var chair = seat[0]
+		var table = seat[1]
+		var chair_area = Area.new()
+		add_child(chair_area)
+		chair_area.add_to_group("seat_area")
+		var chair_collision = CollisionShape.new()
+		chair_collision.shape = BoxShape.new()
+		chair_collision.shape.extents = Vector3(0.05, 0.1, 0.05)
+		chair_area.add_child(chair_collision)
+		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
+		chair_area.translation.x = seat_coord.x
+		chair_area.translation.z = seat_coord.z
+		chair_area.translation.y = 1.5
+		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table])
+		chair_area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
+		var table_area = Area.new()
+		add_child(table_area)
+		table_area.add_to_group("seat_area")
+		var table_collision = CollisionShape.new()
+		table_collision.shape = BoxShape.new()
+		table_collision.shape.extents = Vector3(0.01, 0.01, 0.01)
+		table_area.add_child(table_collision)
+		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
+		table_area.translation.x = table_coord.x
+		table_area.translation.z = table_coord.z
+		table_area.translation.y = 1
+		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
+		var waiter_area = Area.new()
+		add_child(waiter_area)
+		waiter_area.add_to_group("seat_area")
+		var waiter_collision = CollisionShape.new()
+		waiter_collision.shape = BoxShape.new()
+		waiter_collision.shape.extents = Vector3(0.01, 0.01, 0.01)
+		waiter_area.add_child(waiter_collision)
+		var waiter_coord = Astar.map_to_world(0, 1, 0)
+		waiter_area.translation.x = waiter_coord.x
+		waiter_area.translation.z = waiter_coord.z
+		waiter_area.translation.y = 1
+		waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
 
 
 func _on_Map_pressed():

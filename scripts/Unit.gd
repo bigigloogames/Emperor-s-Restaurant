@@ -23,16 +23,4 @@ func _process(delta):
 
 func move_to(target_pos):
 	path = astar_map.generate_path(global_transform.origin, target_pos)
-	var map = []
-	for location in path:
-		map.append(astar_map.world_to_map(location))
-	print(map)
 	path_idx = 0
-
-
-func visit_restaurant():
-	move_to(Vector3(1, 0, 10))
-	yield(get_tree().create_timer(10.0), "timeout")
-	move_to(Vector3(-2, 1, 1))
-	yield(get_tree().create_timer(10.0), "timeout")
-	self.queue_free()
