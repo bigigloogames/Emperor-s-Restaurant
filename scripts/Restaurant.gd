@@ -58,7 +58,8 @@ func spawn_waiters():
 
 
 func _on_Seating_body_entered(_body, table):  # Detect customers entering seats
-	queue.append(table)
+	if not table in queue:
+		queue.append(table)
 
 
 func serve_customer():
@@ -115,34 +116,34 @@ func _input(event):
 	if build_mode and event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		var result = Cam.get_clicked_position(event)
 		if !result:
-			if Furni.is_occupied(result.position):
-				if not dragging and event.pressed:
-					dragging = true
-					Furni.select_item(result.position)
-					var buttons = get_tree().get_nodes_in_group("build_buttons")
-					for button in buttons:
-						button.queue_free()
-			elif event.pressed:
-				var buttons = get_tree().get_nodes_in_group("build_buttons")
-				for button in buttons:
-					button.queue_free()
-				var position = Furni.place_item(selected_item, result.position)
-				if position:
-					sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
-			if dragging and not event.pressed:
-				dragging = false
-				var rotate = Button.new()
-				rotate.text = "Rotate"
-				rotate.set_position(Vector2(15, -650))
-				rotate.add_to_group("build_buttons")
-				rotate.connect("pressed", self, "_on_rotate_pressed", [result.position])
-				Build.add_child(rotate)
-				var remove = Button.new()
-				remove.text = "Remove"
-				remove.set_position(Vector2(75, -650))
-				remove.add_to_group("build_buttons")
-				remove.connect("pressed", self, "_on_remove_pressed", [result.position])
-				Build.add_child(remove)
+			return
+		if Furni.is_occupied(result.position) and !dragging and event.pressed:
+			dragging = true
+			Furni.select_item(result.position)
+			var buttons = get_tree().get_nodes_in_group("build_buttons")
+			for button in buttons:
+				button.queue_free()
+		elif event.pressed:
+			var buttons = get_tree().get_nodes_in_group("build_buttons")
+			for button in buttons:
+				button.queue_free()
+			var position = Furni.place_item(selected_item, result.position)
+			if position:
+				sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
+		if dragging and not event.pressed:
+			dragging = false
+			var rotate = Button.new()
+			rotate.text = "Rotate"
+			rotate.set_position(Vector2(15, -650))
+			rotate.add_to_group("build_buttons")
+			rotate.connect("pressed", self, "_on_rotate_pressed", [result.position])
+			Build.add_child(rotate)
+			var remove = Button.new()
+			remove.text = "Remove"
+			remove.set_position(Vector2(75, -650))
+			remove.add_to_group("build_buttons")
+			remove.connect("pressed", self, "_on_remove_pressed", [result.position])
+			Build.add_child(remove)
 	# Move furniture along with mouse
 	if event is InputEventMouseMotion and dragging:
 		var result = Cam.get_clicked_position(event)
@@ -248,53 +249,43 @@ func init_furni(room_size):
 	return furniture_array
 
 func init_astar():
-	var seat_areas = get_tree().get_nodes_in_group("seat_area")
-	for seat_area in seat_areas:
-		seat_area.queue_free()
+	queue.clear()
+	var areas = get_tree().get_nodes_in_group("areas")
+	for area in areas:
+		area.queue_free()
 	seats = Astar.populate_astar(
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
 	Astar.generate_astar()
 	for seat in seats:
 		var chair = seat[0]
 		var table = seat[1]
-		var chair_area = Area.new()
-		add_child(chair_area)
-		chair_area.add_to_group("seat_area")
-		var chair_collision = CollisionShape.new()
-		chair_collision.shape = BoxShape.new()
-		chair_collision.shape.extents = Vector3(0.1, 0.1, 0.1)
-		chair_area.add_child(chair_collision)
+		# Seat area
 		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
-		chair_area.translation.x = seat_coord.x
-		chair_area.translation.z = seat_coord.z
-		chair_area.translation.y = 1.5
+		var chair_area = create_collision_area(seat_coord.x, 1.5, seat_coord.z)
 		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table])
 		chair_area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
-		var table_area = Area.new()
-		add_child(table_area)
-		table_area.add_to_group("seat_area")
-		var table_collision = CollisionShape.new()
-		table_collision.shape = BoxShape.new()
-		table_collision.shape.extents = Vector3(0.01, 0.01, 0.01)
-		table_area.add_child(table_collision)
+		# Table area
 		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
-		table_area.translation.x = table_coord.x
-		table_area.translation.z = table_coord.z
-		table_area.translation.y = 1
+		var table_area = create_collision_area(table_coord.x, 1.5, table_coord.z)
 		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
-		var waiter_area = Area.new()
-		add_child(waiter_area)
-		waiter_area.add_to_group("seat_area")
-		var waiter_collision = CollisionShape.new()
-		waiter_collision.shape = BoxShape.new()
-		waiter_collision.shape.extents = Vector3(0.1, 0.1, 0.1)
-		waiter_area.add_child(waiter_collision)
+		# Waiter area
 		var waiter_coord = Astar.map_to_world(0, 1, 0)
-		waiter_area.translation.x = waiter_coord.x
-		waiter_area.translation.z = waiter_coord.z
-		waiter_area.translation.y = 1.5
+		var waiter_area = create_collision_area(waiter_coord.x, 1.5, waiter_coord.z)
 		waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
 
+
+func create_collision_area(x, y, z):
+	var area = Area.new()
+	var collision = CollisionShape.new()
+	collision.shape = BoxShape.new()
+	collision.shape.extents = Vector3(0.1, 0.1, 0.1)
+	area.add_child(collision)
+	area.translation.x = x
+	area.translation.y = y
+	area.translation.z = z
+	add_child(area)
+	area.add_to_group("area")
+	return area
 
 func _on_Map_pressed():
 	get_tree().change_scene("res://scenes/Map.tscn")
