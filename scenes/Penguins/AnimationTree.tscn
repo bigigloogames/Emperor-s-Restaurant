@@ -1,0 +1,132 @@
+[gd_scene load_steps=27 format=2]
+
+[ext_resource path="res://scripts/Penguins/AnimationTree.gd" type="Script" id=1]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "eat loop"
+
+[sub_resource type="AnimationNodeAdd2" id=3]
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "flap loop"
+
+[sub_resource type="AnimationNodeBlend2" id=5]
+
+[sub_resource type="AnimationNodeAdd3" id=6]
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "look left loop"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "look right loop"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "look up loop"
+
+[sub_resource type="AnimationNodeAdd2" id=10]
+
+[sub_resource type="AnimationNodeBlend2" id=11]
+
+[sub_resource type="AnimationNodeAnimation" id=12]
+animation = "mouth closed still"
+
+[sub_resource type="AnimationNodeAnimation" id=13]
+animation = "mouth open still"
+
+[sub_resource type="AnimationNodeAdd2" id=14]
+
+[sub_resource type="AnimationNodeAnimation" id=15]
+animation = "sit still"
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeAdd2" id=17]
+
+[sub_resource type="AnimationNodeAnimation" id=18]
+animation = "sway loop"
+
+[sub_resource type="AnimationNodeAnimation" id=19]
+animation = "vocalize loop"
+
+[sub_resource type="AnimationNodeOneShot" id=20]
+
+[sub_resource type="AnimationNodeAnimation" id=21]
+animation = "walk loop"
+
+[sub_resource type="AnimationNodeBlend2" id=22]
+
+[sub_resource type="AnimationNodeAdd2" id=23]
+
+[sub_resource type="AnimationNodeBlend2" id=24]
+
+[sub_resource type="AnimationNodeBlendTree" id=25]
+graph_offset = Vector2( 1693.58, -166 )
+"nodes/arms still/node" = SubResource( 1 )
+"nodes/arms still/position" = Vector2( 1000, -420 )
+nodes/eat/node = SubResource( 3 )
+nodes/eat/position = Vector2( 1460, -80 )
+"nodes/eat loop/node" = SubResource( 2 )
+"nodes/eat loop/position" = Vector2( 1260, 100 )
+nodes/flap/node = SubResource( 5 )
+nodes/flap/position = Vector2( 1060, 40 )
+"nodes/flap loop/node" = SubResource( 4 )
+"nodes/flap loop/position" = Vector2( 860, 60 )
+"nodes/look horizontal/node" = SubResource( 6 )
+"nodes/look horizontal/position" = Vector2( 2320, 40 )
+"nodes/look left loop/node" = SubResource( 7 )
+"nodes/look left loop/position" = Vector2( 2080, 80 )
+"nodes/look right loop/node" = SubResource( 8 )
+"nodes/look right loop/position" = Vector2( 2080, 200 )
+"nodes/look up/node" = SubResource( 10 )
+"nodes/look up/position" = Vector2( 2540, 60 )
+"nodes/look up loop/node" = SubResource( 9 )
+"nodes/look up loop/position" = Vector2( 2320, 260 )
+nodes/mouth/node = SubResource( 14 )
+nodes/mouth/position = Vector2( 2080, -180 )
+"nodes/mouth closed or open/node" = SubResource( 11 )
+"nodes/mouth closed or open/position" = Vector2( 1500, 240 )
+"nodes/mouth closed still/node" = SubResource( 12 )
+"nodes/mouth closed still/position" = Vector2( 1260, 280 )
+"nodes/mouth open still/node" = SubResource( 13 )
+"nodes/mouth open still/position" = Vector2( 1260, 400 )
+nodes/output/position = Vector2( 2740, 60 )
+"nodes/sit loop/node" = SubResource( 17 )
+"nodes/sit loop/position" = Vector2( 1260, -100 )
+"nodes/sit loop lower/node" = SubResource( 15 )
+"nodes/sit loop lower/position" = Vector2( 1060, -80 )
+"nodes/sit loop upper/node" = SubResource( 16 )
+"nodes/sit loop upper/position" = Vector2( 860, -60 )
+"nodes/sway loop/node" = SubResource( 18 )
+"nodes/sway loop/position" = Vector2( 1000, -300 )
+nodes/vocalize/node = SubResource( 20 )
+nodes/vocalize/position = Vector2( 1780, 200 )
+"nodes/vocalize loop/node" = SubResource( 19 )
+"nodes/vocalize loop/position" = Vector2( 1520, 440 )
+"nodes/walk loop/node" = SubResource( 23 )
+"nodes/walk loop/position" = Vector2( 1460, -360 )
+"nodes/walk loop lower/node" = SubResource( 21 )
+"nodes/walk loop lower/position" = Vector2( 1220, -440 )
+"nodes/walk loop upper/node" = SubResource( 22 )
+"nodes/walk loop upper/position" = Vector2( 1220, -320 )
+"nodes/walk or sit/node" = SubResource( 24 )
+"nodes/walk or sit/position" = Vector2( 1780, -220 )
+node_connections = [ "output", 0, "look up", "eat", 0, "sit loop", "eat", 1, "eat loop", "look up", 0, "look horizontal", "look up", 1, "look up loop", "mouth closed or open", 0, "mouth closed still", "mouth closed or open", 1, "mouth open still", "sit loop", 0, "sit loop lower", "sit loop", 1, "flap", "walk loop", 0, "walk loop lower", "walk loop", 1, "walk loop upper", "flap", 0, "sit loop upper", "flap", 1, "flap loop", "mouth", 0, "walk or sit", "mouth", 1, "vocalize", "look horizontal", 0, "look left loop", "look horizontal", 1, "mouth", "look horizontal", 2, "look right loop", "walk loop upper", 0, "arms still", "walk loop upper", 1, "sway loop", "walk or sit", 0, "walk loop", "walk or sit", 1, "eat", "vocalize", 0, "mouth closed or open", "vocalize", 1, "vocalize loop" ]
+
+[node name="AnimationTree" type="AnimationTree"]
+tree_root = SubResource( 25 )
+parameters/eat/add_amount = 0
+parameters/flap/blend_amount = 0
+"parameters/look horizontal/add_amount" = 0
+"parameters/look up/add_amount" = 0
+parameters/mouth/add_amount = 1.0
+"parameters/mouth closed or open/blend_amount" = 0.0
+"parameters/sit loop/add_amount" = 1.0
+parameters/vocalize/active = false
+"parameters/walk loop/add_amount" = 1.0
+"parameters/walk loop upper/blend_amount" = 0.0
+"parameters/walk or sit/blend_amount" = 0.0
+script = ExtResource( 1 )
