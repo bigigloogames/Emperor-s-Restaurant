@@ -62,15 +62,19 @@ func _on_Seating_body_entered(_body, table):  # Detect customers entering seats
 
 
 func serve_customer():
-	if !queue.empty() and !waiters.empty():		
-		var table = queue.pop_front()
-		Astar.toggle_seat(table)
-		waiters.pop_front().move_to(table)
-		Astar.toggle_seat(table)
+	if waiters.empty() or queue.empty():
+		return
+	var table = queue.pop_front()
+	Astar.toggle_seat(table)
+	waiters.pop_front().move_to(table)
+	Astar.toggle_seat(table)
 
 
 func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
-	var customer = seat.get_overlapping_bodies()[0]
+	var customer = seat.get_overlapping_bodies()
+	if customer.empty():
+		return
+	customer = customer[0]
 	body.move_to(Vector3(0, 1, 0))
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
@@ -81,6 +85,8 @@ func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
 
 
 func _on_Waiter_body_entered(body):
+	if body in waiters:
+		return
 	waiters.append(body)
 
 
@@ -108,7 +114,7 @@ func _on_ItemList_item_selected(index, type):
 func _input(event):
 	if build_mode and event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
 		var result = Cam.get_clicked_position(event)
-		if result:
+		if !result:
 			if Furni.is_occupied(result.position):
 				if not dragging and event.pressed:
 					dragging = true
@@ -256,7 +262,7 @@ func init_astar():
 		chair_area.add_to_group("seat_area")
 		var chair_collision = CollisionShape.new()
 		chair_collision.shape = BoxShape.new()
-		chair_collision.shape.extents = Vector3(0.05, 0.1, 0.05)
+		chair_collision.shape.extents = Vector3(0.1, 0.1, 0.1)
 		chair_area.add_child(chair_collision)
 		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
 		chair_area.translation.x = seat_coord.x
@@ -281,12 +287,12 @@ func init_astar():
 		waiter_area.add_to_group("seat_area")
 		var waiter_collision = CollisionShape.new()
 		waiter_collision.shape = BoxShape.new()
-		waiter_collision.shape.extents = Vector3(0.01, 0.01, 0.01)
+		waiter_collision.shape.extents = Vector3(0.1, 0.1, 0.1)
 		waiter_area.add_child(waiter_collision)
 		var waiter_coord = Astar.map_to_world(0, 1, 0)
 		waiter_area.translation.x = waiter_coord.x
 		waiter_area.translation.z = waiter_coord.z
-		waiter_area.translation.y = 1
+		waiter_area.translation.y = 1.5
 		waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
 
 

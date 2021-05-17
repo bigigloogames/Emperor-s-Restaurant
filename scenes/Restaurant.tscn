@@ -249,6 +249,7 @@ __meta__ = {
 }
 
 [node name="Astar" type="GridMap" parent="."]
+visible = false
 mesh_library = ExtResource( 9 )
 cell_size = Vector3( 0.8, 0.8, 0.8 )
 data = {
