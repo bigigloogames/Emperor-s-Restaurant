@@ -66,9 +66,13 @@ func serve_customer():
 	if waiters.empty() or queue.empty():
 		return
 	var table = queue.pop_front()
-	Astar.toggle_seat(table)
-	waiters.pop_front().move_to(table)
-	Astar.toggle_seat(table)
+	var waiter = waiters.pop_front()
+	if waiter:
+		Astar.toggle_seat(table)
+		waiter.move_to(table)
+		Astar.toggle_seat(table)
+	else:
+		queue.push_front(table)
 
 
 func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
@@ -86,9 +90,8 @@ func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
 
 
 func _on_Waiter_body_entered(body):
-	if body in waiters:
-		return
-	waiters.append(body)
+	if not body in waiters:
+		waiters.append(body)
 
 
 func _on_EatingTimer_timeout(body):  # Customer is finished eating
@@ -250,7 +253,8 @@ func init_furni(room_size):
 
 func init_astar():
 	queue.clear()
-	var areas = get_tree().get_nodes_in_group("areas")
+	waiters.clear()
+	var areas = get_tree().get_nodes_in_group("area")
 	for area in areas:
 		area.queue_free()
 	seats = Astar.populate_astar(
@@ -268,10 +272,10 @@ func init_astar():
 		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
 		var table_area = create_collision_area(table_coord.x, 1.5, table_coord.z)
 		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
-		# Waiter area
-		var waiter_coord = Astar.map_to_world(0, 1, 0)
-		var waiter_area = create_collision_area(waiter_coord.x, 1.5, waiter_coord.z)
-		waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
+	# Waiter area
+	var waiter_coord = Astar.map_to_world(0, 1, 0)
+	var waiter_area = create_collision_area(waiter_coord.x, 1.5, waiter_coord.z)
+	waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
 
 
 func create_collision_area(x, y, z):
