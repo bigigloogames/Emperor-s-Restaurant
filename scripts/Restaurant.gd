@@ -1,6 +1,10 @@
 extends Node
 
-const Unit = preload("res://scenes/Unit.tscn")
+const AdeliePenguin = preload("res://scenes/Penguins/AdeliePenguin.tscn")
+const ChinstrapPenguin = preload("res://scenes/Penguins/ChinstrapPenguin.tscn")
+const EmperorPenguin = preload("res://scenes/Penguins/EmperorPenguin.tscn")
+const GentooPenguin = preload("res://scenes/Penguins/GentooPenguin.tscn")
+const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Panel
@@ -42,23 +46,42 @@ func _ready():
 
 func _on_CustomerTimer_timeout():  # Spawn customers
 	if seats:
-		var NewUnit = Unit.instance()
-		self.add_child(NewUnit)
+		var customer = null
+		var species = randi() % 5 + 1
+		match species:
+			1:
+				customer = AdeliePenguin.instance()
+			2:
+				customer = ChinstrapPenguin.instance()
+			3:
+				customer = EmperorPenguin.instance()
+			4:
+				customer = GentooPenguin.instance()
+			5:
+				customer = KingPenguin.instance()
+		self.add_child(customer)
 		var free_seat = seats.pop_back()[0]
 		Astar.toggle_seat(free_seat)
-		NewUnit.move_to(free_seat)
+		move_to(customer, free_seat)
 		Astar.toggle_seat(free_seat)
+
+
+func move_to(body, destination):
+	var path = Astar.generate_path(body.global_transform.origin, destination)
+	body.take_path(path)
 
 
 func spawn_waiters():
 	waiters.clear()
-	var Waiter = Unit.instance()
+	var Waiter = EmperorPenguin.instance()
 	self.add_child(Waiter)
 	waiters.append(Waiter)
+	Waiter.add_to_group("waiters")
+	Waiter.remove_from_group("customers")
 
 
-func _on_Seating_body_entered(_body, table):  # Detect customers entering seats
-	if not table in queue:
+func _on_Seating_body_entered(body, table):  # Detect customers entering seats
+	if body.is_in_group("customers") and not table in queue:
 		queue.append(table)
 
 
@@ -69,18 +92,20 @@ func serve_customer():
 	var waiter = waiters.pop_front()
 	if waiter:
 		Astar.toggle_seat(table)
-		waiter.move_to(table)
+		move_to(waiter, table)
 		Astar.toggle_seat(table)
 	else:
 		queue.push_front(table)
 
 
 func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
+	if !body.is_in_group("waiters"):
+		return
 	var customer = seat.get_overlapping_bodies()
 	if customer.empty():
 		return
 	customer = customer[0]
-	body.move_to(Vector3(0, 1, 0))
+	move_to(body, Vector3(0, 0, 0))
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
 	eating_timer.one_shot = true
@@ -96,11 +121,12 @@ func _on_Waiter_body_entered(body):
 
 func _on_EatingTimer_timeout(body):  # Customer is finished eating
 	if body:
-		body.move_to(Vector3(-2, 1, 8))
+		move_to(body, Vector3(-2, 0, 8))
 
 
-func _on_Seating_body_exited(_body, seat):  # Detect customers leaving seats
-	seats.push_back(seat)
+func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
+	if body.is_in_group("customers"):
+		seats.push_back(seat)
 
 
 func _on_Exit_body_entered(body):  # Dectect customer leaving
@@ -171,6 +197,9 @@ func _on_Build_pressed():
 		var customers = get_tree().get_nodes_in_group("customers")
 		for customer in customers:
 			customer.queue_free()
+		var waiters = get_tree().get_nodes_in_group("waiters")
+		for waiter in waiters:
+			waiter.queue_free()
 	else:
 		var furni_array = init_furni(sav_dict["room_size"])
 		for furni in Furni.get_used_cells():
@@ -265,16 +294,16 @@ func init_astar():
 		var table = seat[1]
 		# Seat area
 		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
-		var chair_area = create_collision_area(seat_coord.x, 1.5, seat_coord.z)
+		var chair_area = create_collision_area(seat_coord.x, 1, seat_coord.z)
 		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table])
 		chair_area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
 		# Table area
 		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
-		var table_area = create_collision_area(table_coord.x, 1.5, table_coord.z)
+		var table_area = create_collision_area(table_coord.x, 1, table_coord.z)
 		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
 	# Waiter area
 	var waiter_coord = Astar.map_to_world(0, 1, 0)
-	var waiter_area = create_collision_area(waiter_coord.x, 1.5, waiter_coord.z)
+	var waiter_area = create_collision_area(waiter_coord.x, 1, waiter_coord.z)
 	waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
 
 
@@ -284,9 +313,7 @@ func create_collision_area(x, y, z):
 	collision.shape = BoxShape.new()
 	collision.shape.extents = Vector3(0.1, 0.1, 0.1)
 	area.add_child(collision)
-	area.translation.x = x
-	area.translation.y = y
-	area.translation.z = z
+	area.translation = Vector3(x, y, z)
 	add_child(area)
 	area.add_to_group("area")
 	return area

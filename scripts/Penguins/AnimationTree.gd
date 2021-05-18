@@ -1,6 +1,5 @@
 extends AnimationTree
 
-Í
 func _ready():
 	self.active = true
 
