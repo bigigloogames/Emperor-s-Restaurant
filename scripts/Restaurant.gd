@@ -47,6 +47,7 @@ func _ready():
 func _on_CustomerTimer_timeout():  # Spawn customers
 	if seats:
 		var customer = null
+		randomize()
 		var species = randi() % 5 + 1
 		match species:
 			1:
@@ -68,6 +69,8 @@ func _on_CustomerTimer_timeout():  # Spawn customers
 
 func move_to(body, destination):
 	var path = Astar.generate_path(body.global_transform.origin, destination)
+#	if body.is_in_group("waiters"):
+#		path.resize(path.size() - 1)
 	body.take_path(path)
 
 
@@ -80,9 +83,11 @@ func spawn_waiters():
 	Waiter.remove_from_group("customers")
 
 
-func _on_Seating_body_entered(body, table):  # Detect customers entering seats
+func _on_Seating_body_entered(body, table, direction):  # Detect customers entering seats
 	if body.is_in_group("customers") and not table in queue:
 		queue.append(table)
+		body.sit()
+		body.face_direction(direction)
 
 
 func serve_customer():
@@ -112,6 +117,7 @@ func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
 	customer.add_child(eating_timer)
 	eating_timer.start()
 	eating_timer.connect("timeout", self, "_on_EatingTimer_timeout", [customer])
+	customer.eat()
 
 
 func _on_Waiter_body_entered(body):
@@ -122,6 +128,7 @@ func _on_Waiter_body_entered(body):
 func _on_EatingTimer_timeout(body):  # Customer is finished eating
 	if body:
 		move_to(body, Vector3(-2, 0, 8))
+		body.walk()
 
 
 func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
@@ -292,13 +299,13 @@ func init_astar():
 	for seat in seats:
 		var chair = seat[0]
 		var table = seat[1]
-		# Seat area
 		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
+		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
+		# Seat area
 		var chair_area = create_collision_area(seat_coord.x, 1, seat_coord.z)
-		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table])
+		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table, table_coord])
 		chair_area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
 		# Table area
-		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
 		var table_area = create_collision_area(table_coord.x, 1, table_coord.z)
 		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
 	# Waiter area
