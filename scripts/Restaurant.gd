@@ -20,7 +20,7 @@ onready var CustomerTimer = $CustomerTimer
 onready var Recipes = $Recipes
 var sav_dict = {}
 var seats = []
-var waiters = []
+var free_waiters = []
 var queue = []
 var selected_item = -1
 var build_mode = false
@@ -75,10 +75,9 @@ func move_to(body, destination):
 
 
 func spawn_waiters():
-	waiters.clear()
 	var Waiter = EmperorPenguin.instance()
 	self.add_child(Waiter)
-	waiters.append(Waiter)
+	free_waiters.append(Waiter)
 	Waiter.add_to_group("waiters")
 	Waiter.remove_from_group("customers")
 
@@ -91,10 +90,10 @@ func _on_Seating_body_entered(body, table, direction):  # Detect customers enter
 
 
 func serve_customer():
-	if waiters.empty() or queue.empty():
+	if free_waiters.empty() or queue.empty():
 		return
 	var table = queue.pop_front()
-	var waiter = waiters.pop_front()
+	var waiter = free_waiters.pop_front()
 	if waiter:
 		Astar.toggle_seat(table)
 		move_to(waiter, table)
@@ -121,8 +120,8 @@ func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
 
 
 func _on_Waiter_body_entered(body):
-	if not body in waiters:
-		waiters.append(body)
+	if not body in free_waiters:
+		free_waiters.append(body)
 
 
 func _on_EatingTimer_timeout(body):  # Customer is finished eating
@@ -221,7 +220,7 @@ func _on_Build_pressed():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	zoom()
 	pan()
 	serve_customer()
@@ -289,7 +288,7 @@ func init_furni(room_size):
 
 func init_astar():
 	queue.clear()
-	waiters.clear()
+	free_waiters.clear()
 	var areas = get_tree().get_nodes_in_group("area")
 	for area in areas:
 		area.queue_free()
@@ -325,8 +324,10 @@ func create_collision_area(x, y, z):
 	area.add_to_group("area")
 	return area
 
+
 func _on_Map_pressed():
-	get_tree().change_scene("res://scenes/Map.tscn")
+	if get_tree().change_scene("res://scenes/Map.tscn") != OK:
+		print("Error changing scenes")
 
 
 func _on_Recipes_pressed():

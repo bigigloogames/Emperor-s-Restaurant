@@ -1,10 +1,10 @@
 extends KinematicBody
 
-
 onready var AnimationTree = $AnimationTree
 var path = []
 var path_idx = 0
 const move_speed = 3
+
 
 func _ready():
 	set_collision_mask_bit(0, 0)
@@ -19,7 +19,7 @@ func _ready():
 	AnimationTree.active = true
 
 
-func _process(delta):
+func _process(_delta):
 	if path_idx < path.size():
 		var mov_vec = (path[path_idx] - global_transform.origin)
 		if mov_vec.length() < 0.1:
