@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/Furniture.gltf-06c5cdde488afb008236d3924ec5c7d5.scn"
+path="res://.import/Furniture.gltf-7482f44ac1a9ce0931dab5fa1e3ac49f.scn"
 
 [deps]
 
-source_file="res://assets/3D/Furniture.gltf"
-dest_files=[ "res://.import/Furniture.gltf-06c5cdde488afb008236d3924ec5c7d5.scn" ]
+source_file="res://assets/3D/Furniture/Furniture.gltf"
+dest_files=[ "res://.import/Furniture.gltf-7482f44ac1a9ce0931dab5fa1e3ac49f.scn" ]
 
 [params]
 
