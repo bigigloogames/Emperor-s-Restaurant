@@ -12,10 +12,11 @@ func populate_list(mesh_lib, type):
 	var items = []
 	var furniture = mesh_lib.get_item_list()
 	for id in furniture:
-		var name = mesh_lib.get_item_name(id)
-		if type in name:
+		var name_str = mesh_lib.get_item_name(id).capitalize()
+		if type in name_str:
 			var texture = mesh_lib.get_item_preview(id)
-			add_item(name, texture, true)
+			add_item(name_str, texture, true)
+			set_item_metadata(get_item_count() - 1, [id, type, name_str])
 			items.push_back(id)
 	return items
 

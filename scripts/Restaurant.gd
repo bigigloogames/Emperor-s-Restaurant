@@ -8,8 +8,10 @@ const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
 
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Panel
-onready var Chairs = $Control/Panel/Build/Inventory/Chairs
-onready var Tables = $Control/Panel/Build/Inventory/Tables
+onready var StoreChairs = $Control/Panel/Build/Store/Chairs
+onready var StoreTables = $Control/Panel/Build/Store/Tables
+onready var InventoryChairs = $Control/Panel/Build/Inventory/Chairs
+onready var InventoryTables = $Control/Panel/Build/Inventory/Tables
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
@@ -37,8 +39,10 @@ func _ready():
 	Furni.populate_furniture(furniture)
 
 	var mesh_lib = Furni.mesh_library
-	tables = Tables.populate_list(mesh_lib, "Table")
-	chairs = Chairs.populate_list(mesh_lib, "Chair")
+	var _store_tables = StoreTables.populate_list(mesh_lib, "Table")
+	var _store_chairs = StoreChairs.populate_list(mesh_lib, "Chair")
+	tables = InventoryTables.populate_list(mesh_lib, "Table")
+	chairs = InventoryChairs.populate_list(mesh_lib, "Chair")
 	
 	init_astar()
 	spawn_waiters()
@@ -140,7 +144,26 @@ func _on_Exit_body_entered(body):  # Dectect customer leaving
 	ExpBar.set_value(ExpBar.get_value() + 20)
 
 
-func _on_ItemList_item_selected(index, type):
+func _on_Store_item_selected(index, type):
+	var confirm = ConfirmationDialog.new()
+	var dialogue = "Purchase "
+	var selected_item = null
+	if type == 0:
+		selected_item = InventoryTables.get_item_text(index)
+	else:
+		selected_item = InventoryChairs.get_item_text(index)
+	dialogue += selected_item + "?"
+	confirm.dialog_text = dialogue
+	confirm.connect("confirmed", self, "_on_purchase_confirmed", [selected_item])
+	add_child(confirm)
+	confirm.popup()
+
+
+func _on_purchase_confirmed(item):
+	print("Purchased " + item)
+
+
+func _on_Inventory_item_selected(index, type):
 	if type == 0:
 		selected_item = tables[index]
 	else:
@@ -155,13 +178,9 @@ func _input(event):
 		if Furni.is_occupied(result.position) and !dragging and event.pressed:
 			dragging = true
 			Furni.select_item(result.position)
-			var buttons = get_tree().get_nodes_in_group("build_buttons")
-			for button in buttons:
-				button.queue_free()
+			remove_in_group("build_buttons")
 		elif event.pressed:
-			var buttons = get_tree().get_nodes_in_group("build_buttons")
-			for button in buttons:
-				button.queue_free()
+			remove_in_group("build_buttons")
 			var position = Furni.place_item(selected_item, result.position)
 			if position:
 				sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
@@ -192,6 +211,7 @@ func _on_rotate_pressed(position):
 
 func _on_remove_pressed(position):
 	Furni.remove_item(position)
+	remove_in_group("build_buttons")
 
 
 func _on_Build_pressed():
@@ -200,12 +220,8 @@ func _on_Build_pressed():
 	Menu.visible = !build_mode
 	if build_mode:
 		CustomerTimer.stop()
-		var customers = get_tree().get_nodes_in_group("customers")
-		for customer in customers:
-			customer.queue_free()
-		var waiters = get_tree().get_nodes_in_group("waiters")
-		for waiter in waiters:
-			waiter.queue_free()
+		remove_in_group("customers")
+		remove_in_group("waiters")
 	else:
 		var furni_array = init_furni(sav_dict["room_size"])
 		for furni in Furni.get_used_cells():
@@ -286,12 +302,11 @@ func init_furni(room_size):
 		furniture_array[x].resize(room_size)
 	return furniture_array
 
+
 func init_astar():
 	queue.clear()
 	free_waiters.clear()
-	var areas = get_tree().get_nodes_in_group("area")
-	for area in areas:
-		area.queue_free()
+	remove_in_group("area")
 	seats = Astar.populate_astar(
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
 	Astar.generate_astar()
@@ -323,6 +338,12 @@ func create_collision_area(x, y, z):
 	add_child(area)
 	area.add_to_group("area")
 	return area
+
+
+func remove_in_group(group_name):
+	var group = get_tree().get_nodes_in_group(group_name)
+	for member in group:
+		member.queue_free()
 
 
 func _on_Map_pressed():

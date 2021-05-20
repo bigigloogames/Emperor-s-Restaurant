@@ -143,6 +143,7 @@ margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
+script = ExtResource( 5 )
 
 [node name="Tables" type="ItemList" parent="Control/Panel/Build/Store"]
 visible = false
@@ -152,6 +153,7 @@ margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
+script = ExtResource( 5 )
 
 [node name="Inventory" type="TabContainer" parent="Control/Panel/Build"]
 visible = false
@@ -273,8 +275,10 @@ shape = SubResource( 1 )
 [connection signal="pressed" from="Control/Menu/Save" to="." method="_on_Save_pressed"]
 [connection signal="pressed" from="Control/Menu/Recipes" to="." method="_on_Recipes_pressed"]
 [connection signal="pressed" from="Control/Menu/Build" to="." method="_on_Build_pressed"]
-[connection signal="item_selected" from="Control/Panel/Build/Inventory/Chairs" to="." method="_on_ItemList_item_selected" binds= [ 1 ]]
-[connection signal="item_selected" from="Control/Panel/Build/Inventory/Tables" to="." method="_on_ItemList_item_selected" binds= [ 0 ]]
+[connection signal="item_selected" from="Control/Panel/Build/Store/Chairs" to="." method="_on_Store_item_selected" binds= [ 1 ]]
+[connection signal="item_selected" from="Control/Panel/Build/Store/Tables" to="." method="_on_Store_item_selected" binds= [ 0 ]]
+[connection signal="item_selected" from="Control/Panel/Build/Inventory/Chairs" to="." method="_on_Inventory_item_selected" binds= [ 1 ]]
+[connection signal="item_selected" from="Control/Panel/Build/Inventory/Tables" to="." method="_on_Inventory_item_selected" binds= [ 0 ]]
 [connection signal="pressed" from="Control/Panel/ExitBuild" to="." method="_on_Build_pressed"]
 [connection signal="pressed" from="Recipes/Recipes" to="." method="_on_Recipes_pressed"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
