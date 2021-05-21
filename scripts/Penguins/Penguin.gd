@@ -8,7 +8,6 @@ signal dest_reached
 
 
 func _ready():
-	set_collision_mask_bit(0, 0)
 	add_to_group("customers")
 	translation = Vector3(-1.2, 0.4, 0.4)
 

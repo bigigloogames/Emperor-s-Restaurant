@@ -135,11 +135,12 @@ func _on_waiter_returned(waiter):
 
 
 func _on_eating_timeout(customer, seat):  # Customer is finished eating
-	if customer:
-		customer.connect("dest_reached", self, "_on_customer_exited", [customer])
-		move_to(customer, Vector3(-2, 0, 8))
-		customer.walk()
-		seats.push_back(seat)
+	if !customer:
+		return
+	customer.connect("dest_reached", self, "_on_customer_exited", [customer])
+	move_to(customer, Vector3(-2, 0, 8))
+	customer.walk()
+	seats.push_back(seat)
 
 
 func _on_customer_exited(customer):  # Dectect customer leaving
@@ -174,32 +175,33 @@ func _on_Inventory_item_selected(index, type):
 
 
 func _input(event):
-	if build_mode and event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+	if build_mode and event is InputEventMouseButton:
 		var result = Cam.get_clicked_position(event)
 		if !result:
 			return
-		if Furni.is_occupied(result.position) and !dragging and event.pressed:
+		var position = result.position
+		if Furni.is_occupied(position) and !dragging and event.pressed:
 			dragging = true
-			Furni.select_item(result.position)
+			Furni.select_item(position)
 			remove_in_group("build_buttons")
 		elif event.pressed:
 			remove_in_group("build_buttons")
-			var position = Furni.place_item(selected_item, result.position)
-			if position:
-				sav_dict["furniture"][position.x][position.z] = [selected_item, 0]
+			var coord = Furni.place_item(selected_item, position)
+			if coord:
+				sav_dict["furniture"][coord.x][coord.z] = [selected_item, 0]
 		if dragging and not event.pressed:
 			dragging = false
 			var rotate = Button.new()
 			rotate.text = "Rotate"
 			rotate.set_position(Vector2(15, -650))
 			rotate.add_to_group("build_buttons")
-			rotate.connect("pressed", self, "_on_rotate_pressed", [result.position])
+			rotate.connect("pressed", self, "_on_rotate_pressed", [position])
 			Build.add_child(rotate)
 			var remove = Button.new()
 			remove.text = "Remove"
 			remove.set_position(Vector2(75, -650))
 			remove.add_to_group("build_buttons")
-			remove.connect("pressed", self, "_on_remove_pressed", [result.position])
+			remove.connect("pressed", self, "_on_remove_pressed", [position])
 			Build.add_child(remove)
 	# Move furniture along with mouse
 	if event is InputEventMouseMotion and dragging:
@@ -228,14 +230,18 @@ func _on_Build_pressed():
 	else:
 		var furni_array = init_furni(sav_dict["room_size"])
 		for furni in Furni.get_used_cells():
-			var data = []
-			data.append(Furni.get_cell_item(furni[0], furni[1], furni[2]))
-			data.append(Furni.get_cell_item_orientation(furni[0], furni[1], furni[2]))
-			furni_array[furni[0]][furni[2]] = data
+			furni_array[furni[0]][furni[2]] = format_furni_data(furni)
 		sav_dict["furniture"] = furni_array
 		init_astar()
 		spawn_waiters()
 		CustomerTimer.start()
+
+
+func format_furni_data(furni):
+	var data = []
+	data.append(Furni.get_cell_item(furni[0], furni[1], furni[2]))
+	data.append(Furni.get_cell_item_orientation(furni[0], furni[1], furni[2]))
+	return data
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
