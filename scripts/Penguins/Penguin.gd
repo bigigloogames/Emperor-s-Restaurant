@@ -4,19 +4,13 @@ onready var AnimationTree = $AnimationTree
 var path = []
 var path_idx = 0
 const move_speed = 3
+signal dest_reached
 
 
 func _ready():
 	set_collision_mask_bit(0, 0)
 	add_to_group("customers")
 	translation = Vector3(-1.2, 0.4, 0.4)
-	var col = CollisionShape.new()
-	var box = BoxShape.new()
-	box.extents = Vector3(0, 0.3, 0)
-	col.translation.y = 0.3
-	col.shape = box
-	add_child(col)
-	AnimationTree.active = true
 
 
 func _process(_delta):
@@ -30,6 +24,7 @@ func _process(_delta):
 	elif path.size() > 0:
 		translation = path[-1]
 		path = []
+		emit_signal("dest_reached")
 
 
 func take_path(new_path):

@@ -49,32 +49,35 @@ func _ready():
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
-	if seats:
-		var customer = null
-		randomize()
-		var species = randi() % 5 + 1
-		match species:
-			1:
-				customer = AdeliePenguin.instance()
-			2:
-				customer = ChinstrapPenguin.instance()
-			3:
-				customer = EmperorPenguin.instance()
-			4:
-				customer = GentooPenguin.instance()
-			5:
-				customer = KingPenguin.instance()
-		self.add_child(customer)
-		var free_seat = seats.pop_back()[0]
-		Astar.toggle_seat(free_seat)
-		move_to(customer, free_seat)
-		Astar.toggle_seat(free_seat)
+	if !seats:
+		return
+	var customer = null
+	randomize()
+	var species = randi() % 5 + 1
+	match species:
+		1:
+			customer = AdeliePenguin.instance()
+		2:
+			customer = ChinstrapPenguin.instance()
+		3:
+			customer = EmperorPenguin.instance()
+		4:
+			customer = GentooPenguin.instance()
+		5:
+			customer = KingPenguin.instance()
+	self.add_child(customer)
+	var seat = seats.pop_back()
+	var chair = seat[0]
+	Astar.toggle_seat(chair)
+	move_to(customer, chair)
+	Astar.toggle_seat(chair)
+	customer.connect("dest_reached", self, "customer_seated", [customer, seat])
 
 
 func move_to(body, destination):
 	var path = Astar.generate_path(body.global_transform.origin, destination)
-#	if body.is_in_group("waiters"):
-#		path.resize(path.size() - 1)
+	if body.is_in_group("waiters"):
+		path.resize(path.size() - 1)
 	body.take_path(path)
 
 
@@ -86,61 +89,61 @@ func spawn_waiters():
 	Waiter.remove_from_group("customers")
 
 
-func _on_Seating_body_entered(body, table, direction):  # Detect customers entering seats
-	if body.is_in_group("customers") and not table in queue:
-		queue.append(table)
-		body.sit()
-		body.face_direction(direction)
+func customer_seated(customer, seat):
+	if not seat in queue:
+		queue.append([seat, customer])
+		var table = seat[1]
+		customer.disconnect("dest_reached", self, "customer_seated")
+		customer.face_direction(Astar.map_to_world(table.x, table.y, table.z))
+		customer.sit()
 
 
 func serve_customer():
 	if free_waiters.empty() or queue.empty():
 		return
-	var table = queue.pop_front()
+	var reservation = queue.pop_front()
 	var waiter = free_waiters.pop_front()
-	if waiter:
-		Astar.toggle_seat(table)
-		move_to(waiter, table)
-		Astar.toggle_seat(table)
-	else:
-		queue.push_front(table)
+	if !waiter:  # Waiters are busy
+		queue.push_front(reservation)
+		return
+	var seat = reservation[0]
+	var table = seat[1]
+	var customer = reservation[1]
+	Astar.toggle_seat(table)
+	move_to(waiter, table)
+	Astar.toggle_seat(table)
+	waiter.connect("dest_reached", self, "_on_served", [waiter, seat, customer])
 
 
-func _on_Table_body_entered(body, seat):  # Detect waiter reaching table
-	if !body.is_in_group("waiters"):
-		return
-	var customer = seat.get_overlapping_bodies()
-	if customer.empty():
-		return
-	customer = customer[0]
-	move_to(body, Vector3(0, 0, 0))
+func _on_served(waiter, seat, customer):  # Waiter reached table
+	waiter.disconnect("dest_reached", self, "_on_served")
+	move_to(waiter, Vector3(0, 0, 0))
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
 	eating_timer.one_shot = true
 	customer.add_child(eating_timer)
 	eating_timer.start()
-	eating_timer.connect("timeout", self, "_on_EatingTimer_timeout", [customer])
+	eating_timer.connect("timeout", self, "_on_eating_timeout", [customer, seat])
 	customer.eat()
+	waiter.connect("dest_reached", self, "_on_waiter_returned", [waiter])
 
 
-func _on_Waiter_body_entered(body):
-	if not body in free_waiters:
-		free_waiters.append(body)
+func _on_waiter_returned(waiter):
+	waiter.disconnect("dest_reached", self, "_on_waiter_returned")
+	if not waiter in free_waiters:
+		free_waiters.append(waiter)
 
 
-func _on_EatingTimer_timeout(body):  # Customer is finished eating
-	if body:
-		move_to(body, Vector3(-2, 0, 8))
-		body.walk()
-
-
-func _on_Seating_body_exited(body, seat):  # Detect customers leaving seats
-	if body.is_in_group("customers"):
+func _on_eating_timeout(customer, seat):  # Customer is finished eating
+	if customer:
+		customer.connect("dest_reached", self, "_on_customer_exited", [customer])
+		move_to(customer, Vector3(-2, 0, 8))
+		customer.walk()
 		seats.push_back(seat)
 
 
-func _on_Exit_body_entered(body):  # Dectect customer leaving
-	body.queue_free()
+func _on_customer_exited(customer):  # Dectect customer leaving
+	customer.queue_free()
 	ExpBar.set_value(ExpBar.get_value() + 20)
 
 
@@ -310,34 +313,6 @@ func init_astar():
 	seats = Astar.populate_astar(
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
 	Astar.generate_astar()
-	for seat in seats:
-		var chair = seat[0]
-		var table = seat[1]
-		var seat_coord = Astar.map_to_world(chair.x, chair.y, chair.z)
-		var table_coord = Astar.map_to_world(table.x, table.y, table.z)
-		# Seat area
-		var chair_area = create_collision_area(seat_coord.x, 1, seat_coord.z)
-		chair_area.connect("body_entered", self, "_on_Seating_body_entered", [table, table_coord])
-		chair_area.connect("body_exited", self, "_on_Seating_body_exited", [seat])
-		# Table area
-		var table_area = create_collision_area(table_coord.x, 1, table_coord.z)
-		table_area.connect("body_entered", self, "_on_Table_body_entered", [chair_area])
-	# Waiter area
-	var waiter_coord = Astar.map_to_world(0, 1, 0)
-	var waiter_area = create_collision_area(waiter_coord.x, 1, waiter_coord.z)
-	waiter_area.connect("body_entered", self, "_on_Waiter_body_entered")
-
-
-func create_collision_area(x, y, z):
-	var area = Area.new()
-	var collision = CollisionShape.new()
-	collision.shape = BoxShape.new()
-	collision.shape.extents = Vector3(0.08, 0.08, 0.08)
-	area.add_child(collision)
-	area.translation = Vector3(x, y, z)
-	add_child(area)
-	area.add_to_group("area")
-	return area
 
 
 func remove_in_group(group_name):

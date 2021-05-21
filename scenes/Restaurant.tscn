@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Floor.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
@@ -10,9 +10,6 @@
 [ext_resource path="res://scripts/Furniture.gd" type="Script" id=8]
 [ext_resource path="res://Point.tres" type="MeshLibrary" id=9]
 [ext_resource path="res://Furniture.tres" type="MeshLibrary" id=10]
-
-[sub_resource type="BoxShape" id=1]
-extents = Vector3( 0.4, 0.4, 0.4 )
 
 [node name="Restaurant" type="Node"]
 script = ExtResource( 2 )
@@ -264,12 +261,6 @@ __meta__ = {
 
 [node name="CustomerTimer" type="Timer" parent="."]
 autostart = true
-
-[node name="Exit" type="Area" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1, 7 )
-
-[node name="CollisionShape" type="CollisionShape" parent="Exit"]
-shape = SubResource( 1 )
 [connection signal="value_changed" from="Control/Menu/ExpBar" to="." method="_on_ExpBar_value_changed"]
 [connection signal="pressed" from="Control/Menu/Map" to="." method="_on_Map_pressed"]
 [connection signal="pressed" from="Control/Menu/Save" to="." method="_on_Save_pressed"]
@@ -282,4 +273,3 @@ shape = SubResource( 1 )
 [connection signal="pressed" from="Control/Panel/ExitBuild" to="." method="_on_Build_pressed"]
 [connection signal="pressed" from="Recipes/Recipes" to="." method="_on_Recipes_pressed"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
-[connection signal="body_entered" from="Exit" to="." method="_on_Exit_body_entered"]
