@@ -147,14 +147,14 @@ func _on_Exit_body_entered(body):  # Dectect customer leaving
 func _on_Store_item_selected(index, type):
 	var confirm = ConfirmationDialog.new()
 	var dialogue = "Purchase "
-	var selected_item = null
+	var cart_item = null
 	if type == 0:
-		selected_item = InventoryTables.get_item_text(index)
+		cart_item = InventoryTables.get_item_text(index)
 	else:
-		selected_item = InventoryChairs.get_item_text(index)
-	dialogue += selected_item + "?"
+		cart_item = InventoryChairs.get_item_text(index)
+	dialogue += cart_item + "?"
 	confirm.dialog_text = dialogue
-	confirm.connect("confirmed", self, "_on_purchase_confirmed", [selected_item])
+	confirm.connect("confirmed", self, "_on_purchase_confirmed", [cart_item])
 	add_child(confirm)
 	confirm.popup()
 
@@ -332,7 +332,7 @@ func create_collision_area(x, y, z):
 	var area = Area.new()
 	var collision = CollisionShape.new()
 	collision.shape = BoxShape.new()
-	collision.shape.extents = Vector3(0.1, 0.1, 0.1)
+	collision.shape.extents = Vector3(0.08, 0.08, 0.08)
 	area.add_child(collision)
 	area.translation = Vector3(x, y, z)
 	add_child(area)

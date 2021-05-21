@@ -58,9 +58,7 @@ func generate_astar():
 		var idx = astar.get_available_point_id()
 		astar.add_point(idx, map_to_world(cell.x, cell.y, cell.z))
 		all_points[v3_to_index(cell)] = idx
-		if get_cell_item(cell.x, cell.y, cell.z) == SEAT_TILE:
-			astar.set_point_disabled(idx, true)
-		if get_cell_item(cell.x, cell.y, cell.z) == TABLE_TILE:
+		if get_cell_item(cell.x, cell.y, cell.z) != PATH_TILE:
 			astar.set_point_disabled(idx, true)
 	for cell in cells:
 		for x in [-1, 0, 1]:
@@ -69,14 +67,22 @@ func generate_astar():
 					var v3 = Vector3(x, y, z)
 					if v3 == Vector3(0, 0, 0):
 						continue
-					if v3_to_index(v3 + cell) in all_points:
+					var adj = v3 + cell
+					if v3_to_index(adj) in all_points and is_valid(cell, adj):
 						var idx1 = all_points[v3_to_index(cell)]
-						var idx2 = all_points[v3_to_index(cell + v3)]
+						var idx2 = all_points[v3_to_index(adj)]
 						if !astar.are_points_connected(idx1, idx2):
 							astar.connect_points(idx1, idx2, true)
 
 
+func is_valid(cell1, cell2):
+	var c1 = get_cell_item(cell1.x, cell1.y, cell1.z) == PATH_TILE
+	var c2 = get_cell_item(cell2.x, cell2.y, cell2.z) == PATH_TILE
+	return c1 or c2
+
+
 func generate_path(start, end):
+	start = world_to_map(start)
 	var grid_start = v3_to_index(start)
 	var grid_end = v3_to_index(end)
 	var start_id = 0
@@ -84,7 +90,7 @@ func generate_path(start, end):
 	if grid_start in all_points:
 		start_id = all_points[grid_start]
 	else:
-		start_id = astar.get_closest_point(start)
+		start_id = astar.get_closest_point(start, true)
 	if grid_end in all_points:
 		end_id = all_points[grid_end]
 	else:
