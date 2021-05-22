@@ -6,8 +6,6 @@ const EmperorPenguin = preload("res://scenes/Penguins/EmperorPenguin.tscn")
 const GentooPenguin = preload("res://scenes/Penguins/GentooPenguin.tscn")
 const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
 
-const InputManager = preload("res://scripts/InputManager.gd")
-
 onready var Cam = $CameraOrigin/Camera
 onready var Build = $Control/Panel
 onready var StoreChairs = $Control/Panel/Build/Store/Chairs
@@ -182,16 +180,16 @@ func _input(event):
 		if !result:
 			return
 		var position = result.position
-		if Furni.is_occupied(position) and !dragging and InputManager.pressed(event):
+		if Furni.is_occupied(position) and !dragging and Input.is_action_pressed("ui_select"):
 			dragging = true
 			Furni.select_item(position)
 			remove_in_group("build_buttons")
-		elif InputManager.pressed(event):
+		elif Input.is_action_pressed("ui_select"):
 			remove_in_group("build_buttons")
 			var coord = Furni.place_item(selected_item, position)
 			if coord:
 				sav_dict["furniture"][coord.x][coord.z] = [selected_item, 0]
-		if dragging and not InputManager.pressed(event):
+		if dragging and not Input.is_action_pressed("ui_select"):
 			dragging = false
 			var rotate = Button.new()
 			rotate.text = "Rotate"
