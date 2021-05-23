@@ -38,11 +38,8 @@ func _ready():
 	Floor.populate_tiles(room_size)
 	Furni.populate_furniture(furniture)
 
-	var mesh_lib = Furni.mesh_library
-	var _store_tables = StoreTables.populate_list(mesh_lib, "Table")
-	var _store_chairs = StoreChairs.populate_list(mesh_lib, "Chair")
-	tables = InventoryTables.populate_list(mesh_lib, "Table")
-	chairs = InventoryChairs.populate_list(mesh_lib, "Chair")
+	init_store()
+	init_inventory()
 	
 	init_astar()
 	spawn_waiters()
@@ -152,26 +149,31 @@ func _on_Store_item_selected(index, type):
 	var confirm = ConfirmationDialog.new()
 	var dialogue = "Purchase "
 	var cart_item = null
+	var item_id = null
 	if type == 0:
-		cart_item = InventoryTables.get_item_text(index)
+		cart_item = StoreTables.get_item_text(index)
+		item_id = StoreTables.get_item_metadata(index)
 	else:
-		cart_item = InventoryChairs.get_item_text(index)
+		cart_item = StoreChairs.get_item_text(index)
+		item_id = StoreChairs.get_item_metadata(index)
 	dialogue += cart_item + "?"
 	confirm.dialog_text = dialogue
-	confirm.connect("confirmed", self, "_on_purchase_confirmed", [cart_item])
+	confirm.connect("confirmed", self, "_on_purchase_confirmed", [cart_item, item_id])
 	add_child(confirm)
 	confirm.popup()
 
 
-func _on_purchase_confirmed(item):
+func _on_purchase_confirmed(item, id):
 	print("Purchased " + item)
+	increment_inventory(id, 1)
+	init_inventory()
 
 
 func _on_Inventory_item_selected(index, type):
 	if type == 0:
-		selected_item = tables[index]
+		selected_item = InventoryTables.get_item_metadata(index)
 	else:
-		selected_item = chairs[index]
+		selected_item = InventoryChairs.get_item_metadata(index)
 
 
 func _input(event):
@@ -186,9 +188,12 @@ func _input(event):
 			remove_in_group("build_buttons")
 		elif Input.is_action_pressed("ui_select"):
 			remove_in_group("build_buttons")
-			var coord = Furni.place_item(selected_item, position)
-			if coord:
-				sav_dict["furniture"][coord.x][coord.z] = [selected_item, 0]
+			if selected_item != -1 and increment_inventory(selected_item, -1):
+				init_inventory()
+				var coord = Furni.place_item(selected_item, position)
+				if coord:
+					sav_dict["furniture"][coord.x][coord.z] = [selected_item, 0]
+			selected_item = -1
 		if dragging and not Input.is_action_pressed("ui_select"):
 			dragging = false
 			var rotate = Button.new()
@@ -215,7 +220,9 @@ func _on_rotate_pressed(position):
 
 
 func _on_remove_pressed(position):
-	Furni.remove_item(position)
+	var item = Furni.remove_item(position)
+	increment_inventory(item, 1)
+	init_inventory()
 	remove_in_group("build_buttons")
 
 
@@ -296,12 +303,15 @@ func load_game():
 func init_sav_dict():
 	sav_dict["level"] = 1
 	sav_dict["exp"] = 0
-	sav_dict["currency"] = 0
+	sav_dict["currency"] = 1000
 	sav_dict["floor"] = 0
 	sav_dict["tiles"] = 0
 	var room_size = 9
 	sav_dict["room_size"] = room_size
 	sav_dict["furniture"] = init_furni(room_size)
+	sav_dict["furni_inv"] = {}
+	sav_dict["recipes"] = {}
+	sav_dict["rec_inv"] = {}
 
 
 func init_furni(room_size):
@@ -310,6 +320,34 @@ func init_furni(room_size):
 		furniture_array.append([])
 		furniture_array[x].resize(room_size)
 	return furniture_array
+
+
+func init_store():
+	var mesh_lib = Furni.mesh_library
+	tables = StoreTables.populate_store(mesh_lib, "Table")
+	chairs = StoreChairs.populate_store(mesh_lib, "Chair")
+
+
+func increment_inventory(item, quantity):
+	item = str(item)
+	var inventory = sav_dict["furni_inv"]
+	if not item in inventory:
+		inventory[item] = 0
+	if inventory[item] + quantity < 0:
+		return false
+	inventory[item] += quantity
+	if inventory[item] == 0:
+		inventory.erase(item)
+	return true
+
+func init_inventory():
+	var mesh_lib = Furni.mesh_library
+	if not "furni_inv" in sav_dict:
+		sav_dict["furni_inv"] = {}
+	var inventory = sav_dict["furni_inv"]
+	
+	InventoryTables.populate_inventory(mesh_lib, "Table", inventory)
+	InventoryChairs.populate_inventory(mesh_lib, "Chair", inventory)
 
 
 func init_astar():

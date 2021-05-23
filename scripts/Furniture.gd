@@ -33,7 +33,9 @@ func place_item(selected_item, position):
 
 func remove_item(position):
 	position = world_to_map(position)
+	var item = get_cell_item(position.x, position.y, position.z)
 	set_cell_item(position.x, position.y, position.z, -1)
+	return item
 
 
 func rotate_item(position):
