@@ -104,6 +104,16 @@ margin_right = 165.275
 margin_bottom = 679.951
 text = "Build"
 
+[node name="Currency" type="Label" parent="Control"]
+margin_left = 1177.31
+margin_top = 16.6489
+margin_right = 1217.31
+margin_bottom = 30.6489
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Panel" type="Panel" parent="Control"]
 visible = false
 anchor_right = 1.0

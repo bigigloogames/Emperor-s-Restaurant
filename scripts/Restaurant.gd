@@ -20,6 +20,7 @@ onready var ExpBar = $Control/Menu/ExpBar
 onready var Level = $Control/Menu/Level
 onready var CustomerTimer = $CustomerTimer
 onready var Recipes = $Recipes
+onready var Currency = $Control/Currency
 var sav_dict = {}
 var seats = []
 var free_waiters = []
@@ -43,6 +44,8 @@ func _ready():
 	
 	init_astar()
 	spawn_waiters()
+	
+	increment_currency(1000)
 
 
 func _on_CustomerTimer_timeout():  # Spawn customers
@@ -143,9 +146,13 @@ func _on_eating_timeout(customer, seat):  # Customer is finished eating
 func _on_customer_exited(customer):  # Dectect customer leaving
 	customer.queue_free()
 	ExpBar.set_value(ExpBar.get_value() + 20)
+	increment_currency(50)
 
 
 func _on_Store_item_selected(index, type):
+	if sav_dict["currency"] < 50:
+		print("Not enough money")
+		return
 	var confirm = ConfirmationDialog.new()
 	var dialogue = "Purchase "
 	var cart_item = null
@@ -165,6 +172,7 @@ func _on_Store_item_selected(index, type):
 
 func _on_purchase_confirmed(item, id):
 	print("Purchased " + item)
+	increment_currency(-50)
 	increment_inventory(id, 1)
 	init_inventory()
 
@@ -326,6 +334,11 @@ func init_store():
 	var mesh_lib = Furni.mesh_library
 	tables = StoreTables.populate_store(mesh_lib, "Table")
 	chairs = StoreChairs.populate_store(mesh_lib, "Chair")
+
+
+func increment_currency(amount):
+	sav_dict["currency"] += amount
+	Currency.text = str(sav_dict["currency"])
 
 
 func increment_inventory(item, quantity):
