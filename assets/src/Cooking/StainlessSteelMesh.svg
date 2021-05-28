@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
+   sodipodi:docname="StainlessSteelMesh.svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient878">
+      <stop
+         style="stop-color:#848484;stop-opacity:1"
+         offset="0"
+         id="stop874" />
+      <stop
+         style="stop-color:#e0d7c8;stop-opacity:1"
+         offset="0.38689476"
+         id="stop886" />
+      <stop
+         style="stop-color:#ebedf2;stop-opacity:1"
+         offset="0.49096948"
+         id="stop884" />
+      <stop
+         style="stop-color:#999999;stop-opacity:1"
+         offset="1"
+         id="stop876" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient878"
+       id="linearGradient882"
+       x1="17.103146"
+       y1="10.032078"
+       x2="17.103146"
+       y2="4.8171649"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,6.2508692)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:showpageshadow="false"
+     inkscape:snap-midpoints="false" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect867"
+       style="fill:url(#linearGradient882)"
+       d="m 0,12.250869 c 0,0 1.859718,0.02843 2.7888016,-0.0026 2.45461,-0.08192 4.8960758,-0.502576 7.3519854,-0.484457 3.776047,0.02786 7.516334,0.835296 11.291713,0.911574 1.79253,0.03622 4.128646,-0.307295 6.196848,-0.381119 C 29.085376,12.242316 32,12.250869 32,12.250869 v 1.5 3.499251 c 0,0 -2.332542,-0.03882 -3.498046,-0.0042 C 26.14218,17.316 23.467542,17.715792 21.4325,17.674676 17.657121,17.598396 13.916798,16.795532 10.140787,16.763103 7.8319158,16.743273 5.5350104,17.111403 3.2278252,17.201828 2.1525884,17.243949 0,17.25012 0,17.25012 Z"
+       sodipodi:nodetypes="caasacccasaacc" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#rect867"
+       id="use872"
+       transform="rotate(90,14.728763,14.728763)"
+       width="100%"
+       height="100%" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use872"
+       id="use1016"
+       transform="translate(32)"
+       width="100%"
+       height="100%" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#rect867"
+       id="use1014"
+       transform="translate(32)"
+       width="100%"
+       height="100%"
+       style="stroke-width:0.5" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use1016"
+       id="use1020"
+       transform="translate(-32,32)"
+       width="100%"
+       height="100%" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use1014"
+       id="use1018"
+       transform="translate(-32,32)"
+       width="100%"
+       height="100%" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use1018"
+       id="use1022"
+       transform="translate(32)"
+       width="100%"
+       height="100%" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use1020"
+       id="use1024"
+       transform="translate(32)"
+       width="100%"
+       height="100%" />
+  </g>
+</svg>
