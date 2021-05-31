@@ -133,7 +133,7 @@
         },
         {
             "mesh" : 10,
-            "name" : "Sphere",
+            "name" : "Ladle",
             "translation" : [
                 2,
                 -0.0024790000170469284,
@@ -275,7 +275,6 @@
             }
         },
         {
-            "doubleSided" : true,
             "name" : "Wood",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
@@ -1372,7 +1371,7 @@
         {
             "bufferView" : 87,
             "componentType" : 5126,
-            "count" : 45,
+            "count" : 76,
             "max" : [
                 0.049999989569187164,
                 0.007479000370949507,
@@ -1388,19 +1387,19 @@
         {
             "bufferView" : 88,
             "componentType" : 5126,
-            "count" : 45,
+            "count" : 76,
             "type" : "VEC3"
         },
         {
             "bufferView" : 89,
             "componentType" : 5126,
-            "count" : 45,
+            "count" : 76,
             "type" : "VEC2"
         },
         {
             "bufferView" : 90,
             "componentType" : 5123,
-            "count" : 150,
+            "count" : 276,
             "type" : "SCALAR"
         }
     ],
@@ -1842,23 +1841,23 @@
         },
         {
             "buffer" : 0,
-            "byteLength" : 540,
+            "byteLength" : 912,
             "byteOffset" : 39376
         },
         {
             "buffer" : 0,
-            "byteLength" : 540,
-            "byteOffset" : 39916
+            "byteLength" : 912,
+            "byteOffset" : 40288
         },
         {
             "buffer" : 0,
-            "byteLength" : 360,
-            "byteOffset" : 40456
+            "byteLength" : 608,
+            "byteOffset" : 41200
         },
         {
             "buffer" : 0,
-            "byteLength" : 300,
-            "byteOffset" : 40816
+            "byteLength" : 552,
+            "byteOffset" : 41808
         }
     ],
     "samplers" : [
@@ -1869,7 +1868,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 41116,
+            "byteLength" : 42360,
             "uri" : "Cookware.bin"
         }
     ]
