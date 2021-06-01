@@ -7,28 +7,20 @@ const GentooPenguin = preload("res://scenes/Penguins/GentooPenguin.tscn")
 const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
 
 onready var Cam = $CameraOrigin/Camera
-onready var Build = $Control/Panel
-onready var StoreChairs = $Control/Panel/Build/Store/Chairs
-onready var StoreTables = $Control/Panel/Build/Store/Tables
-onready var InventoryChairs = $Control/Panel/Build/Inventory/Chairs
-onready var InventoryTables = $Control/Panel/Build/Inventory/Tables
+onready var UI = $UI
 onready var Floor = $Floor
 onready var Furni = $Furniture
 onready var Astar = $Astar
-onready var Menu = $Control/Menu
-onready var ExpBar = $Control/Menu/ExpBar
-onready var Level = $Control/Menu/Level
 onready var CustomerTimer = $CustomerTimer
-onready var Recipes = $Recipes
-onready var Currency = $Control/Currency
+
 var sav_dict = {}
 var seats = []
 var free_waiters = []
 var queue = []
 var selected_item = -1
 var build_mode = false
-var tables = []
 var chairs = []
+var tables = []
 var dragging = false
 
 
@@ -145,7 +137,7 @@ func _on_eating_timeout(customer, seat):  # Customer is finished eating
 
 func _on_customer_exited(customer):  # Dectect customer leaving
 	customer.queue_free()
-	ExpBar.set_value(ExpBar.get_value() + 20)
+	UI.add_exp()
 	increment_currency(50)
 
 
@@ -155,14 +147,9 @@ func _on_Store_item_selected(index, type):
 		return
 	var confirm = ConfirmationDialog.new()
 	var dialogue = "Purchase "
-	var cart_item = null
-	var item_id = null
-	if type == 0:
-		cart_item = StoreTables.get_item_text(index)
-		item_id = StoreTables.get_item_metadata(index)
-	else:
-		cart_item = StoreChairs.get_item_text(index)
-		item_id = StoreChairs.get_item_metadata(index)
+	var item_info = UI.get_store_item_info(type, index)
+	var cart_item = item_info["cart_item"]
+	var item_id = item_info["item_id"]
 	dialogue += cart_item + "?"
 	confirm.dialog_text = dialogue
 	confirm.connect("confirmed", self, "_on_purchase_confirmed", [cart_item, item_id])
@@ -178,10 +165,7 @@ func _on_purchase_confirmed(item, id):
 
 
 func _on_Inventory_item_selected(index, type):
-	if type == 0:
-		selected_item = InventoryTables.get_item_metadata(index)
-	else:
-		selected_item = InventoryChairs.get_item_metadata(index)
+	selected_item = UI.get_inventory_item_info(type, index)
 
 
 func _input(event):
@@ -204,18 +188,7 @@ func _input(event):
 			selected_item = -1
 		if dragging and not Input.is_action_pressed("ui_select"):
 			dragging = false
-			var rotate = Button.new()
-			rotate.text = "Rotate"
-			rotate.set_position(Vector2(15, -650))
-			rotate.add_to_group("build_buttons")
-			rotate.connect("pressed", self, "_on_rotate_pressed", [position])
-			Build.add_child(rotate)
-			var remove = Button.new()
-			remove.text = "Remove"
-			remove.set_position(Vector2(75, -650))
-			remove.add_to_group("build_buttons")
-			remove.connect("pressed", self, "_on_remove_pressed", [position])
-			Build.add_child(remove)
+			UI.add_build_buttons(self, [position])
 	# Move furniture along with mouse
 	if event is InputEventMouseMotion and dragging:
 		var result = Cam.get_clicked_position(event)
@@ -236,8 +209,6 @@ func _on_remove_pressed(position):
 
 func _on_Build_pressed():
 	build_mode = !build_mode
-	Build.visible = build_mode
-	Menu.visible = !build_mode
 	if build_mode:
 		CustomerTimer.stop()
 		remove_in_group("customers")
@@ -283,8 +254,7 @@ func pan():
 func _on_ExpBar_value_changed(value):
 	if value >= 100:
 		sav_dict["level"] += 1
-		Level.set_text(str(sav_dict["level"]))
-		ExpBar.set_value(value - 100)
+		UI.update_level(str(sav_dict["level"]), value - 100)
 
 
 func save_game():
@@ -332,13 +302,14 @@ func init_furni(room_size):
 
 func init_store():
 	var mesh_lib = Furni.mesh_library
-	tables = StoreTables.populate_store(mesh_lib, "Table")
-	chairs = StoreChairs.populate_store(mesh_lib, "Chair")
+	var items = UI.populate_store(mesh_lib)
+	chairs = items["chairs"]
+	tables = items["tables"]
 
 
 func increment_currency(amount):
 	sav_dict["currency"] += amount
-	Currency.text = str(sav_dict["currency"])
+	UI.update_currency(str(sav_dict["currency"]))
 
 
 func increment_inventory(item, quantity):
@@ -358,9 +329,7 @@ func init_inventory():
 	if not "furni_inv" in sav_dict:
 		sav_dict["furni_inv"] = {}
 	var inventory = sav_dict["furni_inv"]
-	
-	InventoryTables.populate_inventory(mesh_lib, "Table", inventory)
-	InventoryChairs.populate_inventory(mesh_lib, "Chair", inventory)
+	UI.populate_inventory(mesh_lib, inventory)
 
 
 func init_astar():
@@ -381,8 +350,3 @@ func remove_in_group(group_name):
 func _on_Map_pressed():
 	if get_tree().change_scene("res://scenes/Map.tscn") != OK:
 		print("Error changing scenes")
-
-
-func _on_Recipes_pressed():
-	Recipes.visible = !Recipes.visible
-	Menu.visible = !Menu.visible

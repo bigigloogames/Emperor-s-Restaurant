@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Floor.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://scripts/Restaurant.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://scripts/Furniture.gd" type="Script" id=8]
 [ext_resource path="res://Point.tres" type="MeshLibrary" id=9]
 [ext_resource path="res://Furniture.tres" type="MeshLibrary" id=10]
+[ext_resource path="res://scripts/RestaurantUI.gd" type="Script" id=11]
 
 [node name="Restaurant" type="Node"]
 script = ExtResource( 2 )
@@ -23,14 +24,15 @@ projection = 1
 size = 10.0
 script = ExtResource( 3 )
 
-[node name="Control" type="Control" parent="."]
+[node name="UI" type="Control" parent="."]
 margin_right = 1280.0
 margin_bottom = 720.0
+script = ExtResource( 11 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Menu" type="Panel" parent="Control"]
+[node name="Menu" type="Control" parent="UI"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 1.0
@@ -40,30 +42,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ExpBar" type="ProgressBar" parent="Control/Menu"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = 370.0
-margin_top = 30.0
-margin_right = 870.0
-margin_bottom = 70.0
-step = 1.0
+[node name="Save" type="Button" parent="UI/Menu"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 45.0
+margin_bottom = 24.0
+text = "Save"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Map" type="Button" parent="Control/Menu"]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = 660.0
-margin_right = 39.0
-margin_bottom = 680.0
-text = "Map"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Level" type="Label" parent="Control/Menu"]
+[node name="Level" type="Label" parent="UI/Menu"]
 margin_left = 350.0
 margin_top = 30.0
 margin_right = 390.0
@@ -75,15 +64,30 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Save" type="Button" parent="Control/Menu"]
-margin_right = 41.0
-margin_bottom = 20.0
-text = "Save"
+[node name="ExpBar" type="ProgressBar" parent="UI/Menu"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = 370.0
+margin_top = 30.0
+margin_right = 870.0
+margin_bottom = 70.0
+step = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Recipes" type="Button" parent="Control/Menu"]
+[node name="Map" type="Button" parent="UI/Menu"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = 660.0
+margin_right = 39.0
+margin_bottom = 680.0
+text = "Map"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Recipes" type="Button" parent="UI/Menu"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -97,14 +101,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Build" type="Button" parent="Control/Menu"]
+[node name="Build" type="Button" parent="UI/Menu"]
 margin_left = 120.275
 margin_top = 659.951
 margin_right = 165.275
 margin_bottom = 679.951
 text = "Build"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Currency" type="Label" parent="Control"]
+[node name="Currency" type="Label" parent="UI"]
 margin_left = 1177.31
 margin_top = 16.6489
 margin_right = 1217.31
@@ -114,28 +121,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="Control"]
+[node name="Build" type="Control" parent="UI"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 720.0
-margin_right = -1280.0
-margin_bottom = 6.10352e-05
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Build" type="TabContainer" parent="Control/Panel"]
+[node name="Items" type="TabContainer" parent="UI/Build"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -250.0
-margin_right = 1280.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Store" type="TabContainer" parent="Control/Panel/Build"]
+[node name="Store" type="TabContainer" parent="UI/Build/Items"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -143,7 +143,7 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="Chairs" type="ItemList" parent="Control/Panel/Build/Store"]
+[node name="Appliances" type="ItemList" parent="UI/Build/Items/Store"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -152,7 +152,7 @@ margin_right = -4.0
 margin_bottom = -4.0
 script = ExtResource( 5 )
 
-[node name="Tables" type="ItemList" parent="Control/Panel/Build/Store"]
+[node name="Chairs" type="ItemList" parent="UI/Build/Items/Store"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -162,7 +162,17 @@ margin_right = -4.0
 margin_bottom = -4.0
 script = ExtResource( 5 )
 
-[node name="Inventory" type="TabContainer" parent="Control/Panel/Build"]
+[node name="Tables" type="ItemList" parent="UI/Build/Items/Store"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 5 )
+
+[node name="Inventory" type="TabContainer" parent="UI/Build/Items"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -171,7 +181,17 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="Chairs" type="ItemList" parent="Control/Panel/Build/Inventory"]
+[node name="Appliances" type="ItemList" parent="UI/Build/Items/Inventory"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+script = ExtResource( 5 )
+
+[node name="Chairs" type="ItemList" parent="UI/Build/Items/Inventory"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -185,7 +205,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tables" type="ItemList" parent="Control/Panel/Build/Inventory"]
+[node name="Tables" type="ItemList" parent="UI/Build/Items/Inventory"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -195,17 +215,17 @@ margin_right = -4.0
 margin_bottom = -4.0
 script = ExtResource( 5 )
 
-[node name="ExitBuild" type="Button" parent="Control/Panel"]
-margin_left = 8.54573
-margin_top = -712.75
-margin_right = 43.5457
-margin_bottom = -692.75
+[node name="ExitBuild" type="Button" parent="UI/Build"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 39.0
+margin_bottom = 24.0
 text = "Exit"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Recipes" type="Control" parent="."]
+[node name="Recipes" type="Control" parent="UI"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -213,7 +233,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="RecipeScroll" type="ScrollContainer" parent="Recipes"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI/Recipes"]
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
@@ -225,9 +245,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Recipes/RecipeScroll"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Recipes/ScrollContainer"]
 
-[node name="Recipes" type="Button" parent="Recipes"]
+[node name="ExitRecipes" type="Button" parent="UI/Recipes"]
 margin_left = 7.27661
 margin_top = 660.121
 margin_right = 87.2766
@@ -271,15 +291,19 @@ __meta__ = {
 
 [node name="CustomerTimer" type="Timer" parent="."]
 autostart = true
-[connection signal="value_changed" from="Control/Menu/ExpBar" to="." method="_on_ExpBar_value_changed"]
-[connection signal="pressed" from="Control/Menu/Map" to="." method="_on_Map_pressed"]
-[connection signal="pressed" from="Control/Menu/Save" to="." method="_on_Save_pressed"]
-[connection signal="pressed" from="Control/Menu/Recipes" to="." method="_on_Recipes_pressed"]
-[connection signal="pressed" from="Control/Menu/Build" to="." method="_on_Build_pressed"]
-[connection signal="item_selected" from="Control/Panel/Build/Store/Chairs" to="." method="_on_Store_item_selected" binds= [ 1 ]]
-[connection signal="item_selected" from="Control/Panel/Build/Store/Tables" to="." method="_on_Store_item_selected" binds= [ 0 ]]
-[connection signal="item_selected" from="Control/Panel/Build/Inventory/Chairs" to="." method="_on_Inventory_item_selected" binds= [ 1 ]]
-[connection signal="item_selected" from="Control/Panel/Build/Inventory/Tables" to="." method="_on_Inventory_item_selected" binds= [ 0 ]]
-[connection signal="pressed" from="Control/Panel/ExitBuild" to="." method="_on_Build_pressed"]
-[connection signal="pressed" from="Recipes/Recipes" to="." method="_on_Recipes_pressed"]
+[connection signal="pressed" from="UI/Menu/Save" to="." method="_on_Save_pressed"]
+[connection signal="value_changed" from="UI/Menu/ExpBar" to="." method="_on_ExpBar_value_changed"]
+[connection signal="pressed" from="UI/Menu/Map" to="." method="_on_Map_pressed"]
+[connection signal="pressed" from="UI/Menu/Recipes" to="UI" method="_toggle_recipes"]
+[connection signal="pressed" from="UI/Menu/Build" to="UI" method="_toggle_build"]
+[connection signal="pressed" from="UI/Menu/Build" to="." method="_on_Build_pressed"]
+[connection signal="item_selected" from="UI/Build/Items/Store/Appliances" to="." method="_on_Store_item_selected" binds= [ 0 ]]
+[connection signal="item_selected" from="UI/Build/Items/Store/Chairs" to="." method="_on_Store_item_selected" binds= [ 1 ]]
+[connection signal="item_selected" from="UI/Build/Items/Store/Tables" to="." method="_on_Store_item_selected" binds= [ 2 ]]
+[connection signal="item_selected" from="UI/Build/Items/Inventory/Appliances" to="." method="_on_Inventory_item_selected" binds= [ 0 ]]
+[connection signal="item_selected" from="UI/Build/Items/Inventory/Chairs" to="." method="_on_Inventory_item_selected" binds= [ 1 ]]
+[connection signal="item_selected" from="UI/Build/Items/Inventory/Tables" to="." method="_on_Inventory_item_selected" binds= [ 2 ]]
+[connection signal="pressed" from="UI/Build/ExitBuild" to="UI" method="_toggle_build"]
+[connection signal="pressed" from="UI/Build/ExitBuild" to="." method="_on_Build_pressed"]
+[connection signal="pressed" from="UI/Recipes/ExitRecipes" to="UI" method="_toggle_recipes"]
 [connection signal="timeout" from="CustomerTimer" to="." method="_on_CustomerTimer_timeout"]
