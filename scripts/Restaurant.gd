@@ -15,10 +15,13 @@ onready var CustomerTimer = $CustomerTimer
 
 var sav_dict = {}
 var seats = []
+var waiters = []
+var chefs = []
 var free_waiters = []
 var queue = []
 var selected_item = -1
 var build_mode = false
+var appliances = []
 var chairs = []
 var tables = []
 var dragging = false
@@ -36,6 +39,7 @@ func _ready():
 	
 	init_astar()
 	spawn_waiters()
+	spawn_chefs()
 	
 	increment_currency(1000)
 
@@ -60,25 +64,36 @@ func _on_CustomerTimer_timeout():  # Spawn customers
 	self.add_child(customer)
 	var seat = seats.pop_back()
 	var chair = seat[0]
-	Astar.toggle_seat(chair)
+	Astar.toggle_point(chair)
 	move_to(customer, chair)
-	Astar.toggle_seat(chair)
+	Astar.toggle_point(chair)
 	customer.connect("dest_reached", self, "customer_seated", [customer, seat])
 
 
-func move_to(body, destination):
-	var path = Astar.generate_path(body.global_transform.origin, destination)
+func move_to(body, destination, w2m = false):
+	var path = Astar.generate_path(body.global_transform.origin, destination, w2m)
 	if body.is_in_group("waiters"):
 		path.resize(path.size() - 1)
 	body.take_path(path)
 
 
 func spawn_waiters():
-	var Waiter = EmperorPenguin.instance()
-	self.add_child(Waiter)
-	free_waiters.append(Waiter)
-	Waiter.add_to_group("waiters")
-	Waiter.remove_from_group("customers")
+	for waiter in waiters:
+		var Waiter = EmperorPenguin.instance()
+		self.add_child(Waiter)
+		free_waiters.append(Waiter)
+		Waiter.add_to_group("waiters")
+		Waiter.remove_from_group("customers")
+		Waiter.initialize_penguin_position(waiter)
+
+
+func spawn_chefs():
+	for chef in chefs:
+		var Chef = EmperorPenguin.instance()
+		self.add_child(Chef)
+		Chef.add_to_group("chefs")
+		Chef.remove_from_group("customers")
+		Chef.initialize_penguin_position(chef[0], chef[1])
 
 
 func customer_seated(customer, seat):
@@ -88,6 +103,7 @@ func customer_seated(customer, seat):
 		customer.disconnect("dest_reached", self, "customer_seated")
 		customer.face_direction(Astar.map_to_world(table.x, table.y, table.z))
 		customer.sit()
+		customer.order()
 
 
 func serve_customer():
@@ -101,15 +117,17 @@ func serve_customer():
 	var seat = reservation[0]
 	var table = seat[1]
 	var customer = reservation[1]
-	Astar.toggle_seat(table)
+	Astar.toggle_point(table)
 	move_to(waiter, table)
-	Astar.toggle_seat(table)
+	Astar.toggle_point(table)
 	waiter.connect("dest_reached", self, "_on_served", [waiter, seat, customer])
 
 
 func _on_served(waiter, seat, customer):  # Waiter reached table
 	waiter.disconnect("dest_reached", self, "_on_served")
-	move_to(waiter, Vector3(0, 0, 0))
+	Astar.toggle_point(chefs[0][1], true)
+	move_to(waiter, chefs[0][1], true)
+	Astar.toggle_point(chefs[0][1], true)
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
 	eating_timer.one_shot = true
@@ -213,6 +231,7 @@ func _on_Build_pressed():
 		CustomerTimer.stop()
 		remove_in_group("customers")
 		remove_in_group("waiters")
+		remove_in_group("chefs")
 	else:
 		var furni_array = init_furni(sav_dict["room_size"])
 		for furni in Furni.get_used_cells():
@@ -220,6 +239,7 @@ func _on_Build_pressed():
 		sav_dict["furniture"] = furni_array
 		init_astar()
 		spawn_waiters()
+		spawn_chefs()
 		CustomerTimer.start()
 
 
@@ -303,6 +323,7 @@ func init_furni(room_size):
 func init_store():
 	var mesh_lib = Furni.mesh_library
 	var items = UI.populate_store(mesh_lib)
+	appliances = items["appliances"]
 	chairs = items["chairs"]
 	tables = items["tables"]
 
@@ -335,9 +356,11 @@ func init_inventory():
 func init_astar():
 	queue.clear()
 	free_waiters.clear()
-	remove_in_group("area")
-	seats = Astar.populate_astar(
-			sav_dict["room_size"], sav_dict["furniture"], tables, chairs)
+	var coordinates = Astar.populate_astar(
+			sav_dict["room_size"], sav_dict["furniture"], tables, chairs, appliances)
+	seats = coordinates["seats"]
+	waiters = coordinates["waiters"]
+	chefs = coordinates["chefs"]
 	Astar.generate_astar()
 
 

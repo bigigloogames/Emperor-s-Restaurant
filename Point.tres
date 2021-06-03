@@ -1,4 +1,4 @@
-[gd_resource type="MeshLibrary" load_steps=4 format=2]
+[gd_resource type="MeshLibrary" load_steps=6 format=2]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0, 0, 0 )
@@ -7,6 +7,12 @@ size = Vector3( 0, 0, 0 )
 size = Vector3( 0, 0, 0 )
 
 [sub_resource type="CubeMesh" id=3]
+size = Vector3( 0, 0, 0 )
+
+[sub_resource type="CubeMesh" id=4]
+size = Vector3( 0, 0, 0 )
+
+[sub_resource type="CubeMesh" id=5]
 size = Vector3( 0, 0, 0 )
 
 [resource]
@@ -25,3 +31,13 @@ item/2/mesh = SubResource( 3 )
 item/2/mesh_transform = null
 item/2/shapes = [  ]
 item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/3/name = "Waiter"
+item/3/mesh = SubResource( 4 )
+item/3/mesh_transform = null
+item/3/shapes = [  ]
+item/3/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+item/4/name = "Chef"
+item/4/mesh = SubResource( 5 )
+item/4/mesh_transform = null
+item/4/shapes = [  ]
+item/4/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )

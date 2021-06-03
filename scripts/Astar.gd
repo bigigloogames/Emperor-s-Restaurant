@@ -1,8 +1,6 @@
 extends GridMap
 
-const PATH_TILE = 0
-const SEAT_TILE = 1
-const TABLE_TILE = 2
+enum {PATH_TILE, SEAT_TILE, TABLE_TILE, WAITER_TILE, CHEF_TILE}
 # GridMap orientation constants
 const NE = 10  # 180
 const SE = 16  # +90 clockwise
@@ -17,22 +15,40 @@ func _ready():
 	pass # Replace with function body.
 
 
-func populate_astar(room_size, furniture, tables, chairs):
+func populate_astar(room_size, furniture, tables, chairs, appliances):
 	clear()
 	var seats = []
+	var waiters = []
+	var chefs = []
 	for m in room_size:
-		set_cell_item(-2, 0, m, PATH_TILE, 0)
+		set_cell_item(-2, 0, m, PATH_TILE)
 		for n in room_size:
 			if furniture[m][n] == null:
-				set_cell_item(m, 0, n, PATH_TILE, 0)
+				set_cell_item(m, 0, n, PATH_TILE)
 			elif tables.has(int(furniture[m][n][0])):
 				var chair = valid_chair(m, n, furniture, room_size, chairs)
 				if chair:
-					set_cell_item(chair.x, 0, chair.z, SEAT_TILE, 0)
-					set_cell_item(m, 0, n, TABLE_TILE, 0)
+					set_cell_item(chair.x, 0, chair.z, SEAT_TILE)
+					set_cell_item(m, 0, n, TABLE_TILE)
 					seats.append([chair, Vector3(m, 0, n)])
-	set_cell_item(-1, 0, int(room_size/2), PATH_TILE, 0)
-	return seats
+			elif appliances.has(int(furniture[m][n][0])):
+				var orientation = int(furniture[m][n][1])
+				var waiter = valid_waiter(m, n, room_size, furniture, orientation)
+				var chef = valid_chef(m, n, room_size, furniture, orientation)
+				if waiter and chef:
+					var appliance = map_to_world(m, 0, n)
+					set_cell_item(m, 0, n, WAITER_TILE)
+					waiter = map_to_world(waiter.x, waiter.y, waiter.z)
+					waiters.append(waiter)
+					set_cell_item(chef.x, 0, chef.z, CHEF_TILE)
+					chef = map_to_world(chef.x, chef.y, chef.z)
+					chefs.append([chef, appliance])
+	set_cell_item(-1, 0, int(room_size/2), PATH_TILE)
+	var coordinates = {}
+	coordinates["seats"] = seats
+	coordinates["waiters"] = waiters
+	coordinates["chefs"] = chefs
+	return coordinates
 
 
 func valid_chair(m, n, furniture, room_size, chairs):
@@ -48,6 +64,48 @@ func valid_chair(m, n, furniture, room_size, chairs):
 		if furni and chairs.has(int(furni[0])) and furni[1] == cell[2]:
 			return Vector3(x, 0, z)
 	return null
+
+
+func valid_waiter(m, n, room_size, furniture, orientation):
+	var x = null
+	var z = null
+	match orientation:
+		NW:
+			x = m + 1
+			z = n
+		SE:
+			x = m - 1
+			z = n
+		NE:
+			x = m
+			z = n + 1
+		SW:
+			x = m
+			z = n - 1
+	if x < 0 or z < 0 or x >= room_size or z >= room_size or furniture[x][z] != null:
+		return null
+	return Vector3(x, 0, z)
+
+
+func valid_chef(m, n, room_size, furniture, orientation):
+	var x = null
+	var z = null
+	match orientation:
+		NW:
+			x = m - 1
+			z = n
+		SE:
+			x = m + 1
+			z = n
+		NE:
+			x = m
+			z = n - 1
+		SW:
+			x = m
+			z = n + 1
+	if x < 0 or z < 0 or x >= room_size or z >= room_size or furniture[x][z] != null:
+		return null
+	return Vector3(x, 0, z)
 
 
 func generate_astar():
@@ -81,8 +139,10 @@ func is_valid(cell1, cell2):
 	return c1 or c2
 
 
-func generate_path(start, end):
+func generate_path(start, end, w2m):
 	start = world_to_map(start)
+	if w2m:
+		end = world_to_map(end)
 	var grid_start = v3_to_index(start)
 	var grid_end = v3_to_index(end)
 	var start_id = 0
@@ -98,9 +158,11 @@ func generate_path(start, end):
 	return astar.get_point_path(start_id, end_id)
 
 
-func toggle_seat(seat):
-	var seat_id = all_points[v3_to_index(seat)]
-	astar.set_point_disabled(seat_id, !astar.is_point_disabled(seat_id))
+func toggle_point(point, w2m = false):
+	if w2m:
+		point = world_to_map(point)
+	var point_id = all_points[v3_to_index(point)]
+	astar.set_point_disabled(point_id, !astar.is_point_disabled(point_id))
 
 
 func v3_to_index(v3):

@@ -26,6 +26,12 @@ func _process(_delta):
 		emit_signal("dest_reached")
 
 
+func initialize_penguin_position(position, stove = null):
+	translation = position
+	if stove:
+		face_direction(stove)
+
+
 func take_path(new_path):
 	path = new_path
 	path_idx = 0
@@ -44,5 +50,10 @@ func sit():
 	AnimationTree.walk_or_sit(1)
 
 
+func order():
+	AnimationTree.vocalize(true)
+
+
 func eat():
+	AnimationTree.vocalize(false)
 	AnimationTree.eat(1)

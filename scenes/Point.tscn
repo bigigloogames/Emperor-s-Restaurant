@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0, 0, 0 )
@@ -7,6 +7,12 @@ size = Vector3( 0, 0, 0 )
 size = Vector3( 0, 0, 0 )
 
 [sub_resource type="CubeMesh" id=3]
+size = Vector3( 0, 0, 0 )
+
+[sub_resource type="CubeMesh" id=4]
+size = Vector3( 0, 0, 0 )
+
+[sub_resource type="CubeMesh" id=5]
 size = Vector3( 0, 0, 0 )
 
 [node name="Point" type="Spatial"]
@@ -21,4 +27,12 @@ material/0 = null
 
 [node name="Table" type="MeshInstance" parent="."]
 mesh = SubResource( 3 )
+material/0 = null
+
+[node name="Waiter" type="MeshInstance" parent="."]
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="Chef" type="MeshInstance" parent="."]
+mesh = SubResource( 5 )
 material/0 = null
