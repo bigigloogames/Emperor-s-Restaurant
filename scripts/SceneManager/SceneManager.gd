@@ -20,7 +20,7 @@ func _ready():
 
 
 func new_scene():
-	if scene and active:
+	if scene and active and not worker:
 		if change_root_scene:
 			var error_code = get_tree().change_scene("res://scenes/%s.tscn" % scene)
 			if error_code != 0:
