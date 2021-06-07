@@ -1,0 +1,38 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=8 format=2]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "waiter carry left still"
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "waiter hold front right still"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "waiter hold side left still"
+
+[sub_resource type="AnimationNodeOneShot" id=4]
+
+[sub_resource type="AnimationNodeBlend2" id=5]
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "waiter pick up left"
+
+[sub_resource type="AnimationNodeAdd2" id=7]
+
+[resource]
+graph_offset = Vector2( -239.336, -182.648 )
+nodes/output/position = Vector2( 860, 80 )
+"nodes/waiter carry left still/node" = SubResource( 1 )
+"nodes/waiter carry left still/position" = Vector2( -340, 320 )
+"nodes/waiter hold front right still/node" = SubResource( 2 )
+"nodes/waiter hold front right still/position" = Vector2( 220, 40 )
+"nodes/waiter hold side left still/node" = SubResource( 3 )
+"nodes/waiter hold side left still/position" = Vector2( -100, 180 )
+"nodes/waiter left carry or pick up/node" = SubResource( 4 )
+"nodes/waiter left carry or pick up/position" = Vector2( -40, 340 )
+"nodes/waiter left hold or carry/node" = SubResource( 5 )
+"nodes/waiter left hold or carry/position" = Vector2( 280, 200 )
+"nodes/waiter pick up left/node" = SubResource( 6 )
+"nodes/waiter pick up left/position" = Vector2( -320, 440 )
+"nodes/waiter right and left/node" = SubResource( 7 )
+"nodes/waiter right and left/position" = Vector2( 620, 80 )
+node_connections = [ "output", 0, "waiter right and left", "waiter left carry or pick up", 0, "waiter carry left still", "waiter left carry or pick up", 1, "waiter pick up left", "waiter left hold or carry", 0, "waiter hold side left still", "waiter left hold or carry", 1, "waiter left carry or pick up", "waiter right and left", 0, "waiter hold front right still", "waiter right and left", 1, "waiter left hold or carry" ]

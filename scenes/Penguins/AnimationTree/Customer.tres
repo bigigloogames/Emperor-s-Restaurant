@@ -1,0 +1,38 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=8 format=2]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "eat loop"
+
+[sub_resource type="AnimationNodeAdd2" id=2]
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "flap loop"
+
+[sub_resource type="AnimationNodeBlend2" id=4]
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "sit still"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeAdd2" id=7]
+
+[resource]
+graph_offset = Vector2( 965.36, -411.736 )
+nodes/eat/node = SubResource( 2 )
+nodes/eat/position = Vector2( 1760, -120 )
+"nodes/eat loop/node" = SubResource( 1 )
+"nodes/eat loop/position" = Vector2( 1560, 40 )
+nodes/flap/node = SubResource( 4 )
+nodes/flap/position = Vector2( 1320, -60 )
+"nodes/flap loop/node" = SubResource( 3 )
+"nodes/flap loop/position" = Vector2( 1100, 40 )
+nodes/output/position = Vector2( 1980, -120 )
+"nodes/sit loop/node" = SubResource( 7 )
+"nodes/sit loop/position" = Vector2( 1540, -180 )
+"nodes/sit loop lower/node" = SubResource( 5 )
+"nodes/sit loop lower/position" = Vector2( 1300, -180 )
+"nodes/sit loop upper/node" = SubResource( 6 )
+"nodes/sit loop upper/position" = Vector2( 1080, -100 )
+node_connections = [ "output", 0, "eat", "eat", 0, "sit loop", "eat", 1, "eat loop", "flap", 0, "sit loop upper", "flap", 1, "flap loop", "sit loop", 0, "sit loop lower", "sit loop", 1, "flap" ]

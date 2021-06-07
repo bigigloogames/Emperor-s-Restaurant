@@ -1,0 +1,83 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=18 format=2]
+
+[sub_resource type="AnimationNodeAdd2" id=1]
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "cook deep fryer left loop"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeBlend2" id=4]
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "cook deep fryer right loop"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeBlend2" id=7]
+
+[sub_resource type="AnimationNodeAdd2" id=8]
+
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "cook stove left loop"
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeBlend2" id=11]
+
+[sub_resource type="AnimationNodeBlend2" id=12]
+
+[sub_resource type="AnimationNodeOneShot" id=13]
+
+[sub_resource type="AnimationNodeAnimation" id=14]
+animation = "cook stove oven"
+
+[sub_resource type="AnimationNodeAnimation" id=15]
+animation = "cook stove right loop"
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeBlend2" id=17]
+
+[resource]
+graph_offset = Vector2( -251, -88 )
+"nodes/cook deep fryer left/node" = SubResource( 4 )
+"nodes/cook deep fryer left/position" = Vector2( 160, 440 )
+"nodes/cook deep fryer left and right/node" = SubResource( 1 )
+"nodes/cook deep fryer left and right/position" = Vector2( 540, 440 )
+"nodes/cook deep fryer left loop/node" = SubResource( 2 )
+"nodes/cook deep fryer left loop/position" = Vector2( -200, 560 )
+"nodes/cook deep fryer left still/node" = SubResource( 3 )
+"nodes/cook deep fryer left still/position" = Vector2( -200, 440 )
+"nodes/cook deep fryer right/node" = SubResource( 7 )
+"nodes/cook deep fryer right/position" = Vector2( 160, 700 )
+"nodes/cook deep fryer right loop/node" = SubResource( 5 )
+"nodes/cook deep fryer right loop/position" = Vector2( -200, 820 )
+"nodes/cook deep fryer right still/node" = SubResource( 6 )
+"nodes/cook deep fryer right still/position" = Vector2( -200, 700 )
+"nodes/cook stove left/node" = SubResource( 11 )
+"nodes/cook stove left/position" = Vector2( -60, -100 )
+"nodes/cook stove left and right/node" = SubResource( 8 )
+"nodes/cook stove left and right/position" = Vector2( 220, -40 )
+"nodes/cook stove left loop/node" = SubResource( 9 )
+"nodes/cook stove left loop/position" = Vector2( -360, 0 )
+"nodes/cook stove left still/node" = SubResource( 10 )
+"nodes/cook stove left still/position" = Vector2( -360, -120 )
+"nodes/cook stove or deep fryer/node" = SubResource( 12 )
+"nodes/cook stove or deep fryer/position" = Vector2( 900, 240 )
+"nodes/cook stove oven/node" = SubResource( 14 )
+"nodes/cook stove oven/position" = Vector2( 240, 260 )
+"nodes/cook stove oven operate/node" = SubResource( 13 )
+"nodes/cook stove oven operate/position" = Vector2( 560, 160 )
+"nodes/cook stove right/node" = SubResource( 17 )
+"nodes/cook stove right/position" = Vector2( -60, 140 )
+"nodes/cook stove right loop/node" = SubResource( 15 )
+"nodes/cook stove right loop/position" = Vector2( -360, 260 )
+"nodes/cook stove right still/node" = SubResource( 16 )
+"nodes/cook stove right still/position" = Vector2( -360, 140 )
+nodes/output/position = Vector2( 1200, 240 )
+node_connections = [ "output", 0, "cook stove or deep fryer", "cook deep fryer left", 0, "cook deep fryer left still", "cook deep fryer left", 1, "cook deep fryer left loop", "cook deep fryer left and right", 0, "cook deep fryer left", "cook deep fryer left and right", 1, "cook deep fryer right", "cook deep fryer right", 0, "cook deep fryer right still", "cook deep fryer right", 1, "cook deep fryer right loop", "cook stove left", 0, "cook stove left still", "cook stove left", 1, "cook stove left loop", "cook stove left and right", 0, "cook stove left", "cook stove left and right", 1, "cook stove right", "cook stove or deep fryer", 0, "cook stove oven operate", "cook stove or deep fryer", 1, "cook deep fryer left and right", "cook stove oven operate", 0, "cook stove left and right", "cook stove oven operate", 1, "cook stove oven", "cook stove right", 0, "cook stove right still", "cook stove right", 1, "cook stove right loop" ]

@@ -1,0 +1,101 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=23 format=2]
+
+[ext_resource path="res://scenes/Penguins/AnimationTree/Customer.tres" type="AnimationNodeBlendTree" id=1]
+[ext_resource path="res://scenes/Penguins/AnimationTree/Chef.tres" type="AnimationNodeBlendTree" id=2]
+[ext_resource path="res://scenes/Penguins/AnimationTree/Waiter.tres" type="AnimationNodeBlendTree" id=3]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeBlend2" id=2]
+
+[sub_resource type="AnimationNodeBlend2" id=3]
+
+[sub_resource type="AnimationNodeAdd3" id=4]
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "look left loop"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "look right loop"
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "look up loop"
+
+[sub_resource type="AnimationNodeAdd2" id=8]
+
+[sub_resource type="AnimationNodeBlend2" id=9]
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "mouth closed still"
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "mouth open still"
+
+[sub_resource type="AnimationNodeAdd2" id=12]
+
+[sub_resource type="AnimationNodeAnimation" id=13]
+animation = "sway loop"
+
+[sub_resource type="AnimationNodeAnimation" id=14]
+animation = "vocalize loop"
+
+[sub_resource type="AnimationNodeOneShot" id=15]
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "walk loop"
+
+[sub_resource type="AnimationNodeBlend2" id=17]
+
+[sub_resource type="AnimationNodeAdd2" id=18]
+
+[sub_resource type="AnimationNodeBlend2" id=19]
+
+[resource]
+graph_offset = Vector2( 1283.23, -321.984 )
+nodes/Chef/node = ExtResource( 2 )
+nodes/Chef/position = Vector2( 940, 140 )
+nodes/Customer/node = ExtResource( 1 )
+nodes/Customer/position = Vector2( 1200, 40 )
+nodes/Waiter/node = ExtResource( 3 )
+nodes/Waiter/position = Vector2( 940, 260 )
+"nodes/arms still/node" = SubResource( 1 )
+"nodes/arms still/position" = Vector2( 1080, -280 )
+"nodes/chef or waiter/node" = SubResource( 2 )
+"nodes/chef or waiter/position" = Vector2( 1200, 180 )
+"nodes/customer or employee/node" = SubResource( 3 )
+"nodes/customer or employee/position" = Vector2( 1500, 40 )
+"nodes/look horizontal/node" = SubResource( 4 )
+"nodes/look horizontal/position" = Vector2( 2320, 20 )
+"nodes/look left loop/node" = SubResource( 5 )
+"nodes/look left loop/position" = Vector2( 2040, 180 )
+"nodes/look right loop/node" = SubResource( 6 )
+"nodes/look right loop/position" = Vector2( 2040, 340 )
+"nodes/look up/node" = SubResource( 8 )
+"nodes/look up/position" = Vector2( 2580, 100 )
+"nodes/look up loop/node" = SubResource( 7 )
+"nodes/look up loop/position" = Vector2( 2340, 260 )
+nodes/mouth/node = SubResource( 12 )
+nodes/mouth/position = Vector2( 2040, -40 )
+"nodes/mouth closed or open/node" = SubResource( 9 )
+"nodes/mouth closed or open/position" = Vector2( 1520, 380 )
+"nodes/mouth closed still/node" = SubResource( 10 )
+"nodes/mouth closed still/position" = Vector2( 1260, 400 )
+"nodes/mouth open still/node" = SubResource( 11 )
+"nodes/mouth open still/position" = Vector2( 1280, 540 )
+nodes/output/position = Vector2( 2780, 100 )
+"nodes/sway loop/node" = SubResource( 13 )
+"nodes/sway loop/position" = Vector2( 1080, -160 )
+nodes/vocalize/node = SubResource( 15 )
+nodes/vocalize/position = Vector2( 1800, 400 )
+"nodes/vocalize loop/node" = SubResource( 14 )
+"nodes/vocalize loop/position" = Vector2( 1560, 580 )
+"nodes/walk loop/node" = SubResource( 18 )
+"nodes/walk loop/position" = Vector2( 1540, -300 )
+"nodes/walk loop lower/node" = SubResource( 16 )
+"nodes/walk loop lower/position" = Vector2( 1300, -360 )
+"nodes/walk loop upper/node" = SubResource( 17 )
+"nodes/walk loop upper/position" = Vector2( 1300, -220 )
+"nodes/walk or routine/node" = SubResource( 19 )
+"nodes/walk or routine/position" = Vector2( 1780, -180 )
+node_connections = [ "output", 0, "look up", "vocalize", 0, "mouth closed or open", "vocalize", 1, "vocalize loop", "walk loop", 0, "walk loop lower", "walk loop", 1, "walk loop upper", "walk loop upper", 0, "arms still", "walk loop upper", 1, "sway loop", "chef or waiter", 0, "Chef", "chef or waiter", 1, "Waiter", "customer or employee", 0, "Customer", "customer or employee", 1, "chef or waiter", "look horizontal", 0, "look left loop", "look horizontal", 1, "mouth", "look horizontal", 2, "look right loop", "look up", 0, "look horizontal", "look up", 1, "look up loop", "mouth", 0, "walk or routine", "mouth", 1, "vocalize", "mouth closed or open", 0, "mouth closed still", "mouth closed or open", 1, "mouth open still", "walk or routine", 0, "walk loop", "walk or routine", 1, "customer or employee" ]
