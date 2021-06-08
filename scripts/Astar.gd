@@ -33,13 +33,10 @@ func populate_astar(room_size, furniture, tables, chairs, appliances):
 					seats.append([chair, Vector3(m, 0, n)])
 			elif appliances.has(int(furniture[m][n][0])):
 				var orientation = int(furniture[m][n][1])
-				var waiter = valid_waiter(m, n, room_size, furniture, orientation)
 				var chef = valid_chef(m, n, room_size, furniture, orientation)
-				if waiter and chef:
+				if chef:
 					var appliance = map_to_world(m, 0, n)
 					set_cell_item(m, 0, n, WAITER_TILE)
-					waiter = map_to_world(waiter.x, waiter.y, waiter.z)
-					waiters.append(waiter)
 					set_cell_item(chef.x, 0, chef.z, CHEF_TILE)
 					chef = map_to_world(chef.x, chef.y, chef.z)
 					chefs.append([chef, appliance])
@@ -64,27 +61,6 @@ func valid_chair(m, n, furniture, room_size, chairs):
 		if furni and chairs.has(int(furni[0])) and furni[1] == cell[2]:
 			return Vector3(x, 0, z)
 	return null
-
-
-func valid_waiter(m, n, room_size, furniture, orientation):
-	var x = null
-	var z = null
-	match orientation:
-		NW:
-			x = m + 1
-			z = n
-		SE:
-			x = m - 1
-			z = n
-		NE:
-			x = m
-			z = n + 1
-		SW:
-			x = m
-			z = n - 1
-	if x < 0 or z < 0 or x >= room_size or z >= room_size or furniture[x][z] != null:
-		return null
-	return Vector3(x, 0, z)
 
 
 func valid_chef(m, n, room_size, furniture, orientation):

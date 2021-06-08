@@ -15,7 +15,6 @@ onready var CustomerTimer = $CustomerTimer
 
 var sav_dict = {}
 var seats = []
-var waiters = []
 var chefs = []
 var free_waiters = []
 var queue = []
@@ -36,10 +35,10 @@ func _ready():
 
 	init_store()
 	init_inventory()
+	init_staff()
 	
 	init_astar()
-	spawn_waiters()
-	spawn_chefs()
+	spawn_staff()
 	
 	increment_currency(1000)
 
@@ -77,23 +76,36 @@ func move_to(body, destination, w2m = false):
 	body.take_path(path)
 
 
-func spawn_waiters():
-	for waiter in waiters:
-		var Waiter = EmperorPenguin.instance()
-		self.add_child(Waiter)
-		free_waiters.append(Waiter)
-		Waiter.add_to_group("waiters")
-		Waiter.remove_from_group("customers")
-		Waiter.initialize_penguin_position(waiter)
-
-
-func spawn_chefs():
-	for chef in chefs:
-		var Chef = EmperorPenguin.instance()
-		self.add_child(Chef)
-		Chef.add_to_group("chefs")
-		Chef.remove_from_group("customers")
-		Chef.initialize_penguin_position(chef[0], chef[1])
+func spawn_staff():
+	var chef_count = 0
+	for staff in sav_dict["staff"]:
+		if not staff or staff["position"] == "Rest":
+			continue
+		var penguin = null
+		match staff["species"]:
+			"Adelie":
+				penguin = AdeliePenguin.instance()
+			"Chinstrap":
+				penguin = ChinstrapPenguin.instance()
+			"Emperor":
+				penguin = EmperorPenguin.instance()
+			"Gentoo":
+				penguin = GentooPenguin.instance()
+			"King":
+				penguin = KingPenguin.instance()
+		self.add_child(penguin)
+		if staff["position"] == "Chef":
+			penguin.add_to_group("chefs")
+			if chef_count < chefs.size():
+				var chef = chefs[chef_count]
+				penguin.initialize_penguin_position(chef[0], chef[1])
+				chef_count += 1
+			else:
+				penguin.queue_free()
+		elif staff["position"] == "Waiter":
+			free_waiters.append(penguin)
+			penguin.add_to_group("waiters")
+			#penguin.initialize_penguin_position(waiter)
 
 
 func customer_seated(customer, seat):
@@ -228,19 +240,43 @@ func _on_remove_pressed(position):
 func _on_Build_pressed():
 	build_mode = !build_mode
 	if build_mode:
-		CustomerTimer.stop()
-		remove_in_group("customers")
-		remove_in_group("waiters")
-		remove_in_group("chefs")
+		close_restaurant()
 	else:
 		var furni_array = init_furni(sav_dict["room_size"])
 		for furni in Furni.get_used_cells():
 			furni_array[furni[0]][furni[2]] = format_furni_data(furni)
 		sav_dict["furniture"] = furni_array
 		init_astar()
-		spawn_waiters()
-		spawn_chefs()
-		CustomerTimer.start()
+		open_restaurant()
+
+
+func _on_Staff_pressed(close):
+	if close:
+		close_restaurant()
+		refresh_staff_profile(0)
+	else:
+		init_astar()
+		open_restaurant()
+
+
+func _on_staff_selected(index):
+	UI.display_profile(index)
+
+
+func _assign_staff(position):
+	var index = UI.get_selected_staff()
+	var staff = sav_dict["staff"]
+	if position == "Sack":
+		staff[index] = null
+	else:
+		staff[index]["position"] = position
+	refresh_staff_profile(index)
+
+
+func _hire_employee():
+	var index = UI.get_selected_staff()
+	sav_dict["staff"][index] = {"name":"Pebbles", "position":"Rest", "species":"Gentoo"}
+	refresh_staff_profile(index)
 
 
 func format_furni_data(furni):
@@ -310,6 +346,7 @@ func init_sav_dict():
 	sav_dict["furni_inv"] = {}
 	sav_dict["recipes"] = {}
 	sav_dict["rec_inv"] = {}
+	sav_dict["staff"] = [null, null]
 
 
 func init_furni(room_size):
@@ -345,23 +382,45 @@ func increment_inventory(item, quantity):
 		inventory.erase(item)
 	return true
 
+
 func init_inventory():
 	var mesh_lib = Furni.mesh_library
 	if not "furni_inv" in sav_dict:
 		sav_dict["furni_inv"] = {}
-	var inventory = sav_dict["furni_inv"]
-	UI.populate_inventory(mesh_lib, inventory)
+	UI.populate_inventory(mesh_lib, sav_dict["furni_inv"])
+
+
+func init_staff():
+	if not "staff" in sav_dict:
+		sav_dict["staff"] = [null, null]
+	UI.populate_staff(sav_dict["staff"])
+
+
+func refresh_staff_profile(index):
+	init_staff()
+	UI.display_profile(index)
 
 
 func init_astar():
-	queue.clear()
-	free_waiters.clear()
 	var coordinates = Astar.populate_astar(
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs, appliances)
 	seats = coordinates["seats"]
-	waiters = coordinates["waiters"]
 	chefs = coordinates["chefs"]
 	Astar.generate_astar()
+
+
+func open_restaurant():
+	spawn_staff()
+	CustomerTimer.start()
+
+
+func close_restaurant():
+	CustomerTimer.stop()
+	remove_in_group("customers")
+	remove_in_group("waiters")
+	remove_in_group("chefs")
+	queue.clear()
+	free_waiters.clear()
 
 
 func remove_in_group(group_name):

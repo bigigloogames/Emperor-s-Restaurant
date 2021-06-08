@@ -6,6 +6,13 @@ onready var ExpBar = $Menu/ExpBar
 onready var Currency = $Currency
 onready var Recipes = $Recipes
 onready var Build = $Build
+onready var Staff = $Staff
+onready var StaffList = $Staff/StaffList
+onready var Profile = $Staff/Profile
+onready var StaffName = $Staff/Profile/Name
+onready var StaffPosition = $Staff/Profile/Position
+onready var StaffOptions = $Staff/Profile/Options
+onready var StaffHire = $Staff/Profile/Hire
 onready var StoreAppliances = $Build/Items/Store/Appliances
 onready var StoreChairs = $Build/Items/Store/Chairs
 onready var StoreTables = $Build/Items/Store/Tables
@@ -14,6 +21,9 @@ onready var InventoryChairs = $Build/Items/Inventory/Chairs
 onready var InventoryTables = $Build/Items/Inventory/Tables
 enum {APPLIANCE, CHAIR, TABLE}
 
+var selected_staff = 0
+
+
 func _toggle_recipes():
 	Recipes.visible = !Recipes.visible
 	Menu.visible = !Menu.visible
@@ -21,6 +31,11 @@ func _toggle_recipes():
 
 func _toggle_build():
 	Build.visible = !Build.visible
+	Menu.visible = !Menu.visible
+
+
+func _toggle_staff():
+	Staff.visible = !Staff.visible
 	Menu.visible = !Menu.visible
 
 
@@ -89,3 +104,31 @@ func get_inventory_item_info(type, index):
 			return InventoryChairs.get_item_metadata(index)
 		TABLE:
 			return InventoryTables.get_item_metadata(index)
+
+
+func populate_staff(staff):
+	StaffList.clear()
+	for s in staff:
+		if s:
+			StaffList.add_item(s["name"])
+		else:
+			StaffList.add_item("Hire")
+		StaffList.set_item_metadata(StaffList.get_item_count() - 1, s)
+
+
+func display_profile(index):
+	selected_staff = index
+	var staff_info = StaffList.get_item_metadata(index)
+	if staff_info:
+		StaffName.text = staff_info["name"]
+		StaffPosition.text = staff_info["position"]
+		StaffOptions.visible = true
+		StaffHire.visible = false
+	else:
+		StaffName.text = ""
+		StaffPosition.text = ""
+		StaffOptions.visible = false
+		StaffHire.visible = true
+
+func get_selected_staff():
+	return selected_staff
