@@ -1,0 +1,29 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=6 format=2]
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "arms still"
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "sway loop"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "walk loop"
+
+[sub_resource type="AnimationNodeBlend2" id=4]
+
+[sub_resource type="AnimationNodeAdd2" id=5]
+
+[resource]
+graph_offset = Vector2( 887.584, -332 )
+"nodes/arms still/node" = SubResource( 1 )
+"nodes/arms still/position" = Vector2( 1020, 40 )
+nodes/output/position = Vector2( 1700, -40 )
+"nodes/sway loop/node" = SubResource( 2 )
+"nodes/sway loop/position" = Vector2( 1020, 180 )
+"nodes/walk loop/node" = SubResource( 5 )
+"nodes/walk loop/position" = Vector2( 1500, -40 )
+"nodes/walk loop lower/node" = SubResource( 3 )
+"nodes/walk loop lower/position" = Vector2( 1240, -80 )
+"nodes/walk loop upper/node" = SubResource( 4 )
+"nodes/walk loop upper/position" = Vector2( 1260, 80 )
+node_connections = [ "output", 0, "walk loop", "walk loop", 0, "walk loop lower", "walk loop", 1, "walk loop upper", "walk loop upper", 0, "arms still", "walk loop upper", 1, "sway loop" ]

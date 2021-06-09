@@ -10,6 +10,7 @@ signal dest_reached
 func _ready():
 	add_to_group("customers")
 	translation = Vector3(-1.2, 0.4, 0.4)
+	AnimationTree.switch_routine_mixer(-1)
 
 
 func _process(_delta):
@@ -43,11 +44,11 @@ func face_direction(direction):
 
 
 func walk():
-	AnimationTree.walk_or_sit(0)
+	AnimationTree.walk_or_routine(0)
 
 
 func sit():
-	AnimationTree.walk_or_sit(1)
+	AnimationTree.walk_or_routine(1)
 
 
 func order():
