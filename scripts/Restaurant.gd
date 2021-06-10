@@ -60,6 +60,7 @@ func _on_CustomerTimer_timeout():  # Spawn customers
 			customer = GentooPenguin.instance()
 		5:
 			customer = KingPenguin.instance()
+	customer.initialize()
 	self.add_child(customer)
 	var seat = seats.pop_back()
 	var chair = seat[0]
@@ -93,9 +94,9 @@ func spawn_staff():
 				penguin = GentooPenguin.instance()
 			"King":
 				penguin = KingPenguin.instance()
+		penguin.initialize(staff["position"])
 		self.add_child(penguin)
 		if staff["position"] == "Chef":
-			penguin.add_to_group("chefs")
 			if chef_count < chefs.size():
 				var chef = chefs[chef_count]
 				penguin.initialize_penguin_position(chef[0], chef[1])
@@ -103,8 +104,8 @@ func spawn_staff():
 			else:
 				penguin.queue_free()
 		elif staff["position"] == "Waiter":
+			penguin.wait_for_order()
 			free_waiters.append(penguin)
-			penguin.add_to_group("waiters")
 			#penguin.initialize_penguin_position(waiter)
 
 
@@ -131,6 +132,7 @@ func serve_customer():
 	var customer = reservation[1]
 	Astar.toggle_point(table)
 	move_to(waiter, table)
+	waiter.serve()
 	Astar.toggle_point(table)
 	waiter.connect("dest_reached", self, "_on_served", [waiter, seat, customer])
 
@@ -152,6 +154,7 @@ func _on_served(waiter, seat, customer):  # Waiter reached table
 
 func _on_waiter_returned(waiter):
 	waiter.disconnect("dest_reached", self, "_on_waiter_returned")
+	waiter.wait_for_order()
 	if not waiter in free_waiters:
 		free_waiters.append(waiter)
 

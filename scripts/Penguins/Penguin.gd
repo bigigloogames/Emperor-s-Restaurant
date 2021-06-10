@@ -1,16 +1,21 @@
 extends KinematicBody
 
 onready var AnimationTree = $AnimationTree
+var routine = "Customer"
 var path = []
 var path_idx = 0
 const move_speed = 3
 signal dest_reached
 
 
+func initialize(r="Customer"):
+	routine = r
+	add_to_group(r.to_lower() +  's')
+
+
 func _ready():
-	add_to_group("customers")
 	translation = Vector3(-1.2, 0.4, 0.4)
-	AnimationTree.switch_routine_mixer(-1)
+	initialize_animations()
 
 
 func _process(_delta):
@@ -43,6 +48,19 @@ func face_direction(direction):
 	rotate_y(PI)
 
 
+func initialize_animations():
+	if routine == 'Waiter':
+		# Routine Mixer: Combine
+		AnimationTree.switch_routine_mixer(1)
+	else:
+		# Routine Mixer: Separate
+		AnimationTree.switch_routine_mixer(-1)
+
+
+func resolve_pedestrian_tree():
+	return 'PedestrianAdd' if routine == 'Waiter' else 'PedestrianBlend'
+
+
 func walk():
 	AnimationTree.walk_or_routine(0)
 
@@ -58,3 +76,11 @@ func order():
 func eat():
 	AnimationTree.vocalize(false)
 	AnimationTree.eat(1)
+
+
+func wait_for_order():
+	AnimationTree.walk_legs_still_or_move(resolve_pedestrian_tree(), 0)
+
+
+func serve():
+	AnimationTree.walk_legs_still_or_move(resolve_pedestrian_tree(), 1)

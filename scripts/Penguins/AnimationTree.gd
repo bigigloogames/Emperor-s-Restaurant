@@ -4,8 +4,8 @@ extends AnimationTree
 func _ready():
 	# Default Non-Zero Parameters
 	# Penguin
-	self.set("parameters/PedestrianAdd/walk loop/add_amount", 1)
-	self.set("parameters/PedestrianBlend/walk loop/add_amount", 1)
+	self.walk_legs_still_or_move('PedestrianAdd', 1)
+	self.walk_legs_still_or_move('PedestrianBlend', 1)
 	self.set("parameters/mouth/add_amount", 1)
 	self.set("parameters/walk and routine/add_amount", 1)
 	# Customer
@@ -36,6 +36,10 @@ func switch_routine_mixer(add_amount: float):
 
 func walk_arms_still_or_sway(blend_tree: String, blend_amount: float):
 	self.set("parameters/%s/walk loop upper/blend_amount" % blend_tree, blend_amount)
+
+
+func walk_legs_still_or_move(blend_tree: String, add_amount: float):
+	self.set("parameters/%s/walk loop/add_amount" % blend_tree, add_amount)
 
 
 func mouth_closed_or_open(blend_amount: float):
