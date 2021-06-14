@@ -5,9 +5,9 @@
 
 [node name="GentooPenguin" instance=ExtResource( 1 )]
 
-[node name="GentooPenguin" parent="." index="0" instance=ExtResource( 2 )]
+[node name="Spatial" parent="." index="0" instance=ExtResource( 2 )]
 
 [node name="AnimationTree" parent="." index="1"]
-anim_player = NodePath("../GentooPenguin/AnimationPlayer")
+anim_player = NodePath("../Spatial/AnimationPlayer")
 
-[editable path="GentooPenguin"]
+[editable path="Spatial"]

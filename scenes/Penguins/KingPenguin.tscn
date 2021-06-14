@@ -5,9 +5,9 @@
 
 [node name="KingPenguin" instance=ExtResource( 2 )]
 
-[node name="KingPenguin" parent="." index="0" instance=ExtResource( 1 )]
+[node name="Spatial" parent="." index="0" instance=ExtResource( 1 )]
 
 [node name="AnimationTree" parent="." index="1"]
-anim_player = NodePath("../KingPenguin/AnimationPlayer")
+anim_player = NodePath("../Spatial/AnimationPlayer")
 
-[editable path="KingPenguin"]
+[editable path="Spatial"]
