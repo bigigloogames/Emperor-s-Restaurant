@@ -25,7 +25,7 @@ func initialize(r="Customer"):
 
 func _ready():
 	translation = Vector3(-1.2, 0.4, 0.4)
-	initialize_equipment()	
+	initialize_equipment()
 	initialize_animations()
 
 

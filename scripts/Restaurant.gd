@@ -15,6 +15,7 @@ onready var CustomerTimer = $CustomerTimer
 
 var sav_dict = {}
 var seats = []
+var waiters = []
 var chefs = []
 var free_waiters = []
 var queue = []
@@ -104,9 +105,13 @@ func spawn_staff():
 			else:
 				penguin.queue_free()
 		elif staff["position"] == "Waiter":
-			penguin.wait_for_order()
-			free_waiters.append(penguin)
-			#penguin.initialize_penguin_position(waiter)
+			var position = waiters.pop_front()
+			if position:
+				penguin.wait_for_order()
+				free_waiters.append(penguin)
+				penguin.initialize_penguin_position(position)
+			else:
+				penguin.queue_free()
 
 
 func customer_seated(customer, seat):
@@ -408,6 +413,7 @@ func init_astar():
 	var coordinates = Astar.populate_astar(
 			sav_dict["room_size"], sav_dict["furniture"], tables, chairs, appliances)
 	seats = coordinates["seats"]
+	waiters = coordinates["waiters"]
 	chefs = coordinates["chefs"]
 	Astar.generate_astar()
 
