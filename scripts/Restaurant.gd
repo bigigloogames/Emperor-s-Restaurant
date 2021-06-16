@@ -5,6 +5,7 @@ const ChinstrapPenguin = preload("res://scenes/Penguins/ChinstrapPenguin.tscn")
 const EmperorPenguin = preload("res://scenes/Penguins/EmperorPenguin.tscn")
 const GentooPenguin = preload("res://scenes/Penguins/GentooPenguin.tscn")
 const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
+const SPECIES = ["Adelie", "Chinstrap", "Emperor", "Gentoo", "King"]
 
 onready var Cam = $CameraOrigin/Camera
 onready var UI = $UI
@@ -14,6 +15,7 @@ onready var Astar = $Astar
 onready var CustomerTimer = $CustomerTimer
 
 var sav_dict = {}
+var staff_names = []
 var seats = []
 var waiters = []
 var chefs = []
@@ -29,6 +31,7 @@ var dragging = false
 
 func _ready():
 	load_game()
+	load_names()
 	var room_size = sav_dict["room_size"]
 	var furniture = sav_dict["furniture"]
 	Floor.populate_tiles(room_size)
@@ -283,7 +286,10 @@ func _assign_staff(position):
 
 func _hire_employee():
 	var index = UI.get_selected_staff()
-	sav_dict["staff"][index] = {"name":"Pebbles", "position":"Rest", "species":"Gentoo"}
+	randomize()
+	var name = staff_names[randi() % staff_names.size()]
+	var species = SPECIES[randi() % 5]
+	sav_dict["staff"][index] = {"name":name, "position":"Rest", "species":species}
 	refresh_staff_profile(index)
 
 
@@ -340,6 +346,16 @@ func load_game():
 	save_file.open("user://savegame.save", File.READ)
 	sav_dict = parse_json(save_file.get_line())
 	save_file.close()
+
+
+func load_names():
+	var names = File.new()
+	if not names.file_exists("res://data/names.txt"):
+		return
+	names.open("res://data/names.txt", File.READ)
+	while not names.eof_reached():
+		staff_names.append(names.get_line())
+	names.close()
 
 
 func init_sav_dict():

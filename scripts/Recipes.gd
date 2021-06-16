@@ -7,9 +7,9 @@ onready var HBox = $HBoxContainer
 func _ready():
 	HBox.set("custom_constants/separation", 400)
 	var recipes = File.new()
-	if not recipes.file_exists("res://assets/src/recipes.json"):
+	if not recipes.file_exists("res://data/recipes.json"):
 		return
-	recipes.open("res://assets/src/recipes.json", File.READ)
+	recipes.open("res://data/recipes.json", File.READ)
 	while not recipes.eof_reached():
 		var line = recipes.get_line()
 		if line == "":
