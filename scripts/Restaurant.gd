@@ -149,6 +149,7 @@ func _on_served(waiter, seat, customer):  # Waiter reached table
 	waiter.disconnect("dest_reached", self, "_on_served")
 	Astar.toggle_point(chefs[0][1], true)
 	move_to(waiter, chefs[0][1], true)
+	waiter.served()
 	Astar.toggle_point(chefs[0][1], true)
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10

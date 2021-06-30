@@ -14,16 +14,16 @@ animation = "walk loop"
 [sub_resource type="AnimationNodeAdd2" id=5]
 
 [resource]
-graph_offset = Vector2( 874.584, -361 )
+graph_offset = Vector2( 689.584, -333 )
 "nodes/arms still/node" = SubResource( 1 )
-"nodes/arms still/position" = Vector2( 980, -140 )
+"nodes/arms still/position" = Vector2( 980, 80 )
 nodes/output/position = Vector2( 1700, -40 )
 "nodes/sway loop/node" = SubResource( 2 )
-"nodes/sway loop/position" = Vector2( 980, 0 )
+"nodes/sway loop/position" = Vector2( 1000, 200 )
 "nodes/walk loop/node" = SubResource( 5 )
 "nodes/walk loop/position" = Vector2( 1500, -40 )
 "nodes/walk loop lower/node" = SubResource( 3 )
-"nodes/walk loop lower/position" = Vector2( 1240, 140 )
+"nodes/walk loop lower/position" = Vector2( 1180, -60 )
 "nodes/walk loop upper/node" = SubResource( 4 )
-"nodes/walk loop upper/position" = Vector2( 1220, -100 )
-node_connections = [ "output", 0, "walk loop", "walk loop", 0, "walk loop upper", "walk loop", 1, "walk loop lower", "walk loop upper", 0, "arms still", "walk loop upper", 1, "sway loop" ]
+"nodes/walk loop upper/position" = Vector2( 1240, 100 )
+node_connections = [ "output", 0, "walk loop", "walk loop", 0, "walk loop lower", "walk loop", 1, "walk loop upper", "walk loop upper", 0, "arms still", "walk loop upper", 1, "sway loop" ]

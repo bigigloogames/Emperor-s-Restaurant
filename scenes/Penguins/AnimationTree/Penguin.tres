@@ -20,37 +20,37 @@ animation = "look up loop"
 
 [sub_resource type="AnimationNodeAdd2" id=6]
 
-[sub_resource type="AnimationNodeBlend2" id=8]
+[sub_resource type="AnimationNodeBlend2" id=7]
 
-[sub_resource type="AnimationNodeAnimation" id=9]
+[sub_resource type="AnimationNodeAnimation" id=8]
 animation = "mouth closed still"
 
-[sub_resource type="AnimationNodeAnimation" id=10]
+[sub_resource type="AnimationNodeAnimation" id=9]
 animation = "mouth open still"
 
-[sub_resource type="AnimationNodeAdd3" id=7]
+[sub_resource type="AnimationNodeAdd2" id=10]
 
-[sub_resource type="AnimationNodeAnimation" id=11]
+[sub_resource type="AnimationNodeAdd3" id=11]
+
+[sub_resource type="AnimationNodeAnimation" id=12]
 animation = "vocalize loop"
 
-[sub_resource type="AnimationNodeOneShot" id=12]
-
-[sub_resource type="AnimationNodeAdd2" id=13]
+[sub_resource type="AnimationNodeOneShot" id=13]
 
 [sub_resource type="AnimationNodeBlend2" id=14]
 
 [resource]
-graph_offset = Vector2( 1342, -473 )
+graph_offset = Vector2( 1007, -327 )
 nodes/Chef/node = ExtResource( 2 )
 nodes/Chef/position = Vector2( 1180, -220 )
 nodes/Customer/node = ExtResource( 1 )
 nodes/Customer/position = Vector2( 1180, -340 )
 nodes/PedestrianAdd/node = ExtResource( 4 )
-nodes/PedestrianAdd/position = Vector2( 1440, -40 )
+nodes/PedestrianAdd/position = Vector2( 1460, 80 )
 nodes/PedestrianBlend/node = ExtResource( 4 )
 nodes/PedestrianBlend/position = Vector2( 1420, -400 )
 nodes/Waiter/node = ExtResource( 3 )
-nodes/Waiter/position = Vector2( 1480, 80 )
+nodes/Waiter/position = Vector2( 1460, -40 )
 "nodes/customer or chef/node" = SubResource( 1 )
 "nodes/customer or chef/position" = Vector2( 1460, -280 )
 "nodes/look horizontal/node" = SubResource( 2 )
@@ -63,21 +63,21 @@ nodes/Waiter/position = Vector2( 1480, 80 )
 "nodes/look up/position" = Vector2( 2580, 100 )
 "nodes/look up loop/node" = SubResource( 5 )
 "nodes/look up loop/position" = Vector2( 2340, 260 )
-"nodes/mouth closed or open/node" = SubResource( 8 )
+"nodes/mouth closed or open/node" = SubResource( 7 )
 "nodes/mouth closed or open/position" = Vector2( 1500, 240 )
-"nodes/mouth closed still/node" = SubResource( 9 )
+"nodes/mouth closed still/node" = SubResource( 8 )
 "nodes/mouth closed still/position" = Vector2( 1240, 260 )
-"nodes/mouth open still/node" = SubResource( 10 )
+"nodes/mouth open still/node" = SubResource( 9 )
 "nodes/mouth open still/position" = Vector2( 1260, 400 )
 nodes/output/position = Vector2( 2780, 100 )
-"nodes/switch routine mixer/node" = SubResource( 7 )
+"nodes/routine and walk/node" = SubResource( 10 )
+"nodes/routine and walk/position" = Vector2( 1700, -40 )
+"nodes/switch routine mixer/node" = SubResource( 11 )
 "nodes/switch routine mixer/position" = Vector2( 2040, -120 )
-nodes/vocalize/node = SubResource( 12 )
+nodes/vocalize/node = SubResource( 13 )
 nodes/vocalize/position = Vector2( 1780, 260 )
-"nodes/vocalize loop/node" = SubResource( 11 )
+"nodes/vocalize loop/node" = SubResource( 12 )
 "nodes/vocalize loop/position" = Vector2( 1540, 440 )
-"nodes/walk and routine/node" = SubResource( 13 )
-"nodes/walk and routine/position" = Vector2( 1700, -40 )
 "nodes/walk or routine/node" = SubResource( 14 )
 "nodes/walk or routine/position" = Vector2( 1700, -340 )
-node_connections = [ "output", 0, "look up", "switch routine mixer", 0, "walk or routine", "switch routine mixer", 1, "vocalize", "switch routine mixer", 2, "walk and routine", "vocalize", 0, "mouth closed or open", "vocalize", 1, "vocalize loop", "customer or chef", 0, "Customer", "customer or chef", 1, "Chef", "look horizontal", 0, "look left loop", "look horizontal", 1, "switch routine mixer", "look horizontal", 2, "look right loop", "look up", 0, "look horizontal", "look up", 1, "look up loop", "mouth closed or open", 0, "mouth closed still", "mouth closed or open", 1, "mouth open still", "walk and routine", 0, "PedestrianAdd", "walk and routine", 1, "Waiter", "walk or routine", 0, "PedestrianBlend", "walk or routine", 1, "customer or chef" ]
+node_connections = [ "output", 0, "look up", "vocalize", 0, "mouth closed or open", "vocalize", 1, "vocalize loop", "customer or chef", 0, "Customer", "customer or chef", 1, "Chef", "look horizontal", 0, "look left loop", "look horizontal", 1, "switch routine mixer", "look horizontal", 2, "look right loop", "look up", 0, "look horizontal", "look up", 1, "look up loop", "mouth closed or open", 0, "mouth closed still", "mouth closed or open", 1, "mouth open still", "walk or routine", 0, "PedestrianBlend", "walk or routine", 1, "customer or chef", "routine and walk", 0, "Waiter", "routine and walk", 1, "PedestrianAdd", "switch routine mixer", 0, "walk or routine", "switch routine mixer", 1, "vocalize", "switch routine mixer", 2, "routine and walk" ]

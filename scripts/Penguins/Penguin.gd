@@ -110,8 +110,14 @@ func eat():
 
 
 func wait_for_order():
-	AnimationTree.walk_legs_still_or_move(resolve_pedestrian_tree(), 0)
+	AnimationTree.routine_and_walk(0)
+	AnimationTree.hold_other_or_carry_order(0)
 
 
 func serve():
-	AnimationTree.walk_legs_still_or_move(resolve_pedestrian_tree(), 1)
+	AnimationTree.routine_and_walk(1)
+	AnimationTree.hold_other_or_carry_order(1)
+
+
+func served():
+	AnimationTree.hold_other_or_carry_order(0)
