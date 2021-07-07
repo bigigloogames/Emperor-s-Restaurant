@@ -72,9 +72,20 @@ func initialize_equipment():
 			skeleton.add_child(bone_attachment)
 
 
-func attach_equipment_item(body_part, equipment_item):
-	var flip_x = "right" in body_part
-	var item = equipment_item.clone(flip_x)
+func attach_equipment_item(equipment_item, flip_lateralization=false):
+	if !equipment_item.body_part:
+		print('EquipmentItem "%s" is not assigned to a body part.' % equipment_item.name)
+		return
+	
+	var item = equipment_item.clone(flip_lateralization)
+	var lateralization = ""
+	if item.lateralized:
+		if item.right_dominant:
+			lateralization = "right_"
+		else:
+			lateralization = "left_"
+	var body_part = lateralization + item.body_part
+	
 	equipment[body_part].bone_attachment.add_child(item)
 	equipment[body_part].item = item
 

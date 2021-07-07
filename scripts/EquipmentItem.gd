@@ -1,17 +1,24 @@
 extends MeshInstance
 
 export (String,
-	"default",
-	"handheld"
-) var type = "default"
+	"",
+	"head",
+	"lower_flipper"
+) var body_part
+export var lateralized = false
+export var right_dominant = false
+export var delta_translation = Vector3()
+export var delta_rotation = Vector3()
 
 
-func clone(flip_x: bool):
+func clone(flip_lateralization: bool):
 	var item = self.duplicate()
-	var direction = -1 if flip_x else 1
+	item.translation = delta_translation
+	item.rotation = delta_rotation
 	
-	if type == "handheld":
-		item.translation = Vector3(direction * 0.05, 0.1, 0)
-		item.rotation = Vector3(PI/2, 0, direction * -PI/2)
+	if flip_lateralization:
+		item.right_dominant = !item.right_dominant
+		item.translation.x *= -1
+		item.rotation.z *= -1 
 
 	return item
