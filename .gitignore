@@ -10,5 +10,6 @@ export_presets.cfg
 .mono/
 data_*/
 
+# Backup ignores
 *.blend1
 *.png~
