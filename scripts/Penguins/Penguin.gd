@@ -65,10 +65,7 @@ func initialize_equipment():
 		for body_part in BODY_PARTS:
 			var bone_attachment = BoneAttachment.new()
 			bone_attachment.bone_name = body_part
-			equipment[body_part] = {
-				"bone_attachment": bone_attachment,
-				"item": null
-			}
+			equipment[body_part] = bone_attachment
 			skeleton.add_child(bone_attachment)
 
 
@@ -86,8 +83,11 @@ func attach_equipment_item(equipment_item, flip_lateralization=false):
 			lateralization = "left_"
 	var body_part = lateralization + item.body_part
 	
-	equipment[body_part].bone_attachment.add_child(item)
-	equipment[body_part].item = item
+	equipment[body_part].add_child(item)
+
+
+func toggle_equipment_item(body_part, equipment_name, visible):
+	equipment[body_part].get_node(equipment_name).visible = visible
 
 
 func initialize_animations():

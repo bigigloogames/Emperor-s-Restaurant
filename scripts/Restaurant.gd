@@ -28,6 +28,10 @@ var chairs = []
 var tables = []
 var dragging = false
 
+# Equipment
+const Serveware = preload("res://scenes/Serveware.tscn")
+var serveware = null
+
 
 func _ready():
 	load_game()
@@ -36,12 +40,13 @@ func _ready():
 	var furniture = sav_dict["furniture"]
 	Floor.populate_tiles(room_size)
 	Furni.populate_furniture(furniture)
-
+	
 	init_store()
 	init_inventory()
 	init_staff()
 	
 	init_astar()
+	init_equipment()
 	spawn_staff()
 	
 	increment_currency(1000)
@@ -115,6 +120,11 @@ func spawn_staff():
 				penguin.initialize_penguin_position(position)
 			else:
 				penguin.queue_free()
+			
+			penguin.attach_equipment_item(serveware.get_node("FoodCloche"))
+			penguin.attach_equipment_item(serveware.get_node("Menu"))
+			penguin.attach_equipment_item(serveware.get_node("TableCloth"))
+			penguin.toggle_equipment_item("left_lower_flipper", "FoodCloche", false)
 
 
 func customer_seated(customer, seat):
@@ -141,6 +151,8 @@ func serve_customer():
 	Astar.toggle_point(table)
 	move_to(waiter, table)
 	waiter.serve()
+	waiter.toggle_equipment_item("left_lower_flipper", "FoodCloche", true)
+	waiter.toggle_equipment_item("left_lower_flipper", "Menu", false)
 	Astar.toggle_point(table)
 	waiter.connect("dest_reached", self, "_on_served", [waiter, seat, customer])
 
@@ -150,6 +162,8 @@ func _on_served(waiter, seat, customer):  # Waiter reached table
 	Astar.toggle_point(chefs[0][1], true)
 	move_to(waiter, chefs[0][1], true)
 	waiter.served()
+	waiter.toggle_equipment_item("left_lower_flipper", "FoodCloche", false)
+	waiter.toggle_equipment_item("left_lower_flipper", "Menu", true)
 	Astar.toggle_point(chefs[0][1], true)
 	var eating_timer = Timer.new()  # Eating time
 	eating_timer.wait_time = 10
@@ -433,6 +447,10 @@ func init_astar():
 	waiters = coordinates["waiters"]
 	chefs = coordinates["chefs"]
 	Astar.generate_astar()
+
+
+func init_equipment():
+	serveware = Serveware.instance()
 
 
 func open_restaurant():
