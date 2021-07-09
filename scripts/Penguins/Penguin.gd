@@ -97,12 +97,16 @@ func initialize_animations():
 	else:
 		# Routine Mixer: Separate
 		AnimationTree.switch_routine_mixer(-1)
+		
+	if routine == 'Chef':
+		AnimationTree.walk_or_routine(1)
 
 
 func resolve_pedestrian_tree():
 	return 'PedestrianAdd' if routine == 'Waiter' else 'PedestrianBlend'
 
 
+# Customer
 func walk():
 	AnimationTree.walk_or_routine(0)
 
@@ -125,6 +129,7 @@ func wait_for_order():
 	AnimationTree.hold_other_or_carry_order(0)
 
 
+# Waiter
 func serve():
 	AnimationTree.routine_and_walk(1)
 	AnimationTree.hold_other_or_carry_order(1)
