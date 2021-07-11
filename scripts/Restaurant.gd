@@ -1,11 +1,6 @@
 extends Node
 
-const AdeliePenguin = preload("res://scenes/Penguins/AdeliePenguin.tscn")
-const ChinstrapPenguin = preload("res://scenes/Penguins/ChinstrapPenguin.tscn")
-const EmperorPenguin = preload("res://scenes/Penguins/EmperorPenguin.tscn")
-const GentooPenguin = preload("res://scenes/Penguins/GentooPenguin.tscn")
-const KingPenguin = preload("res://scenes/Penguins/KingPenguin.tscn")
-const SPECIES = ["Adelie", "Chinstrap", "Emperor", "Gentoo", "King"]
+const Penguindex = preload("res://scripts/Penguins/Penguindex.gd")
 
 onready var Cam = $CameraOrigin/Camera
 onready var UI = $UI
@@ -55,20 +50,7 @@ func _ready():
 func _on_CustomerTimer_timeout():  # Spawn customers
 	if !seats:
 		return
-	var customer = null
-	randomize()
-	var species = randi() % 5 + 1
-	match species:
-		1:
-			customer = AdeliePenguin.instance()
-		2:
-			customer = ChinstrapPenguin.instance()
-		3:
-			customer = EmperorPenguin.instance()
-		4:
-			customer = GentooPenguin.instance()
-		5:
-			customer = KingPenguin.instance()
+	var customer = Penguindex.get_random_penguin()
 	customer.initialize()
 	self.add_child(customer)
 	var seat = seats.pop_back()
@@ -91,18 +73,7 @@ func spawn_staff():
 	for staff in sav_dict["staff"]:
 		if not staff or staff["position"] == "Rest":
 			continue
-		var penguin = null
-		match staff["species"]:
-			"Adelie":
-				penguin = AdeliePenguin.instance()
-			"Chinstrap":
-				penguin = ChinstrapPenguin.instance()
-			"Emperor":
-				penguin = EmperorPenguin.instance()
-			"Gentoo":
-				penguin = GentooPenguin.instance()
-			"King":
-				penguin = KingPenguin.instance()
+		var penguin = Penguindex.get_penguin(staff["species"])
 		penguin.initialize(staff["position"])
 		self.add_child(penguin)
 		if staff["position"] == "Chef":
@@ -303,7 +274,7 @@ func _hire_employee():
 	var index = UI.get_selected_staff()
 	randomize()
 	var name = staff_names[randi() % staff_names.size()]
-	var species = SPECIES[randi() % 5]
+	var species = Penguindex.get_random_species()
 	sav_dict["staff"][index] = {"name":name, "position":"Rest", "species":species}
 	refresh_staff_profile(index)
 
