@@ -7,8 +7,8 @@ export (String,
 ) var body_part
 export var lateralized = false
 export var right_dominant = false
-export var delta_translation = Vector3() # Unit: Meter
-export var delta_rotation = Vector3() # Unit: Degree
+export var delta_translation = Vector3()  # Unit: Meter
+export var delta_rotation = Vector3()  # Unit: Degree
 
 
 func clone(flip_lateralization: bool):

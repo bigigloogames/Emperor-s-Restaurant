@@ -18,9 +18,9 @@ var equipment = {}
 signal dest_reached
 
 
-func initialize(r="Customer"):
-	routine = r
-	add_to_group(r.to_lower() +  's')
+func initialize(p_routine := "Customer"):
+	routine = p_routine
+	add_to_group(p_routine.to_lower() + "s")
 
 
 func _ready():
@@ -73,7 +73,7 @@ func attach_equipment_item(equipment_item, flip_lateralization=false):
 	if !equipment_item.body_part:
 		print('EquipmentItem "%s" is not assigned to a body part.' % equipment_item.name)
 		return
-	
+
 	var item = equipment_item.clone(flip_lateralization)
 	var lateralization = ""
 	if item.lateralized:
@@ -82,7 +82,7 @@ func attach_equipment_item(equipment_item, flip_lateralization=false):
 		else:
 			lateralization = "left_"
 	var body_part = lateralization + item.body_part
-	
+
 	equipment[body_part].add_child(item)
 
 
@@ -91,19 +91,19 @@ func toggle_equipment_item(body_part, equipment_name, visible):
 
 
 func initialize_animations():
-	if routine == 'Waiter':
+	if routine == "Waiter":
 		# Routine Mixer: Combine
 		AnimationTree.switch_routine_mixer(1)
 	else:
 		# Routine Mixer: Separate
 		AnimationTree.switch_routine_mixer(-1)
-		
-	if routine == 'Chef':
+
+	if routine == "Chef":
 		AnimationTree.walk_or_routine(1)
 
 
 func resolve_pedestrian_tree():
-	return 'PedestrianAdd' if routine == 'Waiter' else 'PedestrianBlend'
+	return "PedestrianAdd" if routine == "Waiter" else "PedestrianBlend"
 
 
 # Customer

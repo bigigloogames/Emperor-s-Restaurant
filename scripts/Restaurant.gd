@@ -27,7 +27,6 @@ var dragging = false
 const Serveware = preload("res://scenes/Serveware.tscn")
 var serveware = null
 
-
 func _ready():
 	load_game()
 	load_names()
@@ -35,15 +34,15 @@ func _ready():
 	var furniture = sav_dict["furniture"]
 	Floor.populate_tiles(room_size)
 	Furni.populate_furniture(furniture)
-	
+
 	init_store()
 	init_inventory()
 	init_staff()
-	
+
 	init_astar()
 	init_equipment()
 	spawn_staff()
-	
+
 	increment_currency(1000)
 
 
@@ -91,7 +90,7 @@ func spawn_staff():
 				penguin.initialize_penguin_position(position)
 			else:
 				penguin.queue_free()
-			
+
 			penguin.attach_equipment_item(serveware.get_node("FoodCloche"))
 			penguin.attach_equipment_item(serveware.get_node("Menu"))
 			penguin.attach_equipment_item(serveware.get_node("TableCloth"))
@@ -239,10 +238,7 @@ func _on_Build_pressed():
 	if build_mode:
 		close_restaurant()
 	else:
-		var furni_array = init_furni(sav_dict["room_size"])
-		for furni in Furni.get_used_cells():
-			furni_array[furni[0]][furni[2]] = format_furni_data(furni)
-		sav_dict["furniture"] = furni_array
+		sav_dict["furniture"] = Furni.save(sav_dict["room_size"])
 		init_astar()
 		open_restaurant()
 
@@ -277,13 +273,6 @@ func _hire_employee():
 	var species = Penguindex.get_random_species()
 	sav_dict["staff"][index] = {"name":name, "position":"Rest", "species":species}
 	refresh_staff_profile(index)
-
-
-func format_furni_data(furni):
-	var data = []
-	data.append(Furni.get_cell_item(furni[0], furni[1], furni[2]))
-	data.append(Furni.get_cell_item_orientation(furni[0], furni[1], furni[2]))
-	return data
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -352,19 +341,11 @@ func init_sav_dict():
 	sav_dict["tiles"] = 0
 	var room_size = 9
 	sav_dict["room_size"] = room_size
-	sav_dict["furniture"] = init_furni(room_size)
+	sav_dict["furniture"] = Furni.init_save_data(room_size)
 	sav_dict["furni_inv"] = {}
 	sav_dict["recipes"] = {}
 	sav_dict["rec_inv"] = {}
 	sav_dict["staff"] = [null, null]
-
-
-func init_furni(room_size):
-	var furniture_array = []
-	for x in range(room_size):
-		furniture_array.append([])
-		furniture_array[x].resize(room_size)
-	return furniture_array
 
 
 func init_store():
