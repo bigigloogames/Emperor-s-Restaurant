@@ -4,7 +4,8 @@ const Orientation = preload("res://scripts/Orientation.gd")
 
 var item_id = -1
 var item_name = ""
-var name_suffix = ""
+var item_resource = ""
+var item_script = ""
 var node_name = ""
 var orientation = Orientation.South
 var item = null
@@ -13,14 +14,16 @@ var item = null
 func initialize(
 	p_item_id: int,
 	p_item_name: String,
-	p_name_suffix: String,
+	p_item_resource: String,
+	p_item_script: String,
 	p_translation: Vector3,
 	p_orientation: int
 ):
 	item_id = p_item_id
 	item_name = p_item_name
-	name_suffix = p_name_suffix
-	node_name = item_name.trim_suffix(name_suffix)
+	item_resource = p_item_resource
+	item_script = p_item_script
+	node_name = item_name.trim_suffix(item_resource)
 	translation = p_translation
 	orientation = p_orientation
 	rotation_degrees = Orientation.to_rotation_degrees(orientation)
@@ -32,13 +35,13 @@ func orientation_rotate():
 	rotation_degrees = Orientation.to_rotation_degrees(orientation)
 
 
-func instance_item(addressable_item_index):
+func instance_item(resource: Spatial, script: Reference):
 	if item:
 		return
-	
-	var resource = addressable_item_index.resources[name_suffix]
+
 	var node = resource.get_node(node_name)
 	item = node.duplicate()
 	item.translation = Vector3()
+	item.set_script(script)
 	add_child(item)
 	

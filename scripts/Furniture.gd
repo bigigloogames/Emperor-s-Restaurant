@@ -30,18 +30,6 @@ func populate_furniture(furniture):
 				)
 
 
-func new_addressable_item(item_id: int, position: Vector3, orientation := Orientation.South):
-	var item_name = mesh_library.get_item_name(item_id)
-	var addressable_item = null
-
-	if "StoveAppliance" in item_name or "DeepFryerAppliance" in item_name:
-		addressable_item = AddressableItem.new()
-		addressable_item.initialize(item_id, item_name, "Appliance", position, orientation)
-		addressable_item.instance_item(addressable_item_index)
-
-	return addressable_item
-
-
 func position_to_key(position: Vector3):
 	return "%s,%s" % [position.x, position.z]
 
@@ -59,7 +47,12 @@ func place_item(selected_item, position, orientation = Orientation.South, conver
 	var n = position.z
 
 	if m >= 0 and n >= 0 and m < 9 and n < 9:
-		var addressable_item = new_addressable_item(selected_item, map_to_world(m, 0, n))
+		var addressable_item = addressable_item_index.new_addressable_item(
+			selected_item,
+			mesh_library.get_item_name(selected_item),
+			map_to_world(m, 0, n),
+			orientation
+		)
 
 		if addressable_item:
 			addressables[position_to_key(position)] = addressable_item
