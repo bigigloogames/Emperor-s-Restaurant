@@ -13,9 +13,9 @@
                 24,
                 25,
                 26,
-                31,
                 32,
-                33
+                33,
+                34
             ]
         }
     ],
@@ -44,7 +44,7 @@
         },
         {
             "mesh" : 0,
-            "name" : "BasicStoveBurner.001",
+            "name" : "BasicStoveBurner0",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -53,7 +53,7 @@
         },
         {
             "mesh" : 1,
-            "name" : "BasicStoveGrate.001",
+            "name" : "BasicStoveGrate0",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -65,7 +65,7 @@
                 2,
                 3
             ],
-            "name" : "BasicStoveBurnerOrigin.001",
+            "name" : "BasicStoveBurnerOrigin0",
             "translation" : [
                 -0.17999997735023499,
                 0.04000002145767212,
@@ -74,7 +74,7 @@
         },
         {
             "mesh" : 0,
-            "name" : "BasicStoveBurner.002",
+            "name" : "BasicStoveBurner1",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -83,7 +83,7 @@
         },
         {
             "mesh" : 1,
-            "name" : "BasicStoveGrate.002",
+            "name" : "BasicStoveGrate1",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -95,7 +95,7 @@
                 5,
                 6
             ],
-            "name" : "BasicStoveBurnerOrigin.002",
+            "name" : "BasicStoveBurnerOrigin1",
             "translation" : [
                 0.18000003695487976,
                 0.04000002145767212,
@@ -104,7 +104,7 @@
         },
         {
             "mesh" : 0,
-            "name" : "BasicStoveBurner",
+            "name" : "BasicStoveBurner2",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -113,7 +113,7 @@
         },
         {
             "mesh" : 1,
-            "name" : "BasicStoveGrate",
+            "name" : "BasicStoveGrate2",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -125,16 +125,16 @@
                 8,
                 9
             ],
-            "name" : "BasicStoveBurnerOrigin",
+            "name" : "BasicStoveBurnerOrigin2",
             "translation" : [
-                0.18000003695487976,
+                -0.1799999624490738,
                 0.04000002145767212,
                 -0.1799999624490738
             ]
         },
         {
             "mesh" : 0,
-            "name" : "BasicStoveBurner.003",
+            "name" : "BasicStoveBurner3",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -143,7 +143,7 @@
         },
         {
             "mesh" : 1,
-            "name" : "BasicStoveGrate.003",
+            "name" : "BasicStoveGrate3",
             "translation" : [
                 0,
                 -0.04000002145767212,
@@ -155,9 +155,9 @@
                 11,
                 12
             ],
-            "name" : "BasicStoveBurnerOrigin.003",
+            "name" : "BasicStoveBurnerOrigin3",
             "translation" : [
-                -0.1799999624490738,
+                0.18000003695487976,
                 0.04000002145767212,
                 -0.1799999624490738
             ]
@@ -178,7 +178,7 @@
         },
         {
             "mesh" : 2,
-            "name" : "BasicStoveKnob",
+            "name" : "BasicStoveKnob0",
             "translation" : [
                 -0.2499999850988388,
                 0.019999980926513672,
@@ -187,7 +187,7 @@
         },
         {
             "mesh" : 2,
-            "name" : "BasicStoveKnob.001",
+            "name" : "BasicStoveKnob1",
             "translation" : [
                 0.24999994039535522,
                 0.019999980926513672,
@@ -196,7 +196,7 @@
         },
         {
             "mesh" : 2,
-            "name" : "BasicStoveKnob.002",
+            "name" : "BasicStoveKnob2",
             "translation" : [
                 -0.18000003695487976,
                 0.019999980926513672,
@@ -205,7 +205,7 @@
         },
         {
             "mesh" : 2,
-            "name" : "BasicStoveKnob.003",
+            "name" : "BasicStoveKnob3",
             "translation" : [
                 0.1799999475479126,
                 0.019999980926513672,
@@ -214,7 +214,7 @@
         },
         {
             "mesh" : 2,
-            "name" : "BasicStoveKnob.004",
+            "name" : "BasicStoveKnob4",
             "translation" : [
                 0,
                 0.019999980926513672,
@@ -309,31 +309,31 @@
         },
         {
             "mesh" : 9,
-            "name" : "BasicDeepFryerLid"
+            "name" : "BasicDeepFryerLid0"
         },
         {
             "children" : [
                 27
             ],
-            "name" : "BasicDeepFryerTank",
+            "name" : "BasicDeepFryerTank0",
             "translation" : [
                 -0.16999995708465576,
-                0.5199999809265137,
+                0.019999980926513672,
                 0
             ]
         },
         {
             "mesh" : 9,
-            "name" : "BasicDeepFryerLid.001"
+            "name" : "BasicDeepFryerLid1"
         },
         {
             "children" : [
                 29
             ],
-            "name" : "BasicDeepFryerTank.001",
+            "name" : "BasicDeepFryerTank1",
             "translation" : [
                 0.1700000762939453,
-                0.5199999809265137,
+                0.019999980926513672,
                 0
             ]
         },
@@ -341,6 +341,17 @@
             "children" : [
                 28,
                 30
+            ],
+            "name" : "BasicDeepFryerTanks",
+            "translation" : [
+                0,
+                0.5,
+                0
+            ]
+        },
+        {
+            "children" : [
+                31
             ],
             "mesh" : 10,
             "name" : "BasicDeepFryer",
