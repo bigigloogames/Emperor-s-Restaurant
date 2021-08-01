@@ -1,6 +1,8 @@
 extends Node
 
 const Penguindex = preload("res://scripts/Penguins/Penguindex.gd")
+const Cookware = preload("res://scenes/Cookware.tscn")
+const Serveware = preload("res://scenes/Serveware.tscn")
 
 onready var Cam = $CameraOrigin/Camera
 onready var UI = $UI
@@ -22,10 +24,9 @@ var appliances = []
 var chairs = []
 var tables = []
 var dragging = false
-
-# Equipment
-const Serveware = preload("res://scenes/Serveware.tscn")
+var cookware = null
 var serveware = null
+
 
 func _ready():
 	load_game()
@@ -402,6 +403,7 @@ func init_astar():
 
 
 func init_equipment():
+	cookware = Cookware.instance()
 	serveware = Serveware.instance()
 
 

@@ -1,4 +1,9 @@
-extends Node
+extends MeshInstance
+
+export var burner_count = 4
+
+const BURNER_ORIGIN = 0
+const BURNER_COOKWARE = 1
 
 onready var Burners = get_node(name + "Burners")
 onready var Knobs = get_node(name + "Knobs")
@@ -6,10 +11,13 @@ onready var Oven = get_node(name + "Oven")
 
 var OvenOff = null
 var OvenOn = null
+var burners = []
 var tween = null
 
 
 func _ready():
+	add_to_group("stoves")
+	initialize_burners()
 	initialize_oven()
 	initialize_tween()
 
@@ -64,3 +72,31 @@ func close_oven_door(duration: float, delay: float):
 		tween.EASE_IN,
 		delay
 	)
+
+
+func initialize_burners():
+	var prefix = name + "BurnerOrigin"
+	burners.resize(burner_count)
+	
+	for n in burner_count:
+		var burner = []
+		burner.resize(2)
+		burner[BURNER_ORIGIN] = Burners.get_node(prefix + String(n))
+		burner[BURNER_COOKWARE] = null
+		burners[n] = burner
+
+
+func place_cookware(to: int, cookware: MeshInstance):
+	burners[to][BURNER_ORIGIN].add_child(cookware)
+	burners[to][BURNER_COOKWARE] = cookware
+
+
+func move_cookware(from: int, to: int):
+	var cookware = burners[from][BURNER_COOKWARE]
+	burners[from][BURNER_ORIGIN].remove_child(cookware)
+	burners[from][BURNER_COOKWARE] = null
+	place_cookware(to, cookware)
+
+
+func remove_cookware(from: int):
+	burners[from][BURNER_COOKWARE].queue_free()

@@ -1,6 +1,5 @@
 extends Node
 
-
 export var scene = ""
 export var change_root_scene = false
 export var toggle_self = false
