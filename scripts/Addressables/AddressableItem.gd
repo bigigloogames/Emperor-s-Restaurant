@@ -5,6 +5,7 @@ const Orientation = preload("res://scripts/Orientation.gd")
 var item_id = -1
 var item_name = ""
 var item_scene = ""
+var item_type = ""
 var node_name = ""
 var orientation = Orientation.South
 var item = null
@@ -14,12 +15,14 @@ func initialize(
 	p_item_id: int,
 	p_item_name: String,
 	p_item_scene: String,
+	p_item_type: String,
 	p_translation: Vector3,
 	p_orientation: int
 ):
 	item_id = p_item_id
 	item_name = p_item_name
 	item_scene = p_item_scene
+	item_type = p_item_type
 	node_name = item_name.trim_suffix(item_scene)
 	translation = p_translation
 	orientation = p_orientation

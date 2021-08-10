@@ -39,6 +39,10 @@ func key_to_position(key: String):
 	return Vector3(position[0], 0, position[1])
 
 
+func get_addressable_item(position: Vector3):
+	return addressables.get(position_to_key(position))
+
+
 func place_item(selected_item, position, orientation = Orientation.South, convert_position = true):
 	if convert_position:
 		position = world_to_map(position)

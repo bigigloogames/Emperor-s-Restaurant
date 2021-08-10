@@ -395,7 +395,8 @@ func refresh_staff_profile(index):
 
 func init_astar():
 	var coordinates = Astar.populate_astar(
-			sav_dict["room_size"], sav_dict["furniture"], tables, chairs, appliances)
+		Furni, sav_dict["room_size"], sav_dict["furniture"], tables, chairs
+	)
 	seats = coordinates["seats"]
 	waiters = coordinates["waiters"]
 	chefs = coordinates["chefs"]

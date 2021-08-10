@@ -15,8 +15,8 @@ func _ready():
 	pass # Replace with function body.
 
 
-func populate_astar(room_size, furniture, tables, chairs, appliances):
-	clear()
+func populate_astar(furniture_map, room_size, furniture, tables, chairs):
+	clear() 
 	var seats = []
 	var waiters = []
 	var chefs = []
@@ -25,13 +25,17 @@ func populate_astar(room_size, furniture, tables, chairs, appliances):
 		for n in room_size:
 			if furniture[m][n] == null:
 				set_cell_item(m, 0, n, PATH_TILE)
-			elif tables.has(int(furniture[m][n][0])):
+				continue
+	
+			var position = Vector3(m, 0, n)
+		
+			if tables.has(int(furniture[m][n][0])):
 				var chair = valid_chair(m, n, furniture, room_size, chairs)
 				if chair:
 					set_cell_item(chair.x, 0, chair.z, SEAT_TILE)
 					set_cell_item(m, 0, n, TABLE_TILE)
-					seats.append([chair, Vector3(m, 0, n)])
-			elif appliances.has(int(furniture[m][n][0])):
+					seats.append([chair, position])
+			elif furniture_map.get_addressable_item(position):
 				var orientation = int(furniture[m][n][1])
 				var waiter_list = valid_waiters(m, n, room_size, furniture, orientation)
 				for waiter in waiter_list:
