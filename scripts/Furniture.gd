@@ -150,7 +150,7 @@ func serialize_addressable_item(key: String):
 	var addressable_item = addressables[key]
 	return [
 		addressable_item.item_id,
-		Orientation.South
+		addressable_item.orientation
 	]
 
 
