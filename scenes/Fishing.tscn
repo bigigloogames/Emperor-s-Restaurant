@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://assets/src/Fishing/FishingBarOver.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Fishing.gd" type="Script" id=2]
-[ext_resource path="res://assets/src/Fishing/FishingBar.png" type="Texture" id=3]
-[ext_resource path="res://assets/src/Fishing/FishingCircleOver.png" type="Texture" id=4]
-[ext_resource path="res://assets/src/Fishing/FishingCircle.png" type="Texture" id=5]
+[ext_resource path="res://assets/2D/Fishing/FishingBar.png" type="Texture" id=3]
+[ext_resource path="res://assets/2D/Fishing/FishingCircleOver.png" type="Texture" id=4]
+[ext_resource path="res://assets/2D/Fishing/FishingCircle.png" type="Texture" id=5]
 
 [node name="Fishing" type="Control"]
 anchor_right = 1.0
@@ -71,7 +70,7 @@ margin_right = 150.0
 margin_bottom = 610.0
 step = 0.1
 texture_under = ExtResource( 3 )
-texture_over = ExtResource( 1 )
+texture_over = ExtResource( 4 )
 texture_progress = ExtResource( 3 )
 fill_mode = 3
 tint_under = Color( 0.145098, 0.12549, 0.12549, 1 )

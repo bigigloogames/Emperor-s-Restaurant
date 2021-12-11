@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/FishingBarOver.png-22d615689c0774b25e56fa301099886d.stex"
+path="res://.import/FishingCircle.png-99e1b0f51b22729696632d4ac95bceb0.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://FishingBarOver.png"
-dest_files=[ "res://.import/FishingBarOver.png-22d615689c0774b25e56fa301099886d.stex" ]
+source_file="res://assets/2D/Fishing/FishingCircle.png"
+dest_files=[ "res://.import/FishingCircle.png-99e1b0f51b22729696632d4ac95bceb0.stex" ]
 
 [params]
 
