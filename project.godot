@@ -17,6 +17,7 @@ _global_script_class_icons={
 
 config/name="Emperor's Restaurant"
 config/icon="res://icon.png"
+config/godot_version="3.2.3"
 
 [display]
 
